@@ -1,0 +1,91 @@
+class AppAssetPaths {
+  static const appLogo = 'assets/images/app_logo.svg';
+  static const appLogoTitle = 'assets/images/app_logo_title.png';
+  static const splashBackground = 'assets/images/splash_bg.png';
+  static const downbackground = 'assets/images/down2.png';
+  static const googleLogo = 'assets/icons/google_logo.svg';
+  static const appleLogo = 'assets/icons/apple_logo.svg';
+  static const noMessageImage = 'assets/images/no_message_image.svg';
+  static const noFavoriteImage = 'assets/images/no_favorite_image.svg';
+  static const noConnectionImage =
+      'assets/images/no_connection_illustration.svg';
+  static const noNotificationImage = 'assets/images/no_notification_image.svg';
+  static const notFoundImage = 'assets/images/not_found_image.svg';
+  static const navHomeIcon = 'assets/icons/home.svg';
+  static const navBookmarkIcon = 'assets/icons/bookmark.svg';
+  static const navProfileIcon = 'assets/icons/profile.svg';
+  static const navWishlistIcon = 'assets/icons/wishlist.svg';
+  static const settingIcon = 'assets/icons/setting.svg';
+  static const heartBlankIcon = 'assets/icons/heart_blank.svg';
+  static const heartRedIcon = 'assets/icons/heart_red.svg';
+  static const shareIcon = 'assets/icons/share.svg';
+  static const starIcon = 'assets/icons/star.svg';
+  static const arrowBackIcon = 'assets/icons/arrow_back.svg';
+
+  static const unitHomeIcon = 'assets/icons/unit_icons/unit_home.svg';
+  static const unitKitchenIcon = 'assets/icons/unit_icons/unit_kitchen.svg';
+  static const unitUtilitiesIcon = 'assets/icons/unit_icons/unit_utilities.svg';
+  static const billIcon = 'assets/icons/bill_icon.svg';
+  static const unitPersonIcon = 'assets/icons/unit_icons/unit_person.svg';
+  static const unitLocationIcon = 'assets/icons/unit_icons/unit_location.svg';
+  static const unitLivingRooIcon =
+      'assets/icons/unit_icons/unit_living_room.svg';
+  static const unitElevatorIcon = 'assets/icons/unit_icons/unit_elevator.svg';
+  static const unitBedroomIcon = 'assets/icons/unit_icons/unit_bedroom.svg';
+  static const unitBathroomIcon = 'assets/icons/unit_icons/unit_bathroom.svg';
+  static const unitFeaturesIcon = 'assets/icons/unit_icons/unit_features.svg';
+  static const unitVideoIcon = 'assets/icons/unit_icons/unit_video.svg';
+  static const d360Icon = 'assets/icons/unit_icons/360d_icon.svg';
+  static const successIcon = 'assets/icons/success.svg';
+  static const profileDefaultAvatar = 'assets/images/profile_image.png';
+  static const personalInformationIcon = 'assets/icons/personal_info.svg';
+  static const paymentIcon = 'assets/icons/payment.svg';
+  static const bookingsIcon = 'assets/icons/bookings.svg';
+  static const documentsIcon = 'assets/icons/documents.svg';
+  static const reportProblemIcon = 'assets/icons/report_problem.svg';
+  static const supportChatIcon = 'assets/icons/support_chat.svg';
+  static const notificationsIcon = 'assets/icons/notifications.svg';
+  static const languageIcon = 'assets/icons/language.svg';
+  static const signOutIcon = 'assets/icons/sign_out.svg';
+  static const deleteAccountIcon = 'assets/icons/delete_account.svg';
+  static const forwardNextIcon = 'assets/icons/forward_next.svg';
+  static const cameraIcon = 'assets/icons/camera.svg';
+  static const closeIcon = "assets/icons/close_icon.svg";
+  static const apartmentIcon = "assets/icons/filter/apartment_icon.svg";
+  static const busIcon = "assets/icons/unit_icons/unit_bus.svg";
+  static const bedIcon = "assets/icons/filter/bed_icon.svg";
+  static const studioIcon = "assets/icons/filter/studio_icon.svg";
+  static const roomIcon = "assets/icons/filter/room_icon.svg";
+  static const datePicker = "assets/icons/date_picker.svg";
+  static const addImage = "assets/icons/add_image.svg";
+  static const editIcon = "assets/icons/edit_icon.svg";
+  static const paypalLogo = "assets/icons/logo_paypal.svg";
+  static const walletIcon = "assets/icons/wallet.svg";
+  static const creditCardIcon = "assets/icons/credit_card.svg";
+  static const notificationItemIcon = "assets/icons/notification_item_icon.svg";
+  static const deleteIcon = "assets/icons/payments_invoices/delete_icon.svg";
+  static const downloadIcon =
+      "assets/icons/payments_invoices/download_icon.svg";
+  static const invoiceIcon = "assets/icons/payments_invoices/invoice_icon.svg";
+  static const cardIcon = "assets/icons/payments_invoices/card_icon.svg";
+  static const timeIcon = "assets/icons/time.svg";
+  static const timePicker = "assets/icons/time_picker.svg";
+  static const warringIcon = "assets/icons/warring_icon.svg";
+  static const helpIcon = "assets/icons/help_icon.svg";
+  static const signatureIcon = "assets/icons/signature_icon.svg";
+  static const contractIcon = "assets/icons/contract_icon.svg";
+  static const copyIcon = "assets/icons/copy_icon.svg";
+  static const chatIcon = "assets/icons/chat_icon.svg";
+  static const chatHistoryIcon = "assets/icons/chat_history.png";
+
+  static const galleryPickerIcon = "assets/icons/gallery_icon.png";
+  static const cameraPickerIcon = "assets/icons/camera_icon.png";
+  static const documentPickerIcon = "assets/icons/document_icon.png";
+  static const welcomeBackground = "assets/images/welcome.png";
+  static const selfieBackground = "assets/images/selfie.png";
+  static const apartmentDetails = "assets/images/apartment_details.png";
+  static const qrCode = "assets/images/qrCode.png";
+  static const containerBg = 'assets/images/conatiner_bg.png';
+  static const invoice = 'assets/images/invoice.png';
+
+}
