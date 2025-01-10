@@ -593,5 +593,10 @@
   "message_success_sign_up": "Ihr Konto ist einsatzbereit. ",
   "congratulations": "Glückwunsch!",
   "exit_app": "Beenden Sie die APP",
-  "exit_app_message": "Sind Sie sicher, dass Sie unsere App beenden möchten?"
+  "exit_app_message": "Sind Sie sicher, dass Sie unsere App beenden möchten?",
+  "sign_your_extended_contract": "Unterzeichnen Sie Ihren erweiterten Vertrag",
+  "extended_to": "Sie erstrecken sich auf ",
+  "change_checkout": "Kasse ändern",
+  "checkout_date_is_required": "Das Check-out-Datum ist erforderlich",
+  "check_out_on": "Sie werden sich Folgendes ansehen : "
 }

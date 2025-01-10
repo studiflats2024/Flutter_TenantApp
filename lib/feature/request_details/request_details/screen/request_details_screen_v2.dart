@@ -53,7 +53,9 @@ class RequestDetailsScreenV2 extends StatelessWidget {
   static const argumentRequestStatus = 'status';
 
   static Future<void> open(
-      BuildContext context, String requestId, ) async {
+    BuildContext context,
+    String requestId,
+  ) async {
     Navigator.of(context).pushNamed(routeName, arguments: {
       argumentRequestId: requestId,
     });
@@ -116,7 +118,6 @@ class _RequestDetailsScreenScreenWithBloc
           } else {
             hideLoading();
           }
-
           if (state is RequestDetailErrorState) {
             showFeedbackMessage(state.isLocalizationKey
                 ? translate(state.errorMassage)!
@@ -163,7 +164,7 @@ class _RequestDetailsScreenScreenWithBloc
               //: cancelClicked,
               changeDateClickedCallBack:
                   state.bookingDetailsModel.canEdit ? changeDateClicked : null,
-              changeCheckInDetails: !state.bookingDetailsModel.readyToCheckOut
+              changeCheckInDetails: !state.bookingDetailsModel.readyToCheckout
                   ? changeCheckInClicked
                   : null,
               checkInDetailsClickedCallBack: _checkInDetailsClicked,
@@ -172,6 +173,7 @@ class _RequestDetailsScreenScreenWithBloc
               apartmentRequestsApiModel: state.bookingDetailsModel,
               acceptOfferClickedCallBack: () => _acceptRejectOffer(true, ""),
               rejectOfferClickedCallBack: () => _acceptRejectOffer(false, ""),
+                updateData :_getRequestDetailsApiEvent
             ),
           );
         } else {
@@ -214,130 +216,58 @@ class _RequestDetailsScreenScreenWithBloc
   }
 
   get _actionBottomTittle {
-    // if (_bookingDetailsModel!.rejected) {
-    //   return translate(LocalizationKeys.rejectReason)!;
-    // } else if (_bookingDetailsModel!.nextInvoiceModel != null) {
-    //   return "${translate(LocalizationKeys.payInvoice)!} - ${AppDateFormat.formattingOnlyYearMonth(_bookingDetailsModel!.nextInvoiceModel!.invDate, appLocale.locale.languageCode)}";
-    // } else if (_bookingDetailsModel!.isRefunded) {
-    //   return translate(LocalizationKeys.refunded);
-    // } else if (_bookingDetailsModel!.isWaitingRefund) {
-    //   return translate(LocalizationKeys.waitingForRefund);
-    // } else if (!_bookingDetailsModel!.isCheckoutSheetReady &&
-    //     _bookingDetailsModel!.isReviewd) {
-    //   return translate(LocalizationKeys.waitingCheckoutSheet);
-    // } else if (_bookingDetailsModel!.isReadyCheck &&
-    //     !_bookingDetailsModel!.isReviewd) {
-    //   return translate(LocalizationKeys.reviewBooking);
-    // } else if (_bookingDetailsModel!.isReadyCheck &&
-    //     _bookingDetailsModel!.isCheckoutSheetReady) {
-    //   return translate(LocalizationKeys.continueForCheckout);
-    // } else if (_bookingDetailsModel!.isCheckedout &&
-    //     _bookingDetailsModel!.isCashDeposit) {
-    //   return translate(LocalizationKeys.waitingForRefund);
-    // } else if (_bookingDetailsModel!.terminationRequest) {
-    //   return translate(LocalizationKeys.yourTerminationUnderReview);
-    // } else if (_bookingDetailsModel!.requestStatus == "Pending") {
-    //   return translate(LocalizationKeys.continuee)!;
-    // } else if (!_bookingDetailsModel!.hasUploadedImg) {
-    //   return translate(LocalizationKeys.uploadPassport)!;
-    // } else if (_bookingDetailsModel!.haveInvaliPassport &&
-    //     _bookingDetailsModel!.hasUploadedImg) {
-    //   return translate(LocalizationKeys.passportreview)!;
-    // } else if (_bookingDetailsModel!.haveInvalidData) {
-    //   return translate(LocalizationKeys.passportRejected)!;
-    // } /*else if (_apartmentRequestsApiModel!.haveInvaliPassport) {
-    //   return translate(LocalizationKeys.passportreview)!;
-    // } */
-    // else if (!_bookingDetailsModel!.signedContract &&
-    //     _bookingDetailsModel!.createdContract) {
-    //   return translate(LocalizationKeys.signYourContract)!;
-    // } else if (_bookingDetailsModel!.nextInvoiceModel != null) {
-    //   return "${translate(LocalizationKeys.payInvoice)!} - ${AppDateFormat.formattingOnlyYearMonth(_bookingDetailsModel!.nextInvoiceModel!.invDate, appLocale.locale.languageCode)}";
-    // } else if (_bookingDetailsModel!.checked) {
-    //   return translate(LocalizationKeys.checkInAndRentalRulesDetails)!;
-    // } else if (_bookingDetailsModel!.signedContract) {
-    //   return translate(LocalizationKeys.prepareYourCheckIn)!;
-    // } else if (_bookingDetailsModel!.fullPaid &&
-    //     _bookingDetailsModel!.createdContract) {
-    //   return translate(LocalizationKeys.signYourContract)!;
-    // } else if (_bookingDetailsModel!.fullPaid &&
-    //     !_bookingDetailsModel!.createdContract) {
-    //   return translate(LocalizationKeys.wePreparingYourContract)!;
-    // } else if (_bookingDetailsModel!.isCashed &&
-    //     !_bookingDetailsModel!.fullPaid) {
-    //   return translate(LocalizationKeys.confirmCashPayment)!;
-    // } else {
-    //   return translate(LocalizationKeys.continuee)!;
-    // }
-    if ((_bookingDetailsModel?.bookingStatus ?? "") == "Cancelled" ||
-        (_bookingDetailsModel?.bookingStatus ?? "") == "Rejected") {
+    if (_bookingDetailsModel?.bookingCancelledOrRejected??false) {
       return "${_bookingDetailsModel?.bookingStatus ?? ""} Reason";
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
+    } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
         (_bookingDetailsModel?.needToUploadPassport ?? false)) {
       return translate(LocalizationKeys.uploadPassport)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
+    } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
         (_bookingDetailsModel?.haveRejectPassport ?? false)) {
       return translate(LocalizationKeys.passportRejected)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
+    } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
         (_bookingDetailsModel?.passportInReview ?? false)) {
       return translate(LocalizationKeys.passportreview)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.paidSecurityDeposit ?? false) &&
-        (_bookingDetailsModel?.canResumeBookingAsMainTenant ?? false)) {
+    } else if (_bookingDetailsModel?.readyToPaySecurityDeposit ?? false) {
       return translate(LocalizationKeys.paySecurityDeposit)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.signContract ?? false) &&
-        (_bookingDetailsModel?.canResumeBookingAsMainTenant ?? false)) {
+    } else if (_bookingDetailsModel?.readyToSignContract ?? false) {
       return translate(LocalizationKeys.signContract)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.goToArrivingDetails ?? false)) {
+    } else if (_bookingDetailsModel?.putArrivingDetails ?? false) {
       return translate(LocalizationKeys.arrivingDetails)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        (_bookingDetailsModel?.goToArrivingDetails ?? false) &&
-        DateFormat("MM/dd/yyyy")
-            .parse(_bookingDetailsModel?.checkIn ?? "")
-            .isAfter(DateTime.now())) {
+    } else if (_bookingDetailsModel?.waitingForCheckIn ?? false) {
       return translate(LocalizationKeys.waitingForCheckIn)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        (_bookingDetailsModel?.goToArrivingDetails ?? false) &&
-        !DateFormat("MM/dd/yyyy")
-            .parse(_bookingDetailsModel?.checkIn ?? "")
-            .isAfter(DateTime.now()) &&
-        !(_bookingDetailsModel?.scannedQR ?? false)) {
+    } else if (_bookingDetailsModel?.readyForCheckIn ?? false) {
       return translate(LocalizationKeys.checkIn2)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
+    } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
         !(_bookingDetailsModel?.isSelfie ?? false)) {
       return translate(LocalizationKeys.verificationIdentity)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.paidRent ?? false) &&
-        !(_bookingDetailsModel?.handOverSigned ?? false) &&
-        (_bookingDetailsModel?.canResumeBookingAsMainTenant ?? false)) {
+    } else if ((_bookingDetailsModel?.shouldPayRent ?? false)) {
       return translate(LocalizationKeys.payRent)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.handOverSigned ?? false)) {
+    } else if (_bookingDetailsModel?.readyToSignHandOver ?? false) {
       return translate(LocalizationKeys.signHandoverProtocols)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.rentalRulesSigned ?? false)) {
+    } else if (_bookingDetailsModel?.readyToSignApartmentRules ?? false) {
       return translate(LocalizationKeys.signRentalRules)!;
     } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Pending") {
       return translate(LocalizationKeys.bookingReview)!;
     } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Rejected") {
       return translate(LocalizationKeys.rejectReason)!;
-    } else if (_bookingDetailsModel!.getMonthlyInvoice != null &&
-        (_bookingDetailsModel!.getMonthlyInvoice!.isCashed ?? false) &&
-        DateFormat("MM/dd/yyyy")
-                .parse(_bookingDetailsModel?.checkIn ?? "")
-                .month ==
-            DateTime.now().month &&
-        _bookingDetailsModel!.canResumeBookingAsMainTenant) {
+    } else if (_bookingDetailsModel!.refunded) {
+      return translate(LocalizationKeys.refunded);
+    } else if (_bookingDetailsModel!.waitingToRefunded) {
+      return translate(LocalizationKeys.waitingForRefund);
+    } else if (!_bookingDetailsModel!.checkOutSheetIsReady &&
+        _bookingDetailsModel!.isReviewed) {
+      return translate(LocalizationKeys.waitingCheckoutSheet);
+    } else if (_bookingDetailsModel!.readyToCheckout &&
+        !_bookingDetailsModel!.isReviewed) {
+      return translate(LocalizationKeys.reviewBooking);
+    } else if (_bookingDetailsModel!.readyToCheckout &&
+        _bookingDetailsModel!.checkOutSheetIsReady) {
+      return translate(LocalizationKeys.continueForCheckout);
+    } else if (_bookingDetailsModel!.monthlyInvoiceIsCash) {
       return translate(LocalizationKeys.confirmCashPayment)!;
     } else if (_bookingDetailsModel?.getMonthlyInvoice != null) {
       return translate(LocalizationKeys.monthlyRent)!;
-    } else if (_bookingDetailsModel?.readyToCheckOut ?? false) {
-      return translate(LocalizationKeys.checkOutSheetDetails)!;
-    } else if (!(_bookingDetailsModel?.paidRent ?? false) &&
-        (_bookingDetailsModel?.handOverSigned ?? false) &&
-        (_bookingDetailsModel?.canResumeBookingAsMainTenant ?? false)) {
+    } else if (_bookingDetailsModel?.waitingToConfirmPayRent??false) {
       return translate(LocalizationKeys.confirmCashPayment)!;
     } else {
       return translate(LocalizationKeys.waitingForMonthlyInvoices)!;
@@ -348,121 +278,40 @@ class _RequestDetailsScreenScreenWithBloc
     if ((_bookingDetailsModel?.bookingStatus ?? "") == "Cancelled" ||
         (_bookingDetailsModel?.bookingStatus ?? "") == "Rejected") {
       _showRejectedReason();
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
+    } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
         (_bookingDetailsModel?.needToUploadPassport ?? false)) {
-      RequestPassportScreenV2.open(context, _bookingDetailsModel!,
-              fromRejected: false)
-          .then((value) => _getRequestDetailsApiEvent());
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        (_bookingDetailsModel?.passportInReview ?? false)) {
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
+      _openPassports(false);
+    } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
         (_bookingDetailsModel?.haveRejectPassport ?? false)) {
-      RequestPassportScreenV2.open(context, _bookingDetailsModel!,
-              fromRejected: true)
-          .then((value) => _getRequestDetailsApiEvent());
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.paidSecurityDeposit ?? false) &&
-        (_bookingDetailsModel?.canResumeBookingAsMainTenant ?? false)) {
-      InvoiceScreenV2.open(
-              context, _bookingDetailsModel!, _getRequestDetailsApiEvent)
-          .then((value) => _getRequestDetailsApiEvent());
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.signContract ?? false) &&
-        (_bookingDetailsModel?.canResumeBookingAsMainTenant ?? false)) {
-      SignContractScreenV2.open(
-              context, _bookingDetailsModel!, false, _getRequestDetailsApiEvent)
-          .then((value) => _getRequestDetailsApiEvent());
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.goToArrivingDetails ?? false)) {
-      ArrivingDetails.open(
-        context,
-        ArrivingDetailsRequestModel(
-          bookingId: _bookingDetailsModel?.bookingId ?? "",
-          guestId: _bookingDetailsModel
-                  ?.guests?[_bookingDetailsModel?.guestIndex ?? 0].guestId ??
-              "",
-        ),
-        _bookingDetailsModel!,
-        false,
-      ).then((value) => _getRequestDetailsApiEvent());
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        (_bookingDetailsModel?.goToArrivingDetails ?? false) &&
-        DateFormat("MM/dd/yyyy")
-            .parse(_bookingDetailsModel?.checkIn ?? "")
-            .isAfter(DateTime.now())) {
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        (_bookingDetailsModel?.goToArrivingDetails ?? false) &&
-        !DateFormat("MM/dd/yyyy")
-            .parse(_bookingDetailsModel?.checkIn ?? "")
-            .isAfter(DateTime.now()) &&
-        !(_bookingDetailsModel?.scannedQR ?? false)) {
-      BookingSummary.open(
-              context,
-              _bookingDetailsModel!,
-              _bookingDetailsModel!.guests![_bookingDetailsModel!.guestIndex],
-              _bookingDetailsModel?.apartmentLocation ?? "",
-              _getRequestDetailsApiEvent)
-          .then((value) => _getRequestDetailsApiEvent());
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.isSelfie ?? false)) {
-      _bookingDetailsModel?.guestNeedToUploadProfileImage ?? true
-          ? TakeSelfieScreen.open(context, _bookingDetailsModel!, true,
-                  _getRequestDetailsApiEvent)
-              .then((value) => _getRequestDetailsApiEvent())
-          : SelfieScreen.open(context, _bookingDetailsModel!, true,
-                  _getRequestDetailsApiEvent)
-              .then((value) => _getRequestDetailsApiEvent());
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.paidRent ?? false) &&
-        !(_bookingDetailsModel?.handOverSigned ?? false) &&
-        (_bookingDetailsModel?.canResumeBookingAsMainTenant ?? false)) {
-      if (_bookingDetailsModel?.fullBooking ??
-          false && _bookingDetailsModel!.canResumeBookingAsMainTenant) {
-        InvoicePayRentScreenV2.open(context, _bookingDetailsModel!, false,
-                _getRequestDetailsApiEvent)
-            .then((value) => _getRequestDetailsApiEvent());
-      } else if (_bookingDetailsModel!.isSingleGuest) {
-        InvoicePayRentScreenV2.open(context, _bookingDetailsModel!, false,
-                _getRequestDetailsApiEvent)
-            .then((value) => _getRequestDetailsApiEvent());
-      } else {
-        SelectTenantForPay.open(context, _bookingDetailsModel!, false,
-                _getRequestDetailsApiEvent)
-            .then((value) => _getRequestDetailsApiEvent());
-      }
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.handOverSigned ?? false)) {
-      HandoverProtocolsScreen.open(
-        context,
-        _bookingDetailsModel!,
-        _getRequestDetailsApiEvent,
-      ).then((value) => _getRequestDetailsApiEvent());
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Approved" &&
-        !(_bookingDetailsModel?.rentalRulesSigned ?? false)) {
-      ApartmentRulesScreen.open(
-              context, _bookingDetailsModel!, false, _getRequestDetailsApiEvent)
-          .then((value) => _getRequestDetailsApiEvent());
+      _openPassports(true);
+    } else if (_bookingDetailsModel?.readyToPaySecurityDeposit ?? false) {
+      _openToPaySecurityDeposit();
+    } else if ((_bookingDetailsModel?.readyToSignContract ?? false)) {
+      _openSignContract();
+    } else if (_bookingDetailsModel?.putArrivingDetails ?? false) {
+      _openArrivingDetails();
+    } else if (_bookingDetailsModel?.readyForCheckIn ?? false) {
+      _openBookingSummary();
+    } else if (_bookingDetailsModel?.readyToVerifyIdentity ?? false) {
+      _openVerifyIdentity();
+    } else if ((_bookingDetailsModel?.shouldPayRent ?? false)) {
+      _openToPayRent();
+    } else if (_bookingDetailsModel?.readyToSignHandOver ?? false) {
+      _openToSignHandOver();
+    } else if (_bookingDetailsModel?.readyToSignApartmentRules ?? false) {
+      _openApartmentRules();
     } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Rejected") {
       _showRejectedReason();
-    } else if (_bookingDetailsModel!.getMonthlyInvoice != null &&
-        (_bookingDetailsModel!.getMonthlyInvoice!.isCashed ?? false) &&
-        DateFormat("MM/dd/yyyy")
-                .parse(_bookingDetailsModel?.checkIn ?? "")
-                .month ==
-            DateTime.now().month &&
-        _bookingDetailsModel!.canResumeBookingAsMainTenant) {
-      //don't do anything
+    } else if (_bookingDetailsModel!.readyToCheckout) {
+      _checkReviewAndGoToCheckout();
     } else if (_bookingDetailsModel!.getMonthlyInvoice != null &&
         _bookingDetailsModel!.canResumeBookingAsMainTenant) {
       _showNextInvoiceSheet();
-    } else if (_bookingDetailsModel!.readyToCheckOut) {
-      _checkReviewAndGoToCheckout();
     } else {}
   }
 
   void _actionClickedWhenCantContinue() {
-    if ((_bookingDetailsModel?.bookingStatus ?? "") == "Cancelled" ||
-        (_bookingDetailsModel?.bookingStatus ?? "") == "Rejected") {
+    if (_bookingDetailsModel?.bookingCancelledOrRejected ??false) {
       _showRejectedReason();
     } else {
       null;
@@ -573,10 +422,92 @@ class _RequestDetailsScreenScreenWithBloc
 
   void _checkReviewAndGoToCheckout() {
     _bookingDetailsModel!.isReviewed
-        ? _bookingDetailsModel!.readyToCheckOut
+        ? _bookingDetailsModel!.readyToCheckout
             ? _openCheckoutDetailsScreen()
             : null
         : showReviewBottomSheet();
+  }
+
+  void _openPassports(bool fromRejected) {
+    RequestPassportScreenV2.open(context, _bookingDetailsModel!,
+            fromRejected: fromRejected)
+        .then((value) => _getRequestDetailsApiEvent());
+  }
+
+  void _openToPaySecurityDeposit() {
+    InvoiceScreenV2.open(
+            context, _bookingDetailsModel!, _getRequestDetailsApiEvent)
+        .then((value) => _getRequestDetailsApiEvent());
+  }
+
+  void _openSignContract() {
+    SignContractScreenV2.open(
+            context, _bookingDetailsModel!, false, _getRequestDetailsApiEvent)
+        .then((value) => _getRequestDetailsApiEvent());
+  }
+
+  void _openArrivingDetails() {
+    ArrivingDetails.open(
+      context,
+      ArrivingDetailsRequestModel(
+        bookingId: _bookingDetailsModel?.bookingId ?? "",
+        guestId: _bookingDetailsModel
+                ?.guests?[_bookingDetailsModel?.guestIndex ?? 0].guestId ??
+            "",
+      ),
+      _bookingDetailsModel!,
+      false,
+    ).then((value) => _getRequestDetailsApiEvent());
+  }
+
+  void _openBookingSummary() {
+    BookingSummary.open(
+            context,
+            _bookingDetailsModel!,
+            _bookingDetailsModel!.guests![_bookingDetailsModel!.guestIndex],
+            _bookingDetailsModel?.apartmentLocation ?? "",
+            _getRequestDetailsApiEvent)
+        .then((value) => _getRequestDetailsApiEvent());
+  }
+
+  void _openVerifyIdentity() {
+    _bookingDetailsModel?.guestNeedToUploadProfileImage ?? true
+        ? TakeSelfieScreen.open(context, _bookingDetailsModel!, true,
+                _getRequestDetailsApiEvent)
+            .then((value) => _getRequestDetailsApiEvent())
+        : SelfieScreen.open(context, _bookingDetailsModel!, true,
+                _getRequestDetailsApiEvent)
+            .then((value) => _getRequestDetailsApiEvent());
+  }
+
+  void _openToPayRent() {
+    if ((_bookingDetailsModel?.fullBooking ?? false)) {
+      InvoicePayRentScreenV2.open(
+              context, _bookingDetailsModel!, false, _getRequestDetailsApiEvent)
+          .then((value) => _getRequestDetailsApiEvent());
+    } else if (_bookingDetailsModel!.isSingleGuest) {
+      InvoicePayRentScreenV2.open(
+              context, _bookingDetailsModel!, false, _getRequestDetailsApiEvent)
+          .then((value) => _getRequestDetailsApiEvent());
+    } else {
+      SelectTenantForPay.open(
+              context, _bookingDetailsModel!, false, _getRequestDetailsApiEvent)
+          .then((value) => _getRequestDetailsApiEvent());
+    }
+  }
+
+  void _openToSignHandOver() {
+    HandoverProtocolsScreen.open(
+      context,
+      _bookingDetailsModel!,
+      _getRequestDetailsApiEvent,
+    ).then((value) => _getRequestDetailsApiEvent());
+  }
+
+  void _openApartmentRules() {
+    ApartmentRulesScreen.open(
+            context, _bookingDetailsModel!, false, _getRequestDetailsApiEvent)
+        .then((value) => _getRequestDetailsApiEvent());
   }
 
   void _openCheckoutDetailsScreen() {

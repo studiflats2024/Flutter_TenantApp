@@ -820,10 +820,9 @@ class _MakeRequestScreenWithBloc
   MakeRequestBloc get currentBloc => BlocProvider.of<MakeRequestBloc>(context);
 
   void _confirmClicked() async {
-    if ((currentBloc.apartmentDetailsApiModelV2!.isSelectedFullApartment ||
-        (widget.requestUiModel.numberOfGuests == 1 ||
-            currentBloc.apartmentDetailsApiModelV2!.countOfSelectedBeds ==
-                widget.requestUiModel.numberOfGuests))) {
+    if (currentBloc.apartmentDetailsApiModelV2!.isSelectedFullApartment ||
+        (currentBloc.apartmentDetailsApiModelV2!.countOfSelectedBeds >=
+                widget.requestUiModel.numberOfGuests)) {
       bool nextStep = await showModalBottomSheet(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
@@ -920,7 +919,7 @@ class _MakeRequestScreenWithBloc
                 currentBloc.apartmentDetailsApiModelV2!)
             .then((value) => widget.callBack());
       }
-      // currentBloc.add(ValidateFormEvent(requestFormKey));
+      currentBloc.add(ValidateFormEvent(requestFormKey));
     } else {
       showFeedbackMessage(
           "you have  ${widget.requestUiModel.numberOfGuests - currentBloc.apartmentDetailsApiModelV2!.countOfSelectedBeds} ${translate(LocalizationKeys.guest)} not have ${translate(LocalizationKeys.bed)}  \n please select beds for Guests");

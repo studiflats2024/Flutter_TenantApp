@@ -5,8 +5,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
+import 'package:vivas/apis/models/booking/change_check_out_date_model.dart';
 import 'package:vivas/apis/models/booking/extend_contract_model.dart';
 import 'package:vivas/feature/bookings/screen/booking_details_screen.dart';
+import 'package:vivas/feature/bookings/widget/change_check_out_dates.dart';
 import 'package:vivas/feature/bookings/widget/extend_contract.dart';
 import 'package:vivas/feature/contact_support/screen/chat_screen.dart';
 import 'package:vivas/feature/request_details/request_details/widget/accept_reject_offer_widget.dart';
@@ -34,6 +36,7 @@ class RequestWidgetV2 extends BaseStatelessWidget {
   final VoidCallback? acceptOfferClickedCallBack;
   final VoidCallback? rejectOfferClickedCallBack;
   final VoidCallback? changeCheckInDetails;
+  final Function() updateData;
   final String actionBottomTitle;
 
   RequestWidgetV2(
@@ -49,7 +52,8 @@ class RequestWidgetV2 extends BaseStatelessWidget {
       required this.checkInDetailsClickedCallBack,
       required this.acceptOfferClickedCallBack,
       required this.rejectOfferClickedCallBack,
-      required this.changeCheckInDetails});
+      required this.changeCheckInDetails,
+      required this.updateData});
 
   @override
   Widget baseBuild(BuildContext context) {
@@ -82,7 +86,10 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                         DateFormat("M/d/yyyy")
                             .parse(apartmentRequestsApiModel.checkIn ?? ""),
                         DateFormat("M/d/yyyy")
-                            .parse(apartmentRequestsApiModel.checkOut ?? "")),
+                            .parse(apartmentRequestsApiModel.checkOut ?? ""),
+                        AppDateFormat.appDateFormApiParse(
+                            apartmentRequestsApiModel.guests?[0].checkoutDate ??
+                                apartmentRequestsApiModel.checkOut??"")),
                     SizedBox(height: 10.h),
                     const Divider(),
                     _itemClickableWidget(
@@ -101,51 +108,68 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                     // ],
                     const Divider(),
                     _itemClickableWidget(
-                        translate(LocalizationKeys.bedDetails)!, () {
-                      BookingDetailsScreen.open(
-                          context, apartmentRequestsApiModel);
-                    }, withIcon: true, blueText: false),
-                    const Divider(),
-                    _itemClickableWidget(
-                        translate(LocalizationKeys.extendContract)!,
-                        !apartmentRequestsApiModel.rentalRulesSigned ||
-                                (apartmentRequestsApiModel.hasExtendRequest ??
-                                    false)
-                            ? null
-                            : () {
-                                AppBottomSheet.openAppBottomSheet(
-                                    context: context,
-                                    child: Container(
-                                      height: 200.h,
-                                      width: double.infinity,
-                                      child: ExtendContract(
-                                        ExtendContractModel(
-                                          bookingId: apartmentRequestsApiModel
-                                                  .bookingId ??
-                                              "",
-                                          guestId: apartmentRequestsApiModel
-                                                  .guests?[
-                                                      apartmentRequestsApiModel
-                                                          .guestIndex]
-                                                  .guestId ??
-                                              "",
-                                          startDate: apartmentRequestsApiModel
-                                                      .checkOut ==
-                                                  null
-                                              ? null
-                                              : DateFormat("M/d/yyyy").parse(
-                                                  apartmentRequestsApiModel
-                                                          .checkOut ??
-                                                      "",
-                                                  false),
-                                        ),
-                                      ),
-                                    ),
-                                    title: translate(
-                                        LocalizationKeys.extendContract)!);
-                              },
+                        translate(LocalizationKeys.bedDetails)!,
+                        (apartmentRequestsApiModel.guests?.isNotEmpty ?? false)
+                            ? () {
+                                BookingDetailsScreen.open(
+                                    context, apartmentRequestsApiModel);
+                              }
+                            : null,
                         withIcon: true,
                         blueText: false),
+                    if (apartmentRequestsApiModel.canChangeCheckout) ...[
+                      const Divider(),
+                      _itemClickableWidget(
+                          translate(LocalizationKeys.extendContract)!, () {
+                        AppBottomSheet.openAppBottomSheet(
+                            context: context,
+                            child: Container(
+                              height: 200.h,
+                              width: double.infinity,
+                              child: ExtendContract(
+                                ExtendContractModel(
+                                  bookingId:
+                                      apartmentRequestsApiModel.bookingId ?? "",
+                                  guestId: apartmentRequestsApiModel
+                                          .guests?[apartmentRequestsApiModel
+                                              .guestIndex]
+                                          .guestId ??
+                                      "",
+                                  startDate:
+                                      apartmentRequestsApiModel.checkOut == null
+                                          ? null
+                                          : DateFormat("M/d/yyyy").parse(
+                                              apartmentRequestsApiModel
+                                                      .checkOut ??
+                                                  "",
+                                              false),
+                                ),
+                              ),
+                            ),
+                            title: translate(LocalizationKeys.extendContract)!);
+                      }, withIcon: true, blueText: false),
+                      const Divider(),
+                      _itemClickableWidget(
+                          translate(LocalizationKeys.changeCheckout)!, () {
+                        AppBottomSheet.openAppBottomSheet(
+                            context: context,
+                            child: Container(
+                              height: 200.h,
+                              width: double.infinity,
+                              child: ChangeCheckOutDates(
+                                  ChangeCheckOutDateModel(
+                                      apartmentRequestsApiModel.bookingId ?? "",
+                                      DateFormat("M/d/yyyy").parse(
+                                          apartmentRequestsApiModel.checkIn!,
+                                          false),
+                                      DateFormat("M/d/yyyy").parse(
+                                          apartmentRequestsApiModel.checkOut!,
+                                          false)),
+                                  updateData),
+                            ),
+                            title: translate(LocalizationKeys.changeCheckout)!);
+                      }, withIcon: true, blueText: false),
+                    ],
                     const Divider(),
                     _itemClickableWidget(translate(LocalizationKeys.messageUs)!,
                         () {
@@ -209,7 +233,7 @@ class RequestWidgetV2 extends BaseStatelessWidget {
             .isAfter(DateTime.now()) &&
         apartmentRequestsApiModel.paidSecurityDeposit &&
         apartmentRequestsApiModel.signContract &&
-       apartmentRequestsApiModel.goToArrivingDetails) {
+        apartmentRequestsApiModel.goToArrivingDetails) {
       return AppColors.divider;
     } else if (!apartmentRequestsApiModel.paidSecurityDeposit &&
         apartmentRequestsApiModel.handOverSigned &&
@@ -308,65 +332,84 @@ class RequestWidgetV2 extends BaseStatelessWidget {
     );
   }
 
-  Widget _dateWidget(DateTime checkIn, DateTime checkOut) {
-    return Row(
+  Widget _dateWidget(
+      DateTime checkIn, DateTime checkOut, DateTime guestCheckOut) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                translate(LocalizationKeys.checkIn)!,
-                style: const TextStyle(
-                  color: Color(0xFF667084),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    translate(LocalizationKeys.checkIn)!,
+                    style: const TextStyle(
+                      color: Color(0xFF667084),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    AppDateFormat.formattingMonthDay(
+                        checkIn, appLocale.locale.languageCode),
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: Color(0xFF344053),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                ],
               ),
-              Text(
-                AppDateFormat.formattingMonthDay(
-                    checkIn, appLocale.locale.languageCode),
-                maxLines: 1,
-                style: const TextStyle(
-                  color: Color(0xFF344053),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              )
-            ],
-          ),
-        ),
-        Container(
-          width: 1,
-          color: Colors.grey,
-          margin: EdgeInsets.symmetric(horizontal: 20.w),
-          height: 40,
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                translate(LocalizationKeys.checkOut)!,
-                style: const TextStyle(
-                  color: Color(0xFF667084),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
+            ),
+            Container(
+              width: 1,
+              color: Colors.grey,
+              margin: EdgeInsets.symmetric(horizontal: 20.w),
+              height: 40,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    translate(LocalizationKeys.checkOut)!,
+                    style: const TextStyle(
+                      color: Color(0xFF667084),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    AppDateFormat.formattingMonthDay(
+                        checkOut, appLocale.locale.languageCode),
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: Color(0xFF344053),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                ],
               ),
-              Text(
-                AppDateFormat.formattingMonthDay(
-                    checkOut, appLocale.locale.languageCode),
-                maxLines: 1,
-                style: const TextStyle(
-                  color: Color(0xFF344053),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              )
-            ],
-          ),
+            ),
+          ],
         ),
+        if (apartmentRequestsApiModel.canChangeCheckout) ...[
+          SizedBox(
+            height: 20.r,
+          ),
+          Text(
+            "${translate(LocalizationKeys.checkoutOn)} ${AppDateFormat.formattingMonthDay(guestCheckOut, appLocale.locale.languageCode)}",
+            style: TextStyle(
+              color: AppColors.appFormFieldErrorIBorder,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ]
       ],
     );
   }

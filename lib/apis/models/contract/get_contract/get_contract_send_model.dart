@@ -25,3 +25,14 @@ class GetContractSendModelV2 {
     };
   }
 }
+
+class GetExtendContractSendModel {
+  final String requestId;
+  GetExtendContractSendModel({required this.requestId,});
+
+  Map<String, dynamic> toMap() {
+    return {
+      "Extend_ID": requestId,
+    };
+  }
+}

@@ -4,6 +4,7 @@ import 'package:vivas/apis/models/ApartmentRules/apartment_rules_response_model.
 import 'package:vivas/apis/models/HandoverProtocols/handover_protocols_model.dart';
 import 'package:vivas/apis/models/HandoverProtocols/handover_protocols_request.dart';
 import 'package:vivas/apis/models/apartment_requests/apartment_requests/get_requests_send_model.dart';
+import 'package:vivas/apis/models/booking/change_check_out_date_model.dart';
 import 'package:vivas/apis/models/booking/extend_contract_model.dart';
 import 'package:vivas/apis/models/booking/qr_request_model.dart';
 import 'package:vivas/apis/models/booking/selfie_request_model.dart';
@@ -52,6 +53,7 @@ abstract class BaseBookingsRepository {
   Future<BookingsState> checkLoggedIn();
 
   Future<BookingState> extendContract(ExtendContractModel extendContractModel);
+  Future<BookingState> changeCheckOutDate(ChangeCheckOutDateModel model);
 }
 
 class BookingsRepository implements BaseBookingsRepository {
@@ -276,6 +278,23 @@ class BookingsRepository implements BaseBookingsRepository {
         bookingState = ExtendContractSuccessState();
       },
       (errorModel) {
+        bookingState = ExtendContractFailedState(errorModel);
+      },
+    );
+
+    return bookingState;
+  }
+
+  @override
+  Future<BookingState> changeCheckOutDate(ChangeCheckOutDateModel model) async{
+    late BookingState bookingState;
+    await apartmentRequestsApiManger.changeCheckOutDate(
+      model,
+          (data) {
+        showFeedbackMessage(data['message']);
+        bookingState = ExtendContractSuccessState();
+      },
+          (errorModel) {
         bookingState = ExtendContractFailedState(errorModel);
       },
     );

@@ -8,5 +8,13 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:devapi.studiflats.com</string>
+		<string>applinks:api.studiflats.com</string>
+		<string>applinks:studiflats.com</string>
+		<string>applinks:studiflats.de</string>
+		<string>applinks:dev.studiflats.com</string>
+	</array>
 </dict>
 </plist>

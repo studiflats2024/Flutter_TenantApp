@@ -52,12 +52,9 @@ class _SplashScreenWithBlocState extends BaseScreenState<SplashScreenWithBloc> {
 
   @override
   void initState() {
-    super.initState();
     _getAreaList();
     _getCityList();
-
-    /// to start time to switch to another screen
-    _startTime();
+    super.initState();
   }
 
   @override
@@ -65,7 +62,8 @@ class _SplashScreenWithBlocState extends BaseScreenState<SplashScreenWithBloc> {
     return BlocListener<SplashBloc, SplashState>(
       listener: (context, state) {
         if (state is AreaLoadedState) {
-          _navigationPage();
+          /// to start time to switch to another screen
+          _startTime();
         }
       },
       child: Scaffold(

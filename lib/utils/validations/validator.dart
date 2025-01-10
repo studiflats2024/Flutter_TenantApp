@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vivas/utils/extensions/extension_string.dart';
+import 'package:vivas/utils/locale/app_localization_keys.dart';
 
 class Validator {
   static bool isEmail(String email) {
@@ -162,6 +163,14 @@ class Validator {
     } else if (dayRange != null && dayRange.duration.inDays < 30) {
       failed = "* Minimum Rental Period is 1 Months";
       return failed;
+    } else {
+      return null;
+    }
+  }
+
+  static String? validateDateTimeNotEmpty(DateTime? dateTime) {
+    if (dateTime == null) {
+      return LocalizationKeys.checkoutDateIsRequired;
     } else {
       return null;
     }

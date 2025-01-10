@@ -153,4 +153,7 @@ class ApiKeys {
   static const extendContractUrl = '$baseApiUrl/ApartmentV2/Extend_Contract';
   static const gVersionUrl = '$baseApiUrl/Basics/GetAppVersion';
   static const ssoLoginUrl = '$baseApiUrl/Users/sso-login';
+  static const getExtendContract = '$baseApiUrl/ApartmentV2/Get_Extend_Booking_Contract';
+  static const signExtendContract = '$baseApiUrl/ApartmentV2/Sign_Extend_Request_Contract';
+  static const changeCheckOutDate = '$baseApiUrl/ApartmentV2/UpdateCheckout_Date';
 }

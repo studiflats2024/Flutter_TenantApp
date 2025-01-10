@@ -13,7 +13,7 @@ import 'package:vivas/utils/build_type/build_type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vivas/utils/extensions/extension_string.dart';
 
-class DioApiManager with PlatformManager{
+class DioApiManager with PlatformManager {
   final PreferencesManager preferenceManager;
   final VoidCallback failToRefreshTokenCallback;
 
@@ -66,21 +66,25 @@ class DioApiManager with PlatformManager{
           request.headers[ApiKeys.locale] = language;
         }
         String? token = await preferenceManager.getAccessToken();
-        String deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+        String deviceToken = await (Platform.isIOS && isDebugMode()
+                ?FirebaseMessaging.instance.getAPNSToken()
+                :FirebaseMessaging.instance.getToken() ) ??
+            "";
         request.headers[ApiKeys.keyType] = type;
         if (!token.isNullOrEmpty) {
           if (request.headers[ApiKeys.authorization] == null) {
             request.headers[ApiKeys.authorization] =
-            '${ApiKeys.keyBearer} $token';
+                '${ApiKeys.keyBearer} $token';
             request.headers[ApiKeys.devToken] = deviceToken;
           } else {
             request.headers[ApiKeys.devToken] = deviceToken;
           }
-
         } else {
           if (request.headers[ApiKeys.guestToken] == null) {
             request.headers[ApiKeys.guestToken] =
-            await FirebaseMessaging.instance.getToken();
+            await (Platform.isIOS && isDebugMode()
+                ?FirebaseMessaging.instance.getAPNSToken()
+                :FirebaseMessaging.instance.getToken() );
           }
         }
         return handler.next(request);
@@ -104,19 +108,19 @@ class DioApiManager with PlatformManager{
           }
           await RefreshTokenApiManager(dioUnauthorized).refreshTokenApi(
               RefreshTokenSendModelApi(refreshToken, accessToken!),
-                  (refreshTokenWrapper) async {
-                // update token
-                await preferenceManager
-                    .setAccessToken(refreshTokenWrapper.accessToken);
-                options.headers[ApiKeys.authorization] =
+              (refreshTokenWrapper) async {
+            // update token
+            await preferenceManager
+                .setAccessToken(refreshTokenWrapper.accessToken);
+            options.headers[ApiKeys.authorization] =
                 '${ApiKeys.keyBearer} ${refreshTokenWrapper.accessToken}';
-                await dio.fetch(options).then(
-                      (r) => handler.resolve(r),
-                  onError: (e) {
-                    handler.reject(e);
-                  },
-                );
-              }, (errorApiModel) {
+            await dio.fetch(options).then(
+              (r) => handler.resolve(r),
+              onError: (e) {
+                handler.reject(e);
+              },
+            );
+          }, (errorApiModel) {
             handler.reject(error);
             failToRefreshTokenCallback();
           });
@@ -137,7 +141,9 @@ class DioApiManager with PlatformManager{
         request.headers[ApiKeys.keyType] = type;
         if (request.headers[ApiKeys.guestToken] == null) {
           request.headers[ApiKeys.guestToken] =
-          await FirebaseMessaging.instance.getToken();
+          await (Platform.isIOS && isDebugMode()
+              ?FirebaseMessaging.instance.getAPNSToken()
+              :FirebaseMessaging.instance.getToken());
         }
         return handler.next(request);
       },

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:vivas/apis/errors/error_api_model.dart';
+import 'package:vivas/apis/models/booking/change_check_out_date_model.dart';
 import 'package:vivas/apis/models/booking/extend_contract_model.dart';
 import 'package:vivas/feature/bookings/bloc/bookings_repository.dart';
 
@@ -14,6 +15,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   BookingBloc(this.bookingsRepository) : super(BookingInitial()) {
     on<SetEndDateEvent>(_setEndDate);
     on<ExtendContractEvent>(_extendContract);
+    on<ChangeCheckoutDateEvent>(_changeCheckoutDate);
   }
 
   _setEndDate(SetEndDateEvent setEndDate, Emitter<BookingState> emit) {
@@ -25,5 +27,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     emit(ExtendContractLoadingState());
     emit(await bookingsRepository
         .extendContract(extendContractEvent.extendContractModel));
+  }
+  _changeCheckoutDate(ChangeCheckoutDateEvent event,
+      Emitter<BookingState> emit) async {
+    emit(ExtendContractLoadingState());
+    emit(await bookingsRepository
+        .changeCheckOutDate(event.model));
   }
 }

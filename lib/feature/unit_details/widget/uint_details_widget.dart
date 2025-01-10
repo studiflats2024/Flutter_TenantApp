@@ -745,13 +745,13 @@ class _UintWidgetStateV2 extends BaseState<UintDetailsWidgetV2> {
               ],
             ),
           ),
-          if (!widget.viewOnlyModel)
+
             PositionedDirectional(
               bottom: 0,
               start: 0,
               end: 0,
               child: _requestButtonWidget(),
-            )
+            ),
         ],
       ),
     );

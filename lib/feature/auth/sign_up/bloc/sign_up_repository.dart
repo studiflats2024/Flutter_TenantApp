@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -12,6 +14,7 @@ import 'package:vivas/feature/auth/sign_up/bloc/sign_up_bloc.dart';
 import 'package:vivas/preferences/preferences_manager.dart';
 
 import 'package:vivas/apis/models/auth/login/login_successful_response.dart';
+import 'package:vivas/utils/build_type/build_type.dart';
 
 abstract class BaseSignUpRepository {
   Future<SignUpState> signUpApi(
@@ -75,7 +78,9 @@ class SignUpRepository implements BaseSignUpRepository {
   Future<SignUpState> signUpWithGoogleApi(
       GoogleSignInAccount googleSignInAccount) async {
     late SignUpState signUpState;
-    String deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    String deviceToken =  await (Platform.isIOS && isDebugMode()
+        ?FirebaseMessaging.instance.getAPNSToken()
+        :FirebaseMessaging.instance.getToken() ) ?? "";
 
     await authApiManager.loginWithSocial(
         LoginWithSocialSendModelApi(
@@ -101,7 +106,9 @@ class SignUpRepository implements BaseSignUpRepository {
   Future<SignUpState> signUpWithAppleApi(
       AuthorizationCredentialAppleID appleID) async {
     late SignUpState signUpState;
-    String deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    String deviceToken =  await (Platform.isIOS && isDebugMode()
+        ?FirebaseMessaging.instance.getAPNSToken()
+        :FirebaseMessaging.instance.getToken() ) ?? "";
 
     await authApiManager.loginWithSocial(
         LoginWithSocialSendModelApi(

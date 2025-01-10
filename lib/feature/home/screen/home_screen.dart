@@ -12,11 +12,13 @@ import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/apis/_base/dio_api_manager.dart';
 import 'package:vivas/apis/managers/apartment_api_manger.dart';
 import 'package:vivas/apis/managers/general_api_manger.dart';
+import 'package:vivas/apis/models/apartments/ApartmentQrDetails/apartment_qr_details_model.dart';
 import 'package:vivas/apis/models/apartments/apartment_list/apartment_item_api_model.dart';
 import 'package:vivas/apis/models/contract/check_in_details/check_in_details_response.dart';
 import 'package:vivas/apis/models/general/home_ads_list_wrapper.dart';
 import 'package:vivas/feature/contact_support/screen/chat_history_screen.dart';
 import 'package:vivas/feature/contact_support/screen/chat_screen.dart';
+import 'package:vivas/feature/contract/sign_contract/screen/sign_extend_contract.dart';
 import 'package:vivas/feature/filter/model/filter_model.dart';
 import 'package:vivas/feature/home/bloc/home_bloc.dart';
 import 'package:vivas/feature/home/bloc/home_repository.dart';
@@ -36,6 +38,7 @@ import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/utils/empty/empty_widgets.dart';
 import 'package:vivas/utils/feedback/feedback_message.dart';
+import 'package:vivas/utils/format/app_date_format.dart';
 import 'package:vivas/utils/loaders/loader_widget.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
 
@@ -246,18 +249,19 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
       ),
       body: SafeArea(
         child: BlocListener<HomeBloc, HomeState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             _checkNotification();
             if (state is HomeLoadingState) {
               showLoading();
             } else {
               hideLoading();
             }
-
             if (state is HomeErrorState) {
-              showFeedbackMessage(state.isLocalizationKey
-                  ? translate(state.errorMassage)!
-                  : state.errorMassage);
+              if ((await GetIt.I<PreferencesManager>().isLoggedIn())) {
+                showFeedbackMessage(state.isLocalizationKey
+                    ? translate(state.errorMassage)!
+                    : state.errorMassage);
+              }
             } else if (state is HomeSliderInfoLoadedState) {
               _sliderInfoList = state.list;
             } else if (state is HomeOfferInfoLoadedState) {
@@ -272,10 +276,7 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
                             ?.toInt() ??
                         0);
               } else {
-                bookingSheet(
-                    state.apartmentQrDetailsModel.apartmentId!,
-                    state.apartmentQrDetailsModel.bookingId!,
-                    state.apartmentQrDetailsModel.checkInRules!);
+                bookingSheet(state.apartmentQrDetailsModel);
               }
             } else if (state is OpenUnitListScreenState) {
               _openAllOfferUnitScreen();
@@ -516,12 +517,11 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
     ChatHistoryScreen.open(context);
   }
 
-  Future bookingSheet(String apartmentID, String bookingID,
-      CheckInDetailsResponse checkInDetailsResponse) async {
+  Future bookingSheet(ApartmentQrDetailsModel model) async {
     String? action = await AppBottomSheet.openAppBottomSheet(
         context: context,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
               height: 40.h,
@@ -530,7 +530,7 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
               onPressed: () {
                 RequestDetailsScreenV2.open(
                   context,
-                  bookingID,
+                  model.bookingId ?? "",
                 );
               },
               child: Text(
@@ -543,8 +543,9 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
             ),
             TextButton(
               onPressed: () {
-                CheckInDetailsScreen.open(context, bookingID, apartmentID,
-                    checkInDetailsResponse: checkInDetailsResponse);
+                CheckInDetailsScreen.open(
+                    context, model.bookingId ?? '', model.apartmentId ?? "",
+                    checkInDetailsResponse: model.checkInRules);
               },
               child: Text(
                 translate(LocalizationKeys.checkInDetails)!,
@@ -554,9 +555,32 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
             SizedBox(
               height: 20.h,
             ),
+            if (model.extendContract != null) ...[
+              TextButton(
+                onPressed: (model.extendContract?.extendContractSigned ?? false)
+                    ? null
+                    : () {
+                        SignExtendContractScreen.open(
+                          context,
+                          model.extendContract?.id ?? "",
+                          false,
+                        );
+                      },
+                child: Text(
+                  (model.extendContract?.extendContractSigned ?? false)
+                      ? "${translate(LocalizationKeys.extendedTo)!} ${AppDateFormat.formattingApiDateFromString(model.extendContract!.extendingTo!.toString())}"
+                      : translate(LocalizationKeys.signYourExtendedContract)!,
+                  style:
+                      TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+                ),
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+            ],
             TextButton(
               onPressed: () {
-                ReportApartmentScreen.open(context, apartmentID);
+                ReportApartmentScreen.open(context, model.apartmentId ?? "");
               },
               child: Text(
                 translate(LocalizationKeys.reportProblem)!,
@@ -568,7 +592,7 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
             ),
             TextButton(
                 onPressed: () {
-                  _goToContactSupport(apartmentID);
+                  _goToContactSupport(model.apartmentId ?? "");
                 },
                 child: Text(
                   translate(LocalizationKeys.contactSupport)!,

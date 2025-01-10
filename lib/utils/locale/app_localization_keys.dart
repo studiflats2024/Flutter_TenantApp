@@ -233,6 +233,7 @@ class LocalizationKeys {
   static const contactUs = "contact_us";
   static const changeDates = "change_dates";
   static const changeCheckIn = "change_checkin";
+  static const changeCheckout= "change_checkout";
   static const cancelBooking = "cancel_booking";
   static const terminationBooking = "termination_booking";
   static const cancellationReason = "cancellation_reason";
@@ -669,5 +670,8 @@ class LocalizationKeys {
   static const congratulations = "congratulations";
   static const exitApp = "exit_app";
   static const exitAppMessage = "exit_app_message";
-
+  static const signYourExtendedContract = "sign_your_extended_contract";
+  static const extendedTo = "extended_to";
+  static const checkoutDateIsRequired = "checkout_date_is_required";
+  static const checkoutOn = "check_out_on";
 }

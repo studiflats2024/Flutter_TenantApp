@@ -348,7 +348,12 @@ class _UnitDetailsScreenWithBloc
   }
 
   void _requestApartmentClickedV2() async {
-    _confirmClicked();
+    if(isGuest){
+      AppBottomSheet.showLoginOrRegisterDialog(context);
+    }else{
+      _confirmClicked();
+    }
+
     // await ApartmentRequestView.open(
     //         context,
     //         RequestUiModel(

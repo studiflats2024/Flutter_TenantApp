@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -12,6 +14,7 @@ import 'package:vivas/preferences/preferences_manager.dart';
 
 import 'package:vivas/apis/models/auth/login/login_successful_response.dart';
 
+import '../../../../utils/build_type/build_type.dart';
 import 'login_bloc.dart';
 
 abstract class BaseLoginRepository {
@@ -43,7 +46,9 @@ class LoginRepository implements BaseLoginRepository {
   Future<LoginState> loginWithUserNameAndPasswordApi(
       String userName, String password) async {
     late LoginState loginState;
-    String deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    String deviceToken = await (Platform.isIOS && isDebugMode()
+        ?FirebaseMessaging.instance.getAPNSToken()
+        :FirebaseMessaging.instance.getToken() ) ?? "";
     await authApiManager.loginApi(
         LoginSendModelApi(userName, password, deviceToken), (loginWrapper) {
       loginState = LoginWithPhoneSuccessfullyState(loginWrapper);
@@ -63,7 +68,9 @@ class LoginRepository implements BaseLoginRepository {
   Future<LoginState> signInWithGoogleApi(
       GoogleSignInAccount googleSignInAccount) async {
     late LoginState loginState;
-    String deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    String deviceToken =  await (Platform.isIOS && isDebugMode()
+        ?FirebaseMessaging.instance.getAPNSToken()
+        :FirebaseMessaging.instance.getToken() ) ?? "";
 
     await authApiManager.loginWithSocial(
         LoginWithSocialSendModelApi(
@@ -89,7 +96,9 @@ class LoginRepository implements BaseLoginRepository {
   Future<LoginState> signInWithAppleApi(
       AuthorizationCredentialAppleID appleID) async {
     late LoginState loginState;
-    String deviceToken = await FirebaseMessaging.instance.getToken() ?? "";
+    String deviceToken =  await (Platform.isIOS && isDebugMode()
+        ?FirebaseMessaging.instance.getAPNSToken()
+        :FirebaseMessaging.instance.getToken() ) ?? "";
 
     await authApiManager.loginWithSocial(
         LoginWithSocialSendModelApi(

@@ -90,6 +90,7 @@ class DatePickerFormFiledWidget extends BaseStatelessWidget {
               ? null
               : onFieldSubmitted!(AppDateFormat.appDatePickerParse(
                   value, appLocale.locale.languageCode)),
+
           validator: (value) => validator == null
               ? null
               : validator!(AppDateFormat.appDatePickerParse(
@@ -135,6 +136,7 @@ class DatePickerFormFiledWidget extends BaseStatelessWidget {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(radius),
             ),
+
           ),
         ),
       ],

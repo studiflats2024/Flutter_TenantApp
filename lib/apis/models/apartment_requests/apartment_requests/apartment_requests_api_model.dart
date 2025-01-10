@@ -42,9 +42,9 @@ class ApartmentRequestsApiModel {
   final bool isCashDeposit;
   final bool isWaitingRefund;
   final bool isRefunded;
-  final bool terminationRequest;
   final String? refundID;
   final bool isCheckoutSheetReady;
+  final bool terminationRequest;
   bool get canContinue {
     /* if (rejected) {
       return true;

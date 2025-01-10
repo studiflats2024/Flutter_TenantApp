@@ -38,6 +38,7 @@ import 'package:vivas/feature/contract/prepare_check_in/screen/prepare_check_in_
 import 'package:vivas/feature/contract/check_in_and_rental_details/screen/check_in_details_screen.dart';
 import 'package:vivas/feature/contract/sign_contract/screen/sign_contract_screen.dart';
 import 'package:vivas/feature/contract/sign_contract/screen/sign_contract_screen_v2.dart';
+import 'package:vivas/feature/contract/sign_contract/screen/sign_extend_contract.dart';
 import 'package:vivas/feature/home/screen/apartment_qr_code_details.dart';
 import 'package:vivas/feature/invoices/screen/invoices_details_screen.dart';
 import 'package:vivas/feature/invoices/screen/invoices_screen.dart';
@@ -166,5 +167,6 @@ class AppRoute {
     ApartmentQrCodeDetails.routeName: (ctx) => ApartmentQrCodeDetails(),
     TakeSelfieScreen.routeName: (ctx) => TakeSelfieScreen(),
     MaintenanceApp.routeName: (ctx) => MaintenanceApp(),
+    SignExtendContractScreen.routeName: (ctx) => SignExtendContractScreen()
   };
 }

@@ -215,7 +215,8 @@ class _RequestDetailsScreenScreenWithBloc
       return translate(LocalizationKeys.passportreview)!;
     } else if (_apartmentRequestsApiModel!.haveInvalidData) {
       return translate(LocalizationKeys.passportRejected)!;
-    } /*else if (_apartmentRequestsApiModel!.haveInvaliPassport) {
+    }
+    /*else if (_apartmentRequestsApiModel!.haveInvaliPassport) {
       return translate(LocalizationKeys.passportreview)!;
     } */
     else if (!_apartmentRequestsApiModel!.signedContract &&
@@ -453,4 +454,5 @@ class _RequestDetailsScreenScreenWithBloc
     //         _apartmentRequestsApiModel!.nextInvoiceModel!.isCashed),
     //     title: "");
   }
+
 }

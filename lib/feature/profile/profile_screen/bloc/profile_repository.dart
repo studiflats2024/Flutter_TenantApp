@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:vivas/apis/managers/profile_api_manger.dart';
 import 'package:vivas/apis/models/profile/edit_profile/basic_info/update_basic_data_model.dart';
@@ -8,6 +10,8 @@ import 'package:vivas/feature/profile/profile_screen/bloc/profile_bloc.dart';
 import 'package:vivas/apis/models/profile/edit_profile/update_email_or_phone/update_email_model.dart';
 import 'package:vivas/preferences/preferences_manager.dart';
 import 'package:vivas/feature/profile/edit_personal_information/bloc/edit_profile_bloc.dart';
+
+import '../../../../utils/build_type/build_type.dart';
 
 abstract class BaseProfileRepository {
   Future<GetProfileState> getProfileData();
@@ -127,7 +131,9 @@ class ProfileRepository implements BaseProfileRepository {
   @override
   Future<GetProfileState> logout() async {
     late GetProfileState getProfileState;
-    String deviceToken = (await FirebaseMessaging.instance.getToken())!;
+    String deviceToken = await (Platform.isIOS && isDebugMode()
+        ?FirebaseMessaging.instance.getAPNSToken()
+        :FirebaseMessaging.instance.getToken() ) ?? "";
     await profileApiManger.logoutApi(deviceToken, (p0) {}, (p0) {});
     await preferencesManager.clearData();
 

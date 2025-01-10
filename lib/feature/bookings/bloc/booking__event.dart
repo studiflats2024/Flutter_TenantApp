@@ -12,3 +12,8 @@ class ExtendContractEvent extends BookingEvent{
   final ExtendContractModel extendContractModel ;
   ExtendContractEvent(this.extendContractModel);
 }
+
+class ChangeCheckoutDateEvent extends BookingEvent{
+  final ChangeCheckOutDateModel model ;
+  ChangeCheckoutDateEvent(this.model);
+}

@@ -281,7 +281,7 @@ class _BookingDetailsScreenState
                                   0.00).toStringAsFixed(2)}/',
                               style: TextStyle(
                                 color: AppColors.colorPrimary,
-                                fontSize: 20.sp,
+                                fontSize: 14.spMin,
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w600,
                               ),
@@ -290,7 +290,7 @@ class _BookingDetailsScreenState
                               text: translate(LocalizationKeys.month)!,
                               style: TextStyle(
                                 color: AppColors.colorPrimary,
-                                fontSize: 16.sp,
+                                fontSize: 14.spMin,
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w400,
                               ),

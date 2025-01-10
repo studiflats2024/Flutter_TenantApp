@@ -30,6 +30,7 @@ import 'package:vivas/apis/models/apartment_requests/update_request/update_reque
 import 'package:vivas/apis/models/apartment_requests/update_request/update_request_response.dart';
 import 'package:vivas/apis/models/booking/booking_details_model.dart';
 import 'package:vivas/apis/models/booking/booking_list_model.dart';
+import 'package:vivas/apis/models/booking/change_check_out_date_model.dart';
 import 'package:vivas/apis/models/booking/extend_contract_model.dart';
 import 'package:vivas/apis/models/booking/qr_request_model.dart';
 import 'package:vivas/apis/models/booking/selfie_request_model.dart';
@@ -462,6 +463,27 @@ class ApartmentRequestsApiManger {
       }
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(error: error, context: context));
+    });
+  }
+
+  Future<void> changeCheckOutDate(
+      ChangeCheckOutDateModel model,
+      Function(Map<String, dynamic>) success,
+      Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio
+        .post(
+      ApiKeys.changeCheckOutDate,
+      queryParameters: model.toMap(),
+    )
+        .then((response) async {
+      if (response.statusCode == 200) {
+        success(response.data);
+      } else {
+        fail(ErrorApiModel.identifyError(
+            error: "UnExpected Error", ));
+      }
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(error: error,));
     });
   }
 }

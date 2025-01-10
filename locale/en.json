@@ -593,5 +593,10 @@
   "message_success_sign_up" : "Your account is ready to use. You will be redirected to home screen in a few seconds.",
   "congratulations" : "Congratulations!",
   "exit_app" : "Exit APP",
-  "exit_app_message" : "Are You Sure you want to exit our app ?"
+  "exit_app_message" : "Are You Sure you want to exit our app ?",
+  "sign_your_extended_contract" : "Sign Your Extended Contract",
+  "extended_to" : "You are extend to ",
+  "change_checkout" : "Change Checkout",
+  "checkout_date_is_required" : "checkout date is required",
+  "check_out_on": "You will check out on : "
 }

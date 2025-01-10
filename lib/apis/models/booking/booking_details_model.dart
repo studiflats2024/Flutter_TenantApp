@@ -121,12 +121,26 @@ class BookingDetailsModel {
     return 0;
   }
 
+  bool get canChangeCheckout {
+    if(canResumeBookingAsMainTenant && canResumeBookingProcess && rentalRulesSigned) {
+      Duration difference = DateFormat("M/d/yyyy").parse(checkOut!, false)
+          .difference(DateTime.now());
+      if (difference.inDays > 31) {
+        return false;
+      } else {
+        return true;
+      }
+    }else{
+      return false;
+    }
+  }
+
   bool get isSingleGuest {
-    return guests!.length == 1 ? true : false;
+    return (guests?.isNotEmpty ?? false) && guests!.length == 1 ? true : false;
   }
 
   bool get isTwoGuest {
-    return guests!.length == 2 ? true : false;
+    return (guests?.isNotEmpty ?? false) && guests!.length == 2 ? true : false;
   }
 
   bool get needToUploadPassport {
@@ -152,8 +166,8 @@ class BookingDetailsModel {
   }
 
   bool get haveMonthlyInvoice {
-
-    return guests?[guestIndex].monthlyInvoice != null;
+    return (guests?.isNotEmpty ?? false) &&
+        guests?[guestIndex].monthlyInvoice != null;
   }
 
   bool get passportInReview {
@@ -168,7 +182,8 @@ class BookingDetailsModel {
   }
 
   bool get paidSecurityDeposit {
-    if ((guests?[guestIndex].hasInvoiceSecurityPaid ?? false)) {
+    if ((guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].hasInvoiceSecurityPaid ?? false)) {
       if ((guests?[guestIndex].secuirtyPaid ?? false) &&
           !(guests?[guestIndex].payLater ?? false)) {
         return true;
@@ -184,56 +199,67 @@ class BookingDetailsModel {
   }
 
   bool get signContract {
-    return (guests?[guestIndex].contractSigned ?? false);
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].contractSigned ?? false);
   }
 
   bool get goToArrivingDetails {
-    return (guests?[guestIndex].hasArrived ?? false);
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].hasArrived ?? false);
   }
 
   bool get scannedQR {
-    return guests?[guestIndex].qRScanned ?? false;
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].qRScanned ?? false);
   }
 
   bool get isSelfie {
-    return guests?[guestIndex].identityStatus != "Rejected";
+    return (guests?.isNotEmpty ?? false) &&
+        guests?[guestIndex].identityStatus != "Rejected";
   }
 
   bool get paidRent {
-    return (guests?[guestIndex].hasRent ?? false) &&
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].hasRent ?? false) &&
         (guests?[guestIndex].payRent ?? false);
   }
 
   bool get handOverSigned {
-    return guests?[guestIndex].handoverSigned ?? false;
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].handoverSigned ?? false);
   }
 
   bool get rentalRulesSigned {
-    return guests?[guestIndex].rentalRulesSigned ?? false;
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].rentalRulesSigned ?? false);
   }
 
   bool get canContinue {
-    return bookingStatus == "Approved";
+    return (guests?.isNotEmpty ?? false) && canResumeBookingProcess;
   }
 
   bool get canCancel =>
-      bookingStatus != "Cancelled" && bookingStatus != "Rejected" &&!paidSecurityDeposit;
+      bookingStatus != "Cancelled" &&
+      bookingStatus != "Rejected" &&
+      !paidSecurityDeposit;
 
   bool get canEdit => bookingStatus == "Pending";
+
+  bool get bookingCancelledOrRejected =>
+      bookingStatus == "Cancelled" || bookingStatus == "Rejected";
+
+  bool get canResumeBookingProcess => bookingStatus == "Approved";
 
   double get totalGuestsPaid {
     double total = 0.0;
     for (int i = 0; i < guests!.length; i++) {
-      if((guests![i].payRent??false) && (guests![i].secuirtyPaid??false)){
-
-      }else{
+      if ((guests![i].payRent ?? false) && (guests![i].secuirtyPaid ?? false)) {
+      } else {
         total += guests![i].totalGuestPaid;
       }
-
     }
     return total;
   }
-
 
   double get subTotalGuestsPaid {
     double total = 0.0;
@@ -301,24 +327,80 @@ class BookingDetailsModel {
     return tenants;
   }
 
+  bool get readyToPaySecurityDeposit {
+    return canResumeBookingProcess &&
+        !paidSecurityDeposit &&
+        canResumeBookingAsMainTenant;
+  }
+
+  bool get readyToSignContract {
+    return canResumeBookingProcess &&
+        !signContract &&
+        canResumeBookingAsMainTenant;
+  }
+
+  bool get putArrivingDetails {
+    return (canResumeBookingProcess ?? false) &&
+        !(goToArrivingDetails ?? false);
+  }
+
+  bool get waitingForCheckIn {
+    return canResumeBookingProcess &&
+        goToArrivingDetails &&
+        DateFormat("MM/dd/yyyy").parse(checkIn ?? "").isAfter(DateTime.now());
+  }
+
+  bool get readyForCheckIn {
+    return (bookingStatus ?? "") == "Approved" &&
+        (goToArrivingDetails ?? false) &&
+        !DateFormat("MM/dd/yyyy")
+            .parse(checkIn ?? "")
+            .isAfter(DateTime.now()) &&
+        !scannedQR;
+  }
+
+  bool get readyToVerifyIdentity {
+    return canResumeBookingProcess && !isSelfie;
+  }
+
+  bool get shouldPayRent {
+    return monthlyInvoiceIsCash
+        ? false
+        : canResumeBookingProcess && !paidRent && canResumeBookingAsMainTenant;
+  }
+
+  bool get readyToSignHandOver {
+    return canResumeBookingProcess &&
+        !handOverSigned &&
+        canResumeBookingAsMainTenant;
+  }
+
+  bool get readyToSignApartmentRules {
+    return canResumeBookingProcess &&
+        !rentalRulesSigned &&
+        canResumeBookingAsMainTenant;
+  }
+
   MonthlyInvoice? get getMonthlyInvoice {
-    return guests?[guestIndex].monthlyInvoice;
+    return (guests?.isNotEmpty ?? false)
+        ? (guests?[guestIndex].monthlyInvoice)
+        : null;
   }
 
-  bool get readyToCheckOut {
-    return !DateFormat("MM/dd/yyyy")
-        .parse(checkOut ?? "")
-        .isAfter(DateTime.now());
+  bool get monthlyInvoiceIsCash {
+    return getMonthlyInvoice != null &&
+        (getMonthlyInvoice!.isCashed ?? false) &&
+        DateFormat("MM/dd/yyyy").parse(checkIn ?? "").month ==
+            DateTime.now().month &&
+        canResumeBookingAsMainTenant;
   }
 
-  bool get isReviewed {
-    return !DateFormat("MM/dd/yyyy")
-        .parse(checkOut ?? "")
-        .isAfter(DateTime.now());
+  bool get waitingToConfirmPayRent {
+    return !paidRent && handOverSigned && canResumeBookingAsMainTenant;
   }
 
   bool get canResumeBookingAsMainTenant {
-    if (fullBooking ?? false) {
+    if ((guests?.isNotEmpty ?? false) && (fullBooking ?? false)) {
       return bookingGuestsNo == guests!.length;
     } else {
       return true;
@@ -326,13 +408,44 @@ class BookingDetailsModel {
   }
 
   bool get guestNeedToUploadProfileImage {
-    return guests?[guestIndex].guestImageUploaded ?? true;
-    return guests?[guestIndex].guestImageUploaded ?? true;
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].guestImageUploaded ?? true);
   }
 
-// bool get goToPaidSecurityDeposit{
-//   return guests![].passportStatus == "Rejected"
-// }
+  bool get readyToCheckout {
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].isReadyCheck ?? false);
+  }
+
+  bool get isCheckedOut {
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].isCheckedout ?? false);
+  }
+
+  bool get isReviewed {
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].isReviewd ?? false);
+  }
+
+  bool get refunded {
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].isRefunded ?? false);
+  }
+
+  bool get waitingToRefunded {
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].isWaitingRefund ?? false);
+  }
+
+  bool get checkOutSheetIsReady {
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].isCheckoutSheetReady ?? false);
+  }
+
+  bool get cashDeposit {
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].isCashDeposit ?? false);
+  }
 }
 
 class Guest {
@@ -367,6 +480,15 @@ class Guest {
   bool? hasRent;
   bool? payRent;
   MonthlyInvoice? monthlyInvoice;
+  final bool? isReadyCheck;
+  final bool? isCheckedout;
+  final bool? isReviewd;
+  final bool? isCashDeposit;
+  final bool? isWaitingRefund;
+  final bool? isRefunded;
+  final String? refundID;
+  final bool? isCheckoutSheetReady;
+  final String? checkoutDate;
 
   /*
 
@@ -405,6 +527,15 @@ class Guest {
       this.monthlyInvoice,
       this.guestImageProfile,
       this.guestImageUploaded,
+      this.isReadyCheck,
+      this.isCheckedout,
+      this.isReviewd,
+      this.isCashDeposit,
+      this.isWaitingRefund,
+      this.isRefunded,
+      this.refundID,
+      this.isCheckoutSheetReady,
+      this.checkoutDate,
       this.isSelected = false});
 
   factory Guest.fromJson(Map<String, dynamic> json) => Guest(
@@ -446,6 +577,16 @@ class Guest {
             : MonthlyInvoice.fromJson(json["monthly_Invoice"]),
         guestImageProfile: json["guest_Image_Profile"],
         guestImageUploaded: json["guest_Image_Uploaded"],
+        isCashDeposit: json['is_Cash_Deposit'] as bool? ?? false,
+        isCheckedout: json['is_Checkedout'] as bool? ?? false,
+        isReadyCheck: json['is_ReadyCheck'] as bool? ?? false,
+        isCheckoutSheetReady:
+            json['is_Waiting_CheckoutSheet'] as bool? ?? false,
+        isReviewd: json['is_Reviewd'] as bool? ?? false,
+        isWaitingRefund: json['waiting_Refund'] as bool? ?? false,
+        isRefunded: json['refunded'] as bool? ?? false,
+        refundID: json['refund_ID'] as String?,
+        checkoutDate: json['checkout_Date'] as String?,
       );
 
   Map<String, dynamic> toJson() => {

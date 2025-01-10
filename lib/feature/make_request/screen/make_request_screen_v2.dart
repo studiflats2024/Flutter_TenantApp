@@ -78,6 +78,7 @@ class MakeRequestScreenWithBlocV2 extends BaseStatefulScreenWidget {
   BaseScreenState<MakeRequestScreenWithBlocV2> baseScreenCreateState() {
     return _MakeRequestScreenWithBlocV2();
   }
+
 }
 
 class _MakeRequestScreenWithBlocV2 extends BaseScreenState<MakeRequestScreenWithBlocV2> with AuthValidate {

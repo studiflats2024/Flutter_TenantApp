@@ -13,13 +13,13 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
-	<string>7.0</string>
+	<string>17</string>
 	<key>CFBundleName</key>
 	<string>StudiFlats</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>1.1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -27,24 +27,31 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.studiflats.app</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>studiflats</string>
+				<string>https</string>
+				<string>http</string>
 				<string>com.googleusercontent.apps.727951335686-vr21a12hn8bl4q485h635qdct003kjqe</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>App need to access your camera to take photo for using it in app attachment</string>
+	<key>NSContactsUsageDescription</key>
+	<string>We need access to your contacts to autofill phone numbers.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>To Get Your Location</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow this app to access your photos for using it in app attachment</string>
-	<key>NSContactsUsageDescription</key>
-    <string>We need access to your contacts to autofill phone numbers.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -59,6 +66,7 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
@@ -71,5 +79,13 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:studiflats.com</string>
+		<string>applinks:studiflats.de</string>
+		<string>applinks:dev.studiflats.com</string>
+		<string>applinks:api.studiflats.com</string>
+		<string>applinks:devapi.studiflats.com</string>
+	</array>
 </dict>
 </plist>

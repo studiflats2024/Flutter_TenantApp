@@ -189,12 +189,12 @@ class _BookingSummaryNameState
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          translate(LocalizationKeys.roomType)!,
+                          (widget.bookingDetailsModel.fullBooking??false)?translate(LocalizationKeys.full)!: translate(LocalizationKeys.roomType)!,
                           style: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          guest.roomType ?? "",
+                          (widget.bookingDetailsModel.fullBooking??false)?"": guest.roomType ?? "",
                           style: TextStyle(
                               color: AppColors.textColor,
                               fontSize: 16.sp,
