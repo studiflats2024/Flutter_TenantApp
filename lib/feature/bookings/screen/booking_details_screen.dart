@@ -19,8 +19,8 @@ class BookingDetailsScreen extends StatelessWidget {
 
   const BookingDetailsScreen({super.key});
 
-  static Future<void> open(BuildContext context,
-      BookingDetailsModel bookingDetailsModel) async {
+  static Future<void> open(
+      BuildContext context, BookingDetailsModel bookingDetailsModel) async {
     await Navigator.of(context).pushNamed(routeName,
         arguments: {argumentBookingDetails: bookingDetailsModel});
   }
@@ -33,12 +33,9 @@ class BookingDetailsScreen extends StatelessWidget {
   }
 
   BookingDetailsModel bookingDetails(BuildContext context) =>
-      (ModalRoute
-          .of(context)!
-          .settings
-          .arguments
-      as Map)[BookingDetailsScreen.argumentBookingDetails]
-      as BookingDetailsModel;
+      (ModalRoute.of(context)!.settings.arguments
+              as Map)[BookingDetailsScreen.argumentBookingDetails]
+          as BookingDetailsModel;
 }
 
 class BookingDetailsScreenFull extends BaseStatefulScreenWidget {
@@ -83,22 +80,31 @@ class _BookingDetailsScreenState
                   Container(
                     width: 350.w,
                     height: 150.h,
-                    decoration:  BoxDecoration(
-                        image:(widget.bookingDetailsModel.apartmentPicture?.isLink?? false) ?  null : const DecorationImage(
-                            image: AssetImage(AppAssetPaths.apartmentDetails),
-                            fit: BoxFit.cover),
+                    decoration: BoxDecoration(
+                        image: (widget.bookingDetailsModel.apartmentPicture
+                                    ?.isLink ??
+                                false)
+                            ? null
+                            : const DecorationImage(
+                                image:
+                                    AssetImage(AppAssetPaths.apartmentDetails),
+                                fit: BoxFit.cover),
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10))),
-                    child: (widget.bookingDetailsModel.apartmentPicture
-                        ?.isLink?? false) ? AppCachedNetworkImage(
-                      imageUrl: widget.bookingDetailsModel.apartmentPicture ??
-                          "",
-                      height: double.infinity,
-                      width: double.infinity,
-                      boxFit: BoxFit.fill,
-                      borderRadius: 5,
-                    ) : Container(),
+                    child: (widget
+                                .bookingDetailsModel.apartmentPicture?.isLink ??
+                            false)
+                        ? AppCachedNetworkImage(
+                            imageUrl:
+                                widget.bookingDetailsModel.apartmentPicture ??
+                                    "",
+                            height: double.infinity,
+                            width: double.infinity,
+                            boxFit: BoxFit.fill,
+                            borderRadius: 5,
+                          )
+                        : Container(),
                   ),
                   SizedBox(
                     height: 10.h,
@@ -120,8 +126,7 @@ class _BookingDetailsScreenState
                             ),
                             TextSpan(
                               text:
-                              " ${widget.bookingDetailsModel.apartmentCode ??
-                                  ""}",
+                                  " ${widget.bookingDetailsModel.apartmentCode ?? ""}",
                               style: TextStyle(
                                 color: const Color(0xFF484649),
                                 fontSize: 12.sp,
@@ -139,8 +144,7 @@ class _BookingDetailsScreenState
                               children: [
                                 TextSpan(
                                   text:
-                                  "${translate(
-                                      LocalizationKeys.bookingId)!} : ",
+                                      "${translate(LocalizationKeys.bookingId)!} : ",
                                   style: TextStyle(
                                     color: const Color(0xFF484649),
                                     fontSize: 14.sp,
@@ -150,8 +154,7 @@ class _BookingDetailsScreenState
                                 ),
                                 TextSpan(
                                   text:
-                                  " ${widget.bookingDetailsModel.bookingCode ??
-                                      ""}",
+                                      " ${widget.bookingDetailsModel.bookingCode ?? ""}",
                                   style: TextStyle(
                                     color: const Color(0xFF484649),
                                     fontSize: 12.sp,
@@ -170,15 +173,13 @@ class _BookingDetailsScreenState
                                 try {
                                   Clipboard.setData(ClipboardData(
                                       text: widget.bookingDetailsModel
-                                          .bookingCode ??
+                                              .bookingCode ??
                                           ""));
                                 } catch (e) {
                                   showFeedbackMessage("$e ");
                                 } finally {
                                   showFeedbackMessage(
-                                      "Copied to Clipboard : ${widget
-                                          .bookingDetailsModel.bookingCode ??
-                                          ""}");
+                                      "Copied to Clipboard : ${widget.bookingDetailsModel.bookingCode ?? ""}");
                                 }
                               },
                               child: SvgPicture.asset(AppAssetPaths.copyIcon))
@@ -244,10 +245,10 @@ class _BookingDetailsScreenState
                         TextSpan(
                           children: [
                             TextSpan(
-                              text:
-                              'Room ${widget.bookingDetailsModel.guests?[widget
-                                  .bookingDetailsModel.guestIndex].roomName ??
-                                  ""} ',
+                              text: widget.bookingDetailsModel.fullBooking ==
+                                      true
+                                  ? "${translate(LocalizationKeys.rentPrice)}"
+                                  : '${translate(LocalizationKeys.room)} ${widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].roomName ?? ""} ',
                               style: TextStyle(
                                 color: const Color(0xFF0A2D4E),
                                 fontSize: 16.sp,
@@ -256,10 +257,10 @@ class _BookingDetailsScreenState
                               ),
                             ),
                             TextSpan(
-                              text:
-                              "(${widget.bookingDetailsModel.guests?[widget
-                                  .bookingDetailsModel.guestIndex].bedName ??
-                                  ""})",
+                              text: widget.bookingDetailsModel.fullBooking ==
+                                      true
+                                  ? ""
+                                  : "(${widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].bedName ?? ""})",
                               style: TextStyle(
                                 color: AppColors.colorPrimary,
                                 fontSize: 14.sp,
@@ -275,10 +276,10 @@ class _BookingDetailsScreenState
                         TextSpan(
                           children: [
                             TextSpan(
-                              text:
-                              '€${(widget.bookingDetailsModel.guests?[widget
-                                  .bookingDetailsModel.guestIndex].bedPrice ??
-                                  0.00).toStringAsFixed(2)}/',
+                              text: widget.bookingDetailsModel.fullBooking ==
+                                      true
+                                  ? "€${(widget.bookingDetailsModel.fullRent ?? 0.0).toStringAsFixed(2)} / "
+                                  : '€${(widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].bedPrice ?? 0.00).toStringAsFixed(2)}/',
                               style: TextStyle(
                                 color: AppColors.colorPrimary,
                                 fontSize: 14.spMin,
@@ -303,41 +304,44 @@ class _BookingDetailsScreenState
                   SizedBox(
                     height: 16.h,
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        translate(LocalizationKeys.roomType)!,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: const Color(0xFF0A2D4E),
-                          fontSize: 14.sp,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
+                  if (widget.bookingDetailsModel.fullBooking != true) ...[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          translate(LocalizationKeys.roomType)!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: const Color(0xFF0A2D4E),
+                            fontSize: 14.sp,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 4.h,
-                      ),
-                      Text(
-                        widget
-                            .bookingDetailsModel
-                            .guests?[widget.bookingDetailsModel.guestIndex]
-                            .roomType ??
-                            "",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: const Color(0xFF484649),
-                          fontSize: 12.sp,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w400,
+                        SizedBox(
+                          height: 4.h,
                         ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 16.h,
-                  ),
+                        Text(
+                          widget
+                                  .bookingDetailsModel
+                                  .guests?[
+                                      widget.bookingDetailsModel.guestIndex]
+                                  .roomType ??
+                              "",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: const Color(0xFF484649),
+                            fontSize: 12.sp,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 16.h,
+                    ),
+                  ],
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -355,9 +359,9 @@ class _BookingDetailsScreenState
                         height: 4.h,
                       ),
                       Text(
-                        '€ ${(widget.bookingDetailsModel.guests?[widget
-                            .bookingDetailsModel.guestIndex].serviceFee ?? 0.0)
-                            .toStringAsFixed(2)}',
+                        widget.bookingDetailsModel.fullBooking == true
+                            ? "€${(widget.bookingDetailsModel.fullService ?? 0.0).toStringAsFixed(2)}"
+                            : '€ ${(widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].serviceFee ?? 0.0).toStringAsFixed(2)}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: const Color(0xFF484649),
@@ -388,9 +392,9 @@ class _BookingDetailsScreenState
                         height: 4.h,
                       ),
                       Text(
-                        '€ ${(widget.bookingDetailsModel.guests?[widget
-                            .bookingDetailsModel.guestIndex].securityDeposit ??
-                            0.00).toStringAsFixed(2)}',
+                        widget.bookingDetailsModel.fullBooking == true
+                            ? "€${(widget.bookingDetailsModel.fullSecurity ?? 0.0).toStringAsFixed(2)}"
+                            : '€ ${(widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].securityDeposit ?? 0.00).toStringAsFixed(2)}',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: const Color(0xFF484649),
@@ -425,8 +429,7 @@ class _BookingDetailsScreenState
                               height: 4.h,
                             ),
                             Text(
-                              '${widget.bookingDetailsModel.guests?[widget
-                                  .bookingDetailsModel.guestIndex].qRCode}',
+                              '${widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].qRCode}',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: const Color(0xFF484649),
@@ -457,10 +460,10 @@ class _BookingDetailsScreenState
                                 padding: const EdgeInsets.all(8.0),
                                 child: CachedNetworkImage(
                                   imageUrl: widget
-                                      .bookingDetailsModel
-                                      .guests?[widget
-                                      .bookingDetailsModel.guestIndex]
-                                      .qrCodeImg ??
+                                          .bookingDetailsModel
+                                          .guests?[widget
+                                              .bookingDetailsModel.guestIndex]
+                                          .qrCodeImg ??
                                       "",
                                 ),
                               ),
@@ -469,7 +472,7 @@ class _BookingDetailsScreenState
                               ),
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     width: 160.w,
@@ -486,9 +489,9 @@ class _BookingDetailsScreenState
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         const Icon(Icons.visibility_outlined),
                                         SizedBox(width: 5.w),
@@ -522,9 +525,9 @@ class _BookingDetailsScreenState
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.center,
+                                          CrossAxisAlignment.center,
                                       children: [
                                         const Icon(
                                           Icons.share,

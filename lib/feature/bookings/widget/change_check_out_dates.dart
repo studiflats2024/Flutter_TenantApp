@@ -124,12 +124,10 @@ class _ChangeCheckOutDateScreen
               hintText: "Enter new checkout date",
               validator: Validator.validateDateTimeNotEmpty,
               onSaved: (val) {
-                print("Saved");
                 if (val != null) {
                   currentBloc.add(SetEndDateEvent(val));
                 }
               },onFieldSubmitted: (val) {
-              print("Saved");
               if (val != null) {
                 currentBloc.add(SetEndDateEvent(val));
               }

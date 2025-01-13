@@ -348,9 +348,9 @@ class _UnitDetailsScreenWithBloc
   }
 
   void _requestApartmentClickedV2() async {
-    if(isGuest){
+    if (isGuest) {
       AppBottomSheet.showLoginOrRegisterDialog(context);
-    }else{
+    } else {
       _confirmClicked();
     }
 
@@ -382,7 +382,7 @@ class _UnitDetailsScreenWithBloc
         context: context,
         builder: (ctx) {
           return Container(
-            height: 255.h,
+            height: 260.h,
             width: 400.w,
             padding: EdgeInsets.symmetric(horizontal: 15.0.w, vertical: 10.h),
             child: Center(
@@ -394,7 +394,7 @@ class _UnitDetailsScreenWithBloc
                     height: 10.h,
                   ),
                   Text(
-                    "${translate(LocalizationKeys.numberOfGuests)}",
+                    "${translate(LocalizationKeys.bookingDetails)}",
                     style: const TextStyle(
                         color: AppColors.formFieldText,
                         fontSize: 18,
@@ -405,7 +405,7 @@ class _UnitDetailsScreenWithBloc
                   ),
                   DateRangeFormFieldWidget(
                     withTitle: false,
-                    hintText: translate(LocalizationKeys.selectDate),
+                    hintText: translate(LocalizationKeys.startEndDate),
                     minStay: _unitDetailsApiModelV2!.minStay,
                     initialValue: requestUiModel.startDate != null &&
                             requestUiModel.endDate != null
@@ -431,6 +431,11 @@ class _UnitDetailsScreenWithBloc
                             : null
                         : null,
                     maximumDate: _unitDetailsApiModelV2!.availableTo,
+                    hintTextStyle: TextStyle(
+                      color: AppColors.formFieldHintText,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   SizedBox(height: 5.h),
                   NewPersonWidget(
@@ -494,11 +499,12 @@ class _UnitDetailsScreenWithBloc
                             Utils.showMessageAlert(
                                 context: context,
                                 type: ArtSweetAlertType.warning,
-                                title: translate(LocalizationKeys.minimumStay)??"",
+                                title:
+                                    translate(LocalizationKeys.minimumStay) ??
+                                        "",
                                 message:
                                     "${translate(LocalizationKeys.periodMessage) ?? "minStay is "} ${_unitDetailsApiModelV2!.minStay} ${translate(_unitDetailsApiModelV2!.minStay == 1 ? LocalizationKeys.month : LocalizationKeys.months)}");
-                          }
-                          else if (_unitDetailsApiModelV2!
+                          } else if (_unitDetailsApiModelV2!
                                   .countOfAvailableRoomsBedByDate(
                                 DateTimeRange(
                                   start: requestUiModel.startDate!,
@@ -516,8 +522,7 @@ class _UnitDetailsScreenWithBloc
                                 message: translate(LocalizationKeys
                                         .noAvailableBedsOnThisApartmentForDates) ??
                                     "");
-                          }
-                          else if (requestUiModel.numberOfGuests >
+                          } else if (requestUiModel.numberOfGuests >
                               _unitDetailsApiModelV2!
                                   .countOfAvailableRoomsBedByDate(
                                 DateTimeRange(
@@ -535,8 +540,7 @@ class _UnitDetailsScreenWithBloc
                                 message: translate(LocalizationKeys
                                         .noAvailableBedsForThoseGuests) ??
                                     "");
-                          }
-                          else {
+                          } else {
                             Navigator.of(ctx).pop(true);
                           }
                         },

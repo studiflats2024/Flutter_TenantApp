@@ -598,5 +598,9 @@
   "extended_to" : "You are extend to ",
   "change_checkout" : "Change Checkout",
   "checkout_date_is_required" : "checkout date is required",
-  "check_out_on": "You will check out on : "
+  "check_out_on": "You will check out on : ",
+  "extend_request" : "Extend Request",
+  "extend_status" : "Extend Status :",
+  "start_end_date" : "Start Date - End Date",
+  "full_rent" : "Full Rent"
 }

@@ -40,6 +40,9 @@ class BookingDetailsModel {
   int? bookingGuestsNo;
   bool? hasExtendRequest;
   bool? isOffered;
+  double? fullRent;
+  double? fullService;
+  double? fullSecurity;
 
   CheckInDetailsResponse? checkInDetailsResponse;
 
@@ -64,7 +67,8 @@ class BookingDetailsModel {
       this.fullBooking,
       this.bookingGuestsNo,
       this.isOffered,
-      this.hasExtendRequest});
+      this.hasExtendRequest,
+      this.fullRent,this.fullSecurity,this.fullService});
 
   factory BookingDetailsModel.fromJson(Map<String, dynamic> json) =>
       BookingDetailsModel(
@@ -92,6 +96,9 @@ class BookingDetailsModel {
         bookingGuestsNo: json["booking_Guests_No"] ?? 0,
         isOffered: json["is_Offered"] ?? false,
         hasExtendRequest: json["has_Extend_Request"] ?? false,
+        fullRent: json["full_Rent"],
+        fullService: json["full_Service"],
+        fullSecurity: json["full_Secuirty"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -122,15 +129,18 @@ class BookingDetailsModel {
   }
 
   bool get canChangeCheckout {
-    if(canResumeBookingAsMainTenant && canResumeBookingProcess && rentalRulesSigned) {
-      Duration difference = DateFormat("M/d/yyyy").parse(checkOut!, false)
+    if (canResumeBookingAsMainTenant &&
+        canResumeBookingProcess &&
+        rentalRulesSigned) {
+      Duration difference = DateFormat("M/d/yyyy")
+          .parse(checkOut!, false)
           .difference(DateTime.now());
       if (difference.inDays > 31) {
         return false;
       } else {
         return true;
       }
-    }else{
+    } else {
       return false;
     }
   }
@@ -360,23 +370,23 @@ class BookingDetailsModel {
   }
 
   bool get readyToVerifyIdentity {
-    return canResumeBookingProcess && !isSelfie;
+    return canResumeBookingProcess && readyForCheckIn && !isSelfie;
   }
 
   bool get shouldPayRent {
     return monthlyInvoiceIsCash
         ? false
-        : canResumeBookingProcess && !paidRent && canResumeBookingAsMainTenant;
+        : canResumeBookingProcess && readyForCheckIn && !paidRent && canResumeBookingAsMainTenant;
   }
 
   bool get readyToSignHandOver {
-    return canResumeBookingProcess &&
+    return canResumeBookingProcess && readyForCheckIn &&
         !handOverSigned &&
         canResumeBookingAsMainTenant;
   }
 
   bool get readyToSignApartmentRules {
-    return canResumeBookingProcess &&
+    return canResumeBookingProcess && readyForCheckIn &&
         !rentalRulesSigned &&
         canResumeBookingAsMainTenant;
   }
@@ -446,6 +456,21 @@ class BookingDetailsModel {
     return (guests?.isNotEmpty ?? false) &&
         (guests?[guestIndex].isCashDeposit ?? false);
   }
+
+  bool get haveExtend{
+    return (guests?.isNotEmpty ?? false) &&
+        (guests?[guestIndex].extendedFrom !=null);
+  }
+
+  bool get extendAccepted{
+    return (guests?[guestIndex].extendingStatus=="Approved");
+  }
+
+  String get extendStatus{
+    return
+        (guests?[guestIndex].extendingStatus??"");
+  }
+
 }
 
 class Guest {
@@ -487,6 +512,15 @@ class Guest {
   final bool? isWaitingRefund;
   final bool? isRefunded;
   final String? refundID;
+  final String? extendingStatus;
+  final String? extendID;
+  final String? extendingRejectReason;
+  final String? extendContract;
+  final String? extendContractSignature;
+  final String? extendContractSignedAt;
+  final String? extendedFrom;
+  final String? extendedTo;
+  final bool? extendContractSigned;
   final bool? isCheckoutSheetReady;
   final String? checkoutDate;
 
@@ -536,6 +570,15 @@ class Guest {
       this.refundID,
       this.isCheckoutSheetReady,
       this.checkoutDate,
+      this.extendingStatus,
+        this.extendingRejectReason,
+        this.extendID,
+        this.extendContract,
+        this.extendContractSignature,
+        this.extendContractSigned,
+        this.extendContractSignedAt,
+        this.extendedFrom,
+        this.extendedTo,
       this.isSelected = false});
 
   factory Guest.fromJson(Map<String, dynamic> json) => Guest(
@@ -587,6 +630,15 @@ class Guest {
         isRefunded: json['refunded'] as bool? ?? false,
         refundID: json['refund_ID'] as String?,
         checkoutDate: json['checkout_Date'] as String?,
+        extendingStatus: json['extending_Status'] as String?,
+        extendID: json['extend_ID'] as String?,
+        extendingRejectReason: json['extending_Reject_Reason'] as String?,
+        extendContract: json['extend_Contract'] as String?,
+        extendContractSignature: json['extend_Contract_Signature'] as String?,
+        extendContractSignedAt: json['extend_Contract_Signed_At'] as String?,
+        extendContractSigned: json['extend_Contract_Signed'] as bool?,
+        extendedFrom: json['extended_From'] as String?,
+        extendedTo: json['extended_To'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -616,7 +668,7 @@ class Guest {
         "passport_Reject_Reason": passportRejectReason,
         "monthly_Invoice": monthlyInvoice?.toJson(),
         "guest_Image_Profile": guestImageProfile,
-        "guest_Image_Uploaded": guestImageUploaded
+        "guest_Image_Uploaded": guestImageUploaded,
       };
 
   double get totalGuestPaid {
@@ -638,6 +690,69 @@ class Guest {
           (bedPrice ?? 0.0));
     }
   }
+}
+
+class ExContractModel {
+  String? id;
+  String? bookingId;
+  String? guestId;
+  DateTime? extendingFrom;
+  DateTime? extendingTo;
+  String? extendingStatus;
+  String? extendingRejectReason;
+  String? extendContract;
+  String? extendContractSignature;
+  DateTime? extendContractSignedAt;
+  bool? extendContractSigned;
+
+  ExContractModel({
+    this.id,
+    this.bookingId,
+    this.guestId,
+    this.extendingFrom,
+    this.extendingTo,
+    this.extendingStatus,
+    this.extendingRejectReason,
+    this.extendContract,
+    this.extendContractSignature,
+    this.extendContractSignedAt,
+    this.extendContractSigned,
+  });
+
+  factory ExContractModel.fromJson(Map<String, dynamic> json) =>
+      ExContractModel(
+        id: json["id"],
+        bookingId: json["booking_ID"],
+        guestId: json["guest_ID"],
+        extendingFrom: json["extending_From"] == null
+            ? null
+            : DateTime.parse(json["extending_From"]),
+        extendingTo: json["extending_To"] == null
+            ? null
+            : DateTime.parse(json["extending_To"]),
+        extendingStatus: json["extending_Status"],
+        extendingRejectReason: json["extending_Reject_Reason"],
+        extendContract: json["extend_Contract"],
+        extendContractSignature: json["extend_Contract_Signature"],
+        extendContractSignedAt: json["extend_Contract_Signed_At"] == null
+            ? null
+            : DateTime.parse(json["extend_Contract_Signed_At"]),
+        extendContractSigned: json["extend_Contract_Signed"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "booking_ID": bookingId,
+        "guest_ID": guestId,
+        "extending_From": extendingFrom?.toIso8601String(),
+        "extending_To": extendingTo?.toIso8601String(),
+        "extending_Status": extendingStatus,
+        "extending_Reject_Reason": extendingRejectReason,
+        "extend_Contract": extendContract,
+        "extend_Contract_Signature": extendContractSignature,
+        "extend_Contract_Signed_At": extendContractSignedAt?.toIso8601String(),
+        "extend_Contract_Signed": extendContractSigned,
+      };
 }
 
 class MonthlyInvoice {

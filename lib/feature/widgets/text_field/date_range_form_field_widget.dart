@@ -16,6 +16,7 @@ class DateRangeFormFieldWidget extends StatelessWidget {
   final String? hintText;
   final String? labelText;
   final String? helperText;
+  final TextStyle? hintTextStyle;
   final int? minStay;
   final DateTimeRange? initialValue;
   final FormFieldSetter<DateTimeRange> onSaved;
@@ -43,6 +44,7 @@ class DateRangeFormFieldWidget extends StatelessWidget {
     this.onChangedDate,
     this.maximumDate,
     this.minimumDate,
+    this.hintTextStyle,
   });
 
   @override
@@ -68,6 +70,7 @@ class DateRangeFormFieldWidget extends StatelessWidget {
           hintText: hintText,
           validator: validator,
           minStay: minStay,
+          hintTextStyle: hintTextStyle,
           languageKey: languageKey,
           maximumDate: maximumDate,
           minimumDate: minimumDate,
@@ -85,6 +88,7 @@ class _DateRangeFormField extends FormField<DateTimeRange> {
     FormFieldValidator<DateTimeRange>? validator,
     DateTimeRange? initialValue,
     String? hintText,
+    TextStyle? hintTextStyle,
     DateTime? maximumDate,
     DateTime? minimumDate,
     int? minStay,
@@ -165,7 +169,7 @@ class _DateRangeFormField extends FormField<DateTimeRange> {
                             state.value != null
                                 ? "${AppDateFormat.formattingOnlyMonthDay(state.value!.start, languageKey)}-${AppDateFormat.formattingOnlyMonthDay(state.value!.end, languageKey)}"
                                 : hintText ?? "",
-                            style: TextStyle(
+                            style: hintTextStyle ??TextStyle(
                               fontSize: 18.0,
                               color: state.value != null
                                   ? null

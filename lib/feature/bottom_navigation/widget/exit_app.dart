@@ -38,7 +38,7 @@ class ExitApp extends BaseStatelessWidget {
           children: [
             AppElevatedButton.whiteWithTitle(
               onPressed: (){
-
+                Navigator.of(context).pop();
               },
               title: translate(LocalizationKeys.no) ?? "",
               textColor: AppColors.formFieldText,

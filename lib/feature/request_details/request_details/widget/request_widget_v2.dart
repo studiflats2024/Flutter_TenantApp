@@ -8,6 +8,7 @@ import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/apis/models/booking/change_check_out_date_model.dart';
 import 'package:vivas/apis/models/booking/extend_contract_model.dart';
 import 'package:vivas/feature/bookings/screen/booking_details_screen.dart';
+import 'package:vivas/feature/bookings/screen/extend_contract_request.dart';
 import 'package:vivas/feature/bookings/widget/change_check_out_dates.dart';
 import 'package:vivas/feature/bookings/widget/extend_contract.dart';
 import 'package:vivas/feature/contact_support/screen/chat_screen.dart';
@@ -89,7 +90,8 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                             .parse(apartmentRequestsApiModel.checkOut ?? ""),
                         AppDateFormat.appDateFormApiParse(
                             apartmentRequestsApiModel.guests?[0].checkoutDate ??
-                                apartmentRequestsApiModel.checkOut??"")),
+                                apartmentRequestsApiModel.checkOut ??
+                                "")),
                     SizedBox(height: 10.h),
                     const Divider(),
                     _itemClickableWidget(
@@ -120,40 +122,26 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                     if (apartmentRequestsApiModel.canChangeCheckout) ...[
                       const Divider(),
                       _itemClickableWidget(
-                          translate(LocalizationKeys.extendContract)!, () {
-                        AppBottomSheet.openAppBottomSheet(
-                            context: context,
-                            child: Container(
-                              height: 200.h,
-                              width: double.infinity,
-                              child: ExtendContract(
-                                ExtendContractModel(
-                                  bookingId:
-                                      apartmentRequestsApiModel.bookingId ?? "",
-                                  guestId: apartmentRequestsApiModel
-                                          .guests?[apartmentRequestsApiModel
-                                              .guestIndex]
-                                          .guestId ??
-                                      "",
-                                  startDate:
-                                      apartmentRequestsApiModel.checkOut == null
-                                          ? null
-                                          : DateFormat("M/d/yyyy").parse(
-                                              apartmentRequestsApiModel
-                                                      .checkOut ??
-                                                  "",
-                                              false),
-                                ),
-                              ),
-                            ),
-                            title: translate(LocalizationKeys.extendContract)!);
-                      }, withIcon: true, blueText: false),
+                          apartmentRequestsApiModel.haveExtend
+                              ? translate(LocalizationKeys.extendRequest)!
+                              : translate(LocalizationKeys.extendContract)!,
+                          () {
+                        extendAction(
+                            context,
+                            apartmentRequestsApiModel.haveExtend
+                                ? translate(LocalizationKeys.extendRequest)!
+                                : translate(LocalizationKeys.extendContract)!);
+                      },
+                          withIcon: false,
+                          blueText: false,
+                          withStatusIcon: true,
+                          status: apartmentRequestsApiModel.extendStatus),
                       const Divider(),
                       _itemClickableWidget(
                           translate(LocalizationKeys.changeCheckout)!, () {
                         AppBottomSheet.openAppBottomSheet(
                             context: context,
-                            child: Container(
+                            child: SizedBox(
                               height: 200.h,
                               width: double.infinity,
                               child: ChangeCheckOutDates(
@@ -168,7 +156,8 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                                   updateData),
                             ),
                             title: translate(LocalizationKeys.changeCheckout)!);
-                      }, withIcon: true, blueText: false),
+                      },
+                          withIcon: true, blueText: false),
                     ],
                     const Divider(),
                     _itemClickableWidget(translate(LocalizationKeys.messageUs)!,
@@ -415,7 +404,10 @@ class RequestWidgetV2 extends BaseStatelessWidget {
   }
 
   Widget _itemClickableWidget(String title, VoidCallback? onTap,
-      {bool withIcon = true, bool blueText = false}) {
+      {bool withIcon = true,
+      bool blueText = false,
+      bool withStatusIcon = false,
+      String status = ''}) {
     withIcon;
     return InkWell(
         onTap: onTap,
@@ -428,10 +420,10 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                 title,
                 style: TextStyle(
                   color: onTap == null
-                      ? const Color(0xFF98A1B2)
+                      ? AppColors.formFieldHintText
                       : blueText
-                          ? const Color(0xFF1151B4)
-                          : const Color(0xFF1D2939),
+                          ? AppColors.colorPrimary
+                          : AppColors.appFormFieldTitle,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
@@ -440,12 +432,99 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios_outlined,
                   color: onTap == null
-                      ? const Color(0xFF98A1B2)
-                      : Color(0xff1D2939),
+                      ? AppColors.formFieldHintText
+                      : AppColors.appFormFieldTitle,
+                ),
+              if (withStatusIcon)
+                Row(
+                  children: [
+                    Text(
+                      status,
+                      style: TextStyle(
+                        color: onTap == null
+                            ? AppColors.formFieldHintText
+                            : blueText
+                                ? AppColors.colorPrimary
+                                : AppColors.appFormFieldTitle,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_outlined,
+                      color: onTap == null
+                          ? AppColors.formFieldHintText
+                          : AppColors.appFormFieldTitle,
+                    ),
+                  ],
                 ),
             ],
           ),
         ));
+  }
+
+  void extendAction(BuildContext context, String title) {
+    if (apartmentRequestsApiModel.haveExtend) {
+      AppBottomSheet.openAppBottomSheet(
+          context: context,
+          child: SizedBox(
+            height: apartmentRequestsApiModel.extendAccepted ? 200.h : 130.h,
+            width: double.infinity,
+            child: ExtendContractRequest(
+              ExtendContractModel(
+                bookingId: apartmentRequestsApiModel.bookingId ?? "",
+                guestId: apartmentRequestsApiModel
+                        .guests?[apartmentRequestsApiModel.guestIndex]
+                        .guestId ??
+                    "",
+                extendAccepted: apartmentRequestsApiModel.extendAccepted,
+                extendContract: apartmentRequestsApiModel
+                    .guests![apartmentRequestsApiModel.guestIndex]
+                    .extendContract,
+                extendedTo: apartmentRequestsApiModel
+                    .guests![apartmentRequestsApiModel.guestIndex].extendedTo,
+                extendedFrom: apartmentRequestsApiModel
+                    .guests![apartmentRequestsApiModel.guestIndex].extendedFrom,
+                extendId: apartmentRequestsApiModel
+                    .guests![apartmentRequestsApiModel.guestIndex].extendID,
+                extendSignature: apartmentRequestsApiModel
+                    .guests![apartmentRequestsApiModel.guestIndex]
+                    .extendContractSignature,
+                extendStatus: apartmentRequestsApiModel
+                    .guests![apartmentRequestsApiModel.guestIndex]
+                    .extendingStatus,
+                extendedAt: apartmentRequestsApiModel
+                    .guests![apartmentRequestsApiModel.guestIndex]
+                    .extendContractSignedAt,
+                rejectReason: apartmentRequestsApiModel
+                    .guests![apartmentRequestsApiModel.guestIndex]
+                    .extendingRejectReason,
+              ),
+            ),
+          ),
+          title: title);
+    } else {
+      AppBottomSheet.openAppBottomSheet(
+          context: context,
+          child: SizedBox(
+            height: 200.h,
+            width: double.infinity,
+            child: ExtendContract(
+              ExtendContractModel(
+                bookingId: apartmentRequestsApiModel.bookingId ?? "",
+                guestId: apartmentRequestsApiModel
+                        .guests?[apartmentRequestsApiModel.guestIndex]
+                        .guestId ??
+                    "",
+                startDate: apartmentRequestsApiModel.checkOut == null
+                    ? null
+                    : DateFormat("M/d/yyyy")
+                        .parse(apartmentRequestsApiModel.checkOut ?? "", false),
+              ),
+            ),
+          ),
+          title: translate(LocalizationKeys.extendContract)!);
+    }
   }
 
   Future<void> _openMap({required String mapLink}) async {

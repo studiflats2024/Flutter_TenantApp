@@ -578,7 +578,7 @@ class LocalizationKeys {
   static const delete = "delete";
 
   static const select = "select";
-  static const full = "full";
+  static const full = "full_rent";
   static const price = "price";
   static const bedPrice = "bed_price";
   static const roomPrice = "room_price";
@@ -644,6 +644,7 @@ class LocalizationKeys {
   static const paySecurityDeposit = "pay_security_deposit";
   static const waitForWorkerCollectingRentCash = "wait_for_worker_collecting_rent_cash";
   static const extendContract = "extend_contract";
+  static const extendRequest = "extend_request";
   static const signHandover = "sign_handover";
   static const signRules = "sign_rules";
   static const checkSignature = "check_signature";
@@ -674,4 +675,7 @@ class LocalizationKeys {
   static const extendedTo = "extended_to";
   static const checkoutDateIsRequired = "checkout_date_is_required";
   static const checkoutOn = "check_out_on";
+  static const extendStatus = "extend_status";
+  static const startEndDate= "start_end_date";
+
 }

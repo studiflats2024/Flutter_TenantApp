@@ -598,5 +598,10 @@
   "extended_to": "Sie erstrecken sich auf ",
   "change_checkout": "Kasse ändern",
   "checkout_date_is_required": "Das Check-out-Datum ist erforderlich",
-  "check_out_on": "Sie werden sich Folgendes ansehen : "
+  "check_out_on": "Sie werden sich Folgendes ansehen : ",
+  "extend_request": "Anfrage erweitern",
+  "extend_status": "Erweiterungsstatus:",
+  "start_end_date": "Startdatum – Enddatum",
+  "full_rent": "Volle Miete"
+
 }

@@ -158,7 +158,9 @@ class _BookingSummaryNameState
                       height: 25.h,
                     ),
                     Text(
-                      guest.bedName ?? "",
+                      widget.bookingDetailsModel.fullBooking == true
+                          ? ""
+                          : guest.bedName ?? "",
                       style: TextStyle(
                           fontSize: 18.sp, fontWeight: FontWeight.w600),
                     ),
@@ -189,12 +191,16 @@ class _BookingSummaryNameState
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          (widget.bookingDetailsModel.fullBooking??false)?translate(LocalizationKeys.full)!: translate(LocalizationKeys.roomType)!,
+                          (widget.bookingDetailsModel.fullBooking ?? false)
+                              ? translate(LocalizationKeys.full)!
+                              : translate(LocalizationKeys.roomType)!,
                           style: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          (widget.bookingDetailsModel.fullBooking??false)?"": guest.roomType ?? "",
+                          (widget.bookingDetailsModel.fullBooking ?? false)
+                              ? ""
+                              : guest.roomType ?? "",
                           style: TextStyle(
                               color: AppColors.textColor,
                               fontSize: 16.sp,
@@ -209,12 +215,16 @@ class _BookingSummaryNameState
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          translate(LocalizationKeys.bedPrice)!,
+                          widget.bookingDetailsModel.fullBooking == true
+                              ? translate(LocalizationKeys.rentPrice)!
+                              : translate(LocalizationKeys.bedPrice)!,
                           style: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          "€ ${(guest.bedPrice ?? 0.0).toStringAsFixed(2)}",
+                          widget.bookingDetailsModel.fullBooking == true
+                              ? "€ ${(widget.bookingDetailsModel.fullRent ?? 0.0).toStringAsFixed(2)}"
+                              : "€ ${(guest.bedPrice ?? 0.0).toStringAsFixed(2)}",
                           style: TextStyle(
                               color: AppColors.textColor,
                               fontSize: 16.sp,
@@ -234,7 +244,9 @@ class _BookingSummaryNameState
                               fontSize: 16.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          "€ ${(guest.securityDeposit ?? 0.0).toStringAsFixed(2)}",
+                          widget.bookingDetailsModel.fullBooking == true
+                              ? "€ ${(widget.bookingDetailsModel.fullSecurity ?? 0.0).toStringAsFixed(2)}"
+                              : "€ ${(guest.securityDeposit ?? 0.0).toStringAsFixed(2)}",
                           style: TextStyle(
                               color: AppColors.textColor,
                               fontSize: 16.sp,
@@ -254,7 +266,9 @@ class _BookingSummaryNameState
                               fontSize: 16.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          "€ ${(guest.serviceFee ?? 0.0).toStringAsFixed(2)}",
+                          widget.bookingDetailsModel.fullBooking == true
+                              ? "€ ${(widget.bookingDetailsModel.fullService ?? 0.0).toStringAsFixed(2)}"
+                              : "€ ${(guest.serviceFee ?? 0.0).toStringAsFixed(2)}",
                           style: TextStyle(
                               color: AppColors.textColor,
                               fontSize: 16.sp,

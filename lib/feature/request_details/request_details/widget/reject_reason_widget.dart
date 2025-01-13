@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
+import 'package:vivas/res/app_colors.dart';
 
 // ignore: must_be_immutable
 class RejectReasonWidget extends BaseStatelessWidget {
@@ -31,7 +32,7 @@ class RejectReasonWidget extends BaseStatelessWidget {
         Text(
           rejectReason,
           style: const TextStyle(
-            color: Color(0xFF344053),
+            color: AppColors.appFormFieldTitle,
             fontSize: 14,
           ),
         ),
