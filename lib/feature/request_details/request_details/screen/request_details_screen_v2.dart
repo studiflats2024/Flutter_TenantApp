@@ -22,6 +22,7 @@ import 'package:vivas/feature/contact_support/screen/contact_support_screen.dart
 import 'package:vivas/feature/contract/check_in_and_rental_details/screen/check_in_details_screen.dart';
 import 'package:vivas/feature/contract/prepare_check_in/screen/prepare_check_in_screen.dart';
 import 'package:vivas/feature/contract/sign_contract/screen/sign_contract_screen_v2.dart';
+import 'package:vivas/feature/contract/sign_contract/screen/sign_extend_contract.dart';
 import 'package:vivas/feature/request_details/request_details/bloc/request_details_bloc.dart';
 import 'package:vivas/feature/request_details/request_details/bloc/unit_details_repository.dart';
 import 'package:vivas/feature/request_details/request_details/screen/invoice_screen_v2.dart';
@@ -153,28 +154,28 @@ class _RequestDetailsScreenScreenWithBloc
               await Future.delayed(Durations.long4, _getRequestDetailsApiEvent);
             },
             child: RequestWidgetV2(
-              status: (_bookingDetailsModel?.bookingStatus ?? ""),
-              actionBottomTitle: _actionBottomTittle,
-              actionClickedCallBack: state.bookingDetailsModel.canContinue
-                  ? _actionClicked
-                  : _actionClickedWhenCantContinue,
-              cancelClickedCallBack: state.bookingDetailsModel.canCancel
-                  ? automaticCancelClicked
-                  : null,
-              //: cancelClicked,
-              changeDateClickedCallBack:
-                  state.bookingDetailsModel.canEdit ? changeDateClicked : null,
-              changeCheckInDetails: !state.bookingDetailsModel.readyToCheckout
-                  ? changeCheckInClicked
-                  : null,
-              checkInDetailsClickedCallBack: _checkInDetailsClicked,
-              massageUsClickedCallBack: _massageUsClicked,
-              showApartmentClickedCallBack: _showApartmentClicked,
-              apartmentRequestsApiModel: state.bookingDetailsModel,
-              acceptOfferClickedCallBack: () => _acceptRejectOffer(true, ""),
-              rejectOfferClickedCallBack: () => _acceptRejectOffer(false, ""),
-                updateData :_getRequestDetailsApiEvent
-            ),
+                status: (_bookingDetailsModel?.bookingStatus ?? ""),
+                actionBottomTitle: _actionBottomTittle,
+                actionClickedCallBack: state.bookingDetailsModel.canContinue
+                    ? _actionClicked
+                    : _actionClickedWhenCantContinue,
+                cancelClickedCallBack: state.bookingDetailsModel.canCancel
+                    ? automaticCancelClicked
+                    : null,
+                //: cancelClicked,
+                changeDateClickedCallBack: state.bookingDetailsModel.canEdit
+                    ? changeDateClicked
+                    : null,
+                changeCheckInDetails: !state.bookingDetailsModel.readyToCheckout
+                    ? changeCheckInClicked
+                    : null,
+                checkInDetailsClickedCallBack: _checkInDetailsClicked,
+                massageUsClickedCallBack: _massageUsClicked,
+                showApartmentClickedCallBack: _showApartmentClicked,
+                apartmentRequestsApiModel: state.bookingDetailsModel,
+                acceptOfferClickedCallBack: () => _acceptRejectOffer(true, ""),
+                rejectOfferClickedCallBack: () => _acceptRejectOffer(false, ""),
+                updateData: _getRequestDetailsApiEvent),
           );
         } else {
           return const LoaderWidget();
@@ -216,7 +217,7 @@ class _RequestDetailsScreenScreenWithBloc
   }
 
   get _actionBottomTittle {
-    if (_bookingDetailsModel?.bookingCancelledOrRejected??false) {
+    if (_bookingDetailsModel?.bookingCancelledOrRejected ?? false) {
       return "${_bookingDetailsModel?.bookingStatus ?? ""} Reason";
     } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
         (_bookingDetailsModel?.needToUploadPassport ?? false)) {
@@ -237,8 +238,7 @@ class _RequestDetailsScreenScreenWithBloc
       return translate(LocalizationKeys.waitingForCheckIn)!;
     } else if (_bookingDetailsModel?.readyForCheckIn ?? false) {
       return translate(LocalizationKeys.checkIn2)!;
-    } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
-        !(_bookingDetailsModel?.isSelfie ?? false)) {
+    } else if (!(_bookingDetailsModel?.isSelfie ?? false)) {
       return translate(LocalizationKeys.verificationIdentity)!;
     } else if ((_bookingDetailsModel?.shouldPayRent ?? false)) {
       return translate(LocalizationKeys.payRent)!;
@@ -246,7 +246,8 @@ class _RequestDetailsScreenScreenWithBloc
       return translate(LocalizationKeys.signHandoverProtocols)!;
     } else if (_bookingDetailsModel?.readyToSignApartmentRules ?? false) {
       return translate(LocalizationKeys.signRentalRules)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Pending") {
+    }
+    else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Pending") {
       return translate(LocalizationKeys.bookingReview)!;
     } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Rejected") {
       return translate(LocalizationKeys.rejectReason)!;
@@ -263,11 +264,14 @@ class _RequestDetailsScreenScreenWithBloc
     } else if (_bookingDetailsModel!.readyToCheckout &&
         _bookingDetailsModel!.checkOutSheetIsReady) {
       return translate(LocalizationKeys.continueForCheckout);
-    } else if (_bookingDetailsModel!.monthlyInvoiceIsCash) {
+    } else if (_bookingDetailsModel?.extendReadyForSign ?? false) {
+      return translate(LocalizationKeys.signYourExtendedContract)!;
+    }
+    else if (_bookingDetailsModel!.monthlyInvoiceIsCash) {
       return translate(LocalizationKeys.confirmCashPayment)!;
     } else if (_bookingDetailsModel?.getMonthlyInvoice != null) {
       return translate(LocalizationKeys.monthlyRent)!;
-    } else if (_bookingDetailsModel?.waitingToConfirmPayRent??false) {
+    } else if (_bookingDetailsModel?.waitingToConfirmPayRent ?? false) {
       return translate(LocalizationKeys.confirmCashPayment)!;
     } else {
       return translate(LocalizationKeys.waitingForMonthlyInvoices)!;
@@ -284,6 +288,8 @@ class _RequestDetailsScreenScreenWithBloc
     } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
         (_bookingDetailsModel?.haveRejectPassport ?? false)) {
       _openPassports(true);
+    } else if ((_bookingDetailsModel?.canResumeBookingProcess ?? false) &&
+        (_bookingDetailsModel?.passportInReview ?? false)) {
     } else if (_bookingDetailsModel?.readyToPaySecurityDeposit ?? false) {
       _openToPaySecurityDeposit();
     } else if ((_bookingDetailsModel?.readyToSignContract ?? false)) {
@@ -302,7 +308,10 @@ class _RequestDetailsScreenScreenWithBloc
       _openApartmentRules();
     } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Rejected") {
       _showRejectedReason();
-    } else if (_bookingDetailsModel!.readyToCheckout) {
+    } else if (_bookingDetailsModel?.extendReadyForSign ?? false) {
+      _openSignExtend();
+    }
+    else if (_bookingDetailsModel!.readyToCheckout) {
       _checkReviewAndGoToCheckout();
     } else if (_bookingDetailsModel!.getMonthlyInvoice != null &&
         _bookingDetailsModel!.canResumeBookingAsMainTenant) {
@@ -311,7 +320,7 @@ class _RequestDetailsScreenScreenWithBloc
   }
 
   void _actionClickedWhenCantContinue() {
-    if (_bookingDetailsModel?.bookingCancelledOrRejected ??false) {
+    if (_bookingDetailsModel?.bookingCancelledOrRejected ?? false) {
       _showRejectedReason();
     } else {
       null;
@@ -507,6 +516,17 @@ class _RequestDetailsScreenScreenWithBloc
   void _openApartmentRules() {
     ApartmentRulesScreen.open(
             context, _bookingDetailsModel!, false, _getRequestDetailsApiEvent)
+        .then((value) => _getRequestDetailsApiEvent());
+  }
+
+  void _openSignExtend() {
+    SignExtendContractScreen.open(
+            context,
+            _bookingDetailsModel
+                    ?.guests?[_bookingDetailsModel?.guestIndex ?? 0].extendID ??
+                "",
+            false,
+            _getRequestDetailsApiEvent)
         .then((value) => _getRequestDetailsApiEvent());
   }
 

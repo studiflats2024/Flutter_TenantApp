@@ -34,18 +34,21 @@ class SignExtendContractScreen extends StatelessWidget {
   static const routeName = '/sign-extend-contract-screen';
   static const argumentReplacement = 'replacement';
   static const argumentExtendId = 'extend-id';
+  static const argumentOnSigned = 'on-signed';
 
   static Future<void> open(BuildContext context, String extendId,
-      bool replacement) async {
+      bool replacement, Function() onSigned) async {
     if (replacement) {
       await Navigator.of(context).pushReplacementNamed(routeName, arguments: {
         argumentReplacement: replacement,
-        argumentExtendId: extendId
+        argumentExtendId: extendId,
+        argumentOnSigned: onSigned
       });
     } else {
       await Navigator.of(context).pushNamed(routeName, arguments: {
         argumentReplacement: replacement,
-        argumentExtendId: extendId
+        argumentExtendId: extendId,
+        argumentOnSigned: onSigned
       });
     }
   }
@@ -58,7 +61,7 @@ class SignExtendContractScreen extends StatelessWidget {
       create: (context) => SignContractBloc(SignContractRepository(
           contractApiManger: ContractApiManger(dioApiManager, context))),
       child: SignContractScreenWithBloc(
-          extendId(context), replacement(context)),
+          extendId(context), replacement(context), onBack(context)),
     );
   }
 
@@ -69,13 +72,19 @@ class SignExtendContractScreen extends StatelessWidget {
   String extendId(BuildContext context) =>
       (ModalRoute.of(context)!.settings.arguments
           as Map)[SignExtendContractScreen.argumentExtendId] as String;
+
+  Function() onBack(BuildContext context) =>
+      (ModalRoute.of(context)!.settings.arguments as Map)[argumentOnSigned]
+          as Function();
 }
 
 class SignContractScreenWithBloc extends BaseStatefulScreenWidget {
   final String extendId;
   final bool replacement;
+  final Function() onSigned;
 
-  const SignContractScreenWithBloc(this.extendId, this.replacement,
+  const SignContractScreenWithBloc(
+      this.extendId, this.replacement, this.onSigned,
       {super.key});
 
   @override
@@ -105,8 +114,7 @@ class _SignContractScreenWithBloc
   @override
   Widget baseScreenBuild(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(title: Text(translate(LocalizationKeys.rentalAgreements)!)),
+      appBar: AppBar(title: Text(translate(LocalizationKeys.extendContract)!)),
       body: BlocConsumer<SignContractBloc, SignContractState>(
         listener: (context, state) {
           if (state is SignContractLoadingState) {
@@ -125,6 +133,7 @@ class _SignContractScreenWithBloc
             _showSignatureAlertDialog();
           } else if (state is ContractSignedSuccessfullyState) {
             showFeedbackMessage(state.response.message);
+            widget.onSigned();
             _clearSignature();
             _closeScreen();
           } else if (state is ContractTermsAndConditionsStatusChanged) {

@@ -361,7 +361,7 @@ class BookingDetailsModel {
   }
 
   bool get readyForCheckIn {
-    return (bookingStatus ?? "") == "Approved" &&
+    return canResumeBookingProcess &&
         (goToArrivingDetails ?? false) &&
         !DateFormat("MM/dd/yyyy")
             .parse(checkIn ?? "")
@@ -369,24 +369,33 @@ class BookingDetailsModel {
         !scannedQR;
   }
 
+  bool get continueForCheckIn {
+    return canResumeBookingProcess &&
+        (goToArrivingDetails ?? false) &&
+        !DateFormat("MM/dd/yyyy")
+            .parse(checkIn ?? "")
+            .isAfter(DateTime.now()) &&
+        scannedQR;
+  }
+
   bool get readyToVerifyIdentity {
-    return canResumeBookingProcess && readyForCheckIn && !isSelfie;
+    return  continueForCheckIn && !isSelfie;
   }
 
   bool get shouldPayRent {
     return monthlyInvoiceIsCash
         ? false
-        : canResumeBookingProcess && readyForCheckIn && !paidRent && canResumeBookingAsMainTenant;
+        :  continueForCheckIn && !paidRent && canResumeBookingAsMainTenant;
   }
 
   bool get readyToSignHandOver {
-    return canResumeBookingProcess && readyForCheckIn &&
+    return continueForCheckIn &&
         !handOverSigned &&
         canResumeBookingAsMainTenant;
   }
 
   bool get readyToSignApartmentRules {
-    return canResumeBookingProcess && readyForCheckIn &&
+    return continueForCheckIn &&
         !rentalRulesSigned &&
         canResumeBookingAsMainTenant;
   }
@@ -466,6 +475,9 @@ class BookingDetailsModel {
     return (guests?[guestIndex].extendingStatus=="Approved");
   }
 
+  bool get extendReadyForSign{
+    return (guests?[guestIndex].extendingStatus=="Approved") && !(guests?[guestIndex].extendContractSigned??true);
+  }
   String get extendStatus{
     return
         (guests?[guestIndex].extendingStatus??"");

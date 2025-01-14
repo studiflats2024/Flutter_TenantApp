@@ -564,6 +564,7 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
                           context,
                           model.extendContract?.id ?? "",
                           false,
+                            (){}
                         );
                       },
                 child: Text(

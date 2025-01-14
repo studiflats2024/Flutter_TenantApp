@@ -27,8 +27,8 @@ import 'package:vivas/utils/size_manager.dart';
 
 class ExtendContractRequest extends BaseStatelessWidget {
   final ExtendContractModel extendContractModel;
-
-  ExtendContractRequest(this.extendContractModel, {super.key});
+  final Function() afterChange;
+  ExtendContractRequest(this.extendContractModel,this.afterChange, {super.key});
 
   PreferencesManager preferencesManager = GetIt.I<PreferencesManager>();
   DioApiManager dioApiManager = GetIt.I<DioApiManager>();
@@ -45,14 +45,14 @@ class ExtendContractRequest extends BaseStatelessWidget {
                 ),
               ),
             ),
-        child: ExtendContractScreen(extendContractModel));
+        child: ExtendContractScreen(extendContractModel, afterChange));
   }
 }
 
 class ExtendContractScreen extends BaseStatefulScreenWidget {
   final ExtendContractModel extendContractModel;
-
-  ExtendContractScreen(this.extendContractModel);
+  final Function() afterChange;
+  ExtendContractScreen(this.extendContractModel, this.afterChange);
 
   @override
   BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() {
@@ -185,30 +185,6 @@ class _ExtendContractScreen extends BaseScreenState<ExtendContractScreen> {
                     fontSize: 14,
                   ),
                 ),
-              ],
-              if (extendContractModel.extendAccepted ?? false) ...[
-                SizedBox(
-                  height: 15.h,
-                ),
-                Center(
-                  child: AppElevatedButton(
-                    onPressed: () {
-                      if (extendContractModel.extendSigned ?? false) {
-                        SignExtendContractScreen.open(
-                          context,
-                          extendContractModel.extendId ?? "",
-                          false,
-                        );
-                      }
-                    },
-                    label: Text(
-                      translate(LocalizationKeys.signYourExtendedContract)!,
-                      style: TextStyle(
-                          color: AppColors.appButtonText, fontSize: 14.sp),
-                    ),
-                    color: AppColors.colorPrimary,
-                  ),
-                )
               ],
             ],
           );

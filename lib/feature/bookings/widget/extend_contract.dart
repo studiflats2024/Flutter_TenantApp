@@ -25,8 +25,9 @@ import 'package:vivas/utils/locale/app_localization_keys.dart';
 
 class ExtendContract extends BaseStatelessWidget {
   final ExtendContractModel extendContractModel;
+  final Function() afterChange;
 
-  ExtendContract(this.extendContractModel);
+  ExtendContract(this.extendContractModel ,this.afterChange);
 
   PreferencesManager preferencesManager = GetIt.I<PreferencesManager>();
   DioApiManager dioApiManager = GetIt.I<DioApiManager>();
@@ -43,14 +44,15 @@ class ExtendContract extends BaseStatelessWidget {
                 ),
               ),
             ),
-        child: ExtendContractScreen(extendContractModel));
+        child: ExtendContractScreen(extendContractModel, afterChange));
   }
 }
 
 class ExtendContractScreen extends BaseStatefulScreenWidget {
   final ExtendContractModel extendContractModel;
+  final Function() afterChange;
 
-  ExtendContractScreen(this.extendContractModel);
+  ExtendContractScreen(this.extendContractModel, this.afterChange);
 
   @override
   BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() {
@@ -98,6 +100,7 @@ class _ExtendContractScreen extends BaseScreenState<ExtendContractScreen> {
           extendContractModel.endDate = state.endDate;
         }
         if(state is ExtendContractSuccessState){
+          widget.afterChange();
           Navigator.of(context).pop();
         }
       },

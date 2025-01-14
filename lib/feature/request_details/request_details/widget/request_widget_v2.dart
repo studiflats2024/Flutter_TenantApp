@@ -135,7 +135,7 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                           withIcon: false,
                           blueText: false,
                           withStatusIcon: true,
-                          status: apartmentRequestsApiModel.extendStatus),
+                          status: apartmentRequestsApiModel.haveExtend? apartmentRequestsApiModel.extendStatus: ""),
                       const Divider(),
                       _itemClickableWidget(
                           translate(LocalizationKeys.changeCheckout)!, () {
@@ -217,6 +217,8 @@ class RequestWidgetV2 extends BaseStatelessWidget {
   Color? get colorOfSubmitWidget {
     if (status == "Pending") {
       return AppColors.divider;
+    }else if(apartmentRequestsApiModel.extendReadyForSign ?? false){
+      return null;
     } else if (DateFormat("MM/dd/yyyy")
             .parse(apartmentRequestsApiModel.checkIn ?? "")
             .isAfter(DateTime.now()) &&
@@ -468,7 +470,7 @@ class RequestWidgetV2 extends BaseStatelessWidget {
       AppBottomSheet.openAppBottomSheet(
           context: context,
           child: SizedBox(
-            height: apartmentRequestsApiModel.extendAccepted ? 200.h : 130.h,
+            height: 130.h,
             width: double.infinity,
             child: ExtendContractRequest(
               ExtendContractModel(
@@ -493,6 +495,9 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                 extendStatus: apartmentRequestsApiModel
                     .guests![apartmentRequestsApiModel.guestIndex]
                     .extendingStatus,
+                extendSigned: apartmentRequestsApiModel
+                    .guests![apartmentRequestsApiModel.guestIndex]
+                    .extendContractSigned,
                 extendedAt: apartmentRequestsApiModel
                     .guests![apartmentRequestsApiModel.guestIndex]
                     .extendContractSignedAt,
@@ -500,6 +505,7 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                     .guests![apartmentRequestsApiModel.guestIndex]
                     .extendingRejectReason,
               ),
+              updateData
             ),
           ),
           title: title);
@@ -521,6 +527,7 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                     : DateFormat("M/d/yyyy")
                         .parse(apartmentRequestsApiModel.checkOut ?? "", false),
               ),
+              updateData
             ),
           ),
           title: translate(LocalizationKeys.extendContract)!);
