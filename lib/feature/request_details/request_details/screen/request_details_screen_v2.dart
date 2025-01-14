@@ -238,7 +238,7 @@ class _RequestDetailsScreenScreenWithBloc
       return translate(LocalizationKeys.waitingForCheckIn)!;
     } else if (_bookingDetailsModel?.readyForCheckIn ?? false) {
       return translate(LocalizationKeys.checkIn2)!;
-    } else if (!(_bookingDetailsModel?.isSelfie ?? false)) {
+    } else if (!(_bookingDetailsModel?.readyToVerifyIdentity ?? false)) {
       return translate(LocalizationKeys.verificationIdentity)!;
     } else if ((_bookingDetailsModel?.shouldPayRent ?? false)) {
       return translate(LocalizationKeys.payRent)!;
@@ -246,8 +246,7 @@ class _RequestDetailsScreenScreenWithBloc
       return translate(LocalizationKeys.signHandoverProtocols)!;
     } else if (_bookingDetailsModel?.readyToSignApartmentRules ?? false) {
       return translate(LocalizationKeys.signRentalRules)!;
-    }
-    else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Pending") {
+    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Pending") {
       return translate(LocalizationKeys.bookingReview)!;
     } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Rejected") {
       return translate(LocalizationKeys.rejectReason)!;
@@ -255,19 +254,20 @@ class _RequestDetailsScreenScreenWithBloc
       return translate(LocalizationKeys.refunded);
     } else if (_bookingDetailsModel!.waitingToRefunded) {
       return translate(LocalizationKeys.waitingForRefund);
-    } else if (!_bookingDetailsModel!.checkOutSheetIsReady &&
-        _bookingDetailsModel!.isReviewed) {
-      return translate(LocalizationKeys.waitingCheckoutSheet);
     } else if (_bookingDetailsModel!.readyToCheckout &&
         !_bookingDetailsModel!.isReviewed) {
       return translate(LocalizationKeys.reviewBooking);
     } else if (_bookingDetailsModel!.readyToCheckout &&
-        _bookingDetailsModel!.checkOutSheetIsReady) {
+        !_bookingDetailsModel!.checkOutSheetIsReady &&
+        _bookingDetailsModel!.isReviewed) {
+      return translate(LocalizationKeys.waitingCheckoutSheet);
+    } else if (_bookingDetailsModel!.readyToCheckout &&
+        _bookingDetailsModel!.checkOutSheetIsReady &&
+        _bookingDetailsModel!.isReviewed) {
       return translate(LocalizationKeys.continueForCheckout);
     } else if (_bookingDetailsModel?.extendReadyForSign ?? false) {
       return translate(LocalizationKeys.signYourExtendedContract)!;
-    }
-    else if (_bookingDetailsModel!.monthlyInvoiceIsCash) {
+    } else if (_bookingDetailsModel!.monthlyInvoiceIsCash) {
       return translate(LocalizationKeys.confirmCashPayment)!;
     } else if (_bookingDetailsModel?.getMonthlyInvoice != null) {
       return translate(LocalizationKeys.monthlyRent)!;
@@ -298,7 +298,7 @@ class _RequestDetailsScreenScreenWithBloc
       _openArrivingDetails();
     } else if (_bookingDetailsModel?.readyForCheckIn ?? false) {
       _openBookingSummary();
-    } else if (_bookingDetailsModel?.readyToVerifyIdentity ?? false) {
+    } else if (!(_bookingDetailsModel?.readyToVerifyIdentity ?? false)) {
       _openVerifyIdentity();
     } else if ((_bookingDetailsModel?.shouldPayRent ?? false)) {
       _openToPayRent();
@@ -310,8 +310,7 @@ class _RequestDetailsScreenScreenWithBloc
       _showRejectedReason();
     } else if (_bookingDetailsModel?.extendReadyForSign ?? false) {
       _openSignExtend();
-    }
-    else if (_bookingDetailsModel!.readyToCheckout) {
+    } else if (_bookingDetailsModel!.readyToCheckout) {
       _checkReviewAndGoToCheckout();
     } else if (_bookingDetailsModel!.getMonthlyInvoice != null &&
         _bookingDetailsModel!.canResumeBookingAsMainTenant) {
@@ -431,7 +430,7 @@ class _RequestDetailsScreenScreenWithBloc
 
   void _checkReviewAndGoToCheckout() {
     _bookingDetailsModel!.isReviewed
-        ? _bookingDetailsModel!.readyToCheckout
+        ? _bookingDetailsModel!.checkOutSheetIsReady
             ? _openCheckoutDetailsScreen()
             : null
         : showReviewBottomSheet();
@@ -481,10 +480,10 @@ class _RequestDetailsScreenScreenWithBloc
 
   void _openVerifyIdentity() {
     _bookingDetailsModel?.guestNeedToUploadProfileImage ?? true
-        ? TakeSelfieScreen.open(context, _bookingDetailsModel!, true,
+        ? TakeSelfieScreen.open(context, _bookingDetailsModel!, false,
                 _getRequestDetailsApiEvent)
             .then((value) => _getRequestDetailsApiEvent())
-        : SelfieScreen.open(context, _bookingDetailsModel!, true,
+        : SelfieScreen.open(context, _bookingDetailsModel!, false,
                 _getRequestDetailsApiEvent)
             .then((value) => _getRequestDetailsApiEvent());
   }

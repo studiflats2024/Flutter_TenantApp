@@ -178,11 +178,15 @@ class _ExtendContractScreen extends BaseScreenState<ExtendContractScreen> {
               if (extendContractModel.rejectReason != null &&
                   extendContractModel.rejectReason!.isNotEmpty &&
                   extendContractModel.extendStatus == "Rejected") ...[
+                SizedBox(
+                  height: SizeManager.sizeSp20,
+                ),
                 Text(
                   extendContractModel.rejectReason ?? "",
-                  style: const TextStyle(
-                    color: AppColors.appFormFieldTitle,
-                    fontSize: 14,
+                  style:  TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.appFormFieldErrorIBorder,
+                    fontSize: 14.sp,
                   ),
                 ),
               ],

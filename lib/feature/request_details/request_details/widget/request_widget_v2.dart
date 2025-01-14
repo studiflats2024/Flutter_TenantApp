@@ -86,11 +86,11 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                     _dateWidget(
                         DateFormat("M/d/yyyy")
                             .parse(apartmentRequestsApiModel.checkIn ?? ""),
-                        DateFormat("M/d/yyyy")
-                            .parse(apartmentRequestsApiModel.checkOut ?? ""),
+                        AppDateFormat.appDateFormApiParse(
+                            apartmentRequestsApiModel.bookingCheckOut ?? ""),
                         AppDateFormat.appDateFormApiParse(
                             apartmentRequestsApiModel.guests?[0].checkoutDate ??
-                                apartmentRequestsApiModel.checkOut ??
+                                apartmentRequestsApiModel.bookingCheckOut ??
                                 "")),
                     SizedBox(height: 10.h),
                     const Divider(),
@@ -119,7 +119,7 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                             : null,
                         withIcon: true,
                         blueText: false),
-                    if (apartmentRequestsApiModel.canChangeCheckout) ...[
+                    if (apartmentRequestsApiModel.canSeeExtend) ...[
                       const Divider(),
                       _itemClickableWidget(
                           apartmentRequestsApiModel.haveExtend
@@ -135,7 +135,11 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                           withIcon: false,
                           blueText: false,
                           withStatusIcon: true,
-                          status: apartmentRequestsApiModel.haveExtend? apartmentRequestsApiModel.extendStatus: ""),
+                          status: apartmentRequestsApiModel.haveExtend
+                              ? apartmentRequestsApiModel.extendStatus
+                              : ""),
+                    ],
+                    if (apartmentRequestsApiModel.canChangeCheckout) ...[
                       const Divider(),
                       _itemClickableWidget(
                           translate(LocalizationKeys.changeCheckout)!, () {
@@ -156,8 +160,7 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                                   updateData),
                             ),
                             title: translate(LocalizationKeys.changeCheckout)!);
-                      },
-                          withIcon: true, blueText: false),
+                      }, withIcon: true, blueText: false),
                     ],
                     const Divider(),
                     _itemClickableWidget(translate(LocalizationKeys.messageUs)!,
@@ -209,6 +212,12 @@ class RequestWidgetV2 extends BaseStatelessWidget {
     if (status == "Pending") {
       return translate(
           LocalizationKeys.onceYourRequestIsApprovedYouCanContinue);
+    }
+    else if (apartmentRequestsApiModel.canResumeBookingProcess &&
+        apartmentRequestsApiModel.readyToCheckout &&
+        !apartmentRequestsApiModel.checkOutSheetIsReady) {
+      return translate(
+          LocalizationKeys.preparingCheckout);
     } else {
       return null;
     }
@@ -217,7 +226,13 @@ class RequestWidgetV2 extends BaseStatelessWidget {
   Color? get colorOfSubmitWidget {
     if (status == "Pending") {
       return AppColors.divider;
-    }else if(apartmentRequestsApiModel.extendReadyForSign ?? false){
+    } else if (apartmentRequestsApiModel.extendReadyForSign ?? false) {
+      return null;
+    } else if (apartmentRequestsApiModel.canResumeBookingProcess &&
+        apartmentRequestsApiModel.readyToCheckout &&
+        !apartmentRequestsApiModel.checkOutSheetIsReady) {
+      return AppColors.divider;
+    } else if (apartmentRequestsApiModel.readyToCheckout) {
       return null;
     } else if (DateFormat("MM/dd/yyyy")
             .parse(apartmentRequestsApiModel.checkIn ?? "")
@@ -473,40 +488,40 @@ class RequestWidgetV2 extends BaseStatelessWidget {
             height: 130.h,
             width: double.infinity,
             child: ExtendContractRequest(
-              ExtendContractModel(
-                bookingId: apartmentRequestsApiModel.bookingId ?? "",
-                guestId: apartmentRequestsApiModel
-                        .guests?[apartmentRequestsApiModel.guestIndex]
-                        .guestId ??
-                    "",
-                extendAccepted: apartmentRequestsApiModel.extendAccepted,
-                extendContract: apartmentRequestsApiModel
-                    .guests![apartmentRequestsApiModel.guestIndex]
-                    .extendContract,
-                extendedTo: apartmentRequestsApiModel
-                    .guests![apartmentRequestsApiModel.guestIndex].extendedTo,
-                extendedFrom: apartmentRequestsApiModel
-                    .guests![apartmentRequestsApiModel.guestIndex].extendedFrom,
-                extendId: apartmentRequestsApiModel
-                    .guests![apartmentRequestsApiModel.guestIndex].extendID,
-                extendSignature: apartmentRequestsApiModel
-                    .guests![apartmentRequestsApiModel.guestIndex]
-                    .extendContractSignature,
-                extendStatus: apartmentRequestsApiModel
-                    .guests![apartmentRequestsApiModel.guestIndex]
-                    .extendingStatus,
-                extendSigned: apartmentRequestsApiModel
-                    .guests![apartmentRequestsApiModel.guestIndex]
-                    .extendContractSigned,
-                extendedAt: apartmentRequestsApiModel
-                    .guests![apartmentRequestsApiModel.guestIndex]
-                    .extendContractSignedAt,
-                rejectReason: apartmentRequestsApiModel
-                    .guests![apartmentRequestsApiModel.guestIndex]
-                    .extendingRejectReason,
-              ),
-              updateData
-            ),
+                ExtendContractModel(
+                  bookingId: apartmentRequestsApiModel.bookingId ?? "",
+                  guestId: apartmentRequestsApiModel
+                          .guests?[apartmentRequestsApiModel.guestIndex]
+                          .guestId ??
+                      "",
+                  extendAccepted: apartmentRequestsApiModel.extendAccepted,
+                  extendContract: apartmentRequestsApiModel
+                      .guests![apartmentRequestsApiModel.guestIndex]
+                      .extendContract,
+                  extendedTo: apartmentRequestsApiModel
+                      .guests![apartmentRequestsApiModel.guestIndex].extendedTo,
+                  extendedFrom: apartmentRequestsApiModel
+                      .guests![apartmentRequestsApiModel.guestIndex]
+                      .extendedFrom,
+                  extendId: apartmentRequestsApiModel
+                      .guests![apartmentRequestsApiModel.guestIndex].extendID,
+                  extendSignature: apartmentRequestsApiModel
+                      .guests![apartmentRequestsApiModel.guestIndex]
+                      .extendContractSignature,
+                  extendStatus: apartmentRequestsApiModel
+                      .guests![apartmentRequestsApiModel.guestIndex]
+                      .extendingStatus,
+                  extendSigned: apartmentRequestsApiModel
+                      .guests![apartmentRequestsApiModel.guestIndex]
+                      .extendContractSigned,
+                  extendedAt: apartmentRequestsApiModel
+                      .guests![apartmentRequestsApiModel.guestIndex]
+                      .extendContractSignedAt,
+                  rejectReason: apartmentRequestsApiModel
+                      .guests![apartmentRequestsApiModel.guestIndex]
+                      .extendingRejectReason,
+                ),
+                updateData),
           ),
           title: title);
     } else {
@@ -516,19 +531,18 @@ class RequestWidgetV2 extends BaseStatelessWidget {
             height: 200.h,
             width: double.infinity,
             child: ExtendContract(
-              ExtendContractModel(
-                bookingId: apartmentRequestsApiModel.bookingId ?? "",
-                guestId: apartmentRequestsApiModel
-                        .guests?[apartmentRequestsApiModel.guestIndex]
-                        .guestId ??
-                    "",
-                startDate: apartmentRequestsApiModel.checkOut == null
-                    ? null
-                    : DateFormat("M/d/yyyy")
-                        .parse(apartmentRequestsApiModel.checkOut ?? "", false),
-              ),
-              updateData
-            ),
+                ExtendContractModel(
+                  bookingId: apartmentRequestsApiModel.bookingId ?? "",
+                  guestId: apartmentRequestsApiModel
+                          .guests?[apartmentRequestsApiModel.guestIndex]
+                          .guestId ??
+                      "",
+                  startDate: apartmentRequestsApiModel.checkOut == null
+                      ? null
+                      : DateFormat("M/d/yyyy").parse(
+                          apartmentRequestsApiModel.checkOut ?? "", false),
+                ),
+                updateData),
           ),
           title: translate(LocalizationKeys.extendContract)!);
     }

@@ -8,6 +8,7 @@ import 'package:dartz/dartz_unsafe.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:vivas/apis/models/contract/check_in_details/check_in_details_response.dart';
+import 'package:vivas/utils/format/app_date_format.dart';
 
 import '../../../preferences/preferences_manager.dart';
 
@@ -68,7 +69,9 @@ class BookingDetailsModel {
       this.bookingGuestsNo,
       this.isOffered,
       this.hasExtendRequest,
-      this.fullRent,this.fullSecurity,this.fullService});
+      this.fullRent,
+      this.fullSecurity,
+      this.fullService});
 
   factory BookingDetailsModel.fromJson(Map<String, dynamic> json) =>
       BookingDetailsModel(
@@ -128,13 +131,34 @@ class BookingDetailsModel {
     return 0;
   }
 
+  bool get canSeeExtend {
+    if (canResumeBookingAsMainTenant &&
+        canResumeBookingProcess &&
+        rentalRulesSigned) {
+      if (haveExtend) {
+        return true;
+      } else {
+        Duration difference =
+            AppDateFormat.appDateFormApiParse(bookingCheckOut ?? "")
+                .difference(DateTime.now());
+        if (difference.inDays > 31) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    } else {
+      return false;
+    }
+  }
+
   bool get canChangeCheckout {
     if (canResumeBookingAsMainTenant &&
         canResumeBookingProcess &&
         rentalRulesSigned) {
-      Duration difference = DateFormat("M/d/yyyy")
-          .parse(checkOut!, false)
-          .difference(DateTime.now());
+      Duration difference =
+          AppDateFormat.appDateFormApiParse(bookingCheckOut ?? "")
+              .difference(DateTime.now());
       if (difference.inDays > 31) {
         return false;
       } else {
@@ -225,7 +249,7 @@ class BookingDetailsModel {
 
   bool get isSelfie {
     return (guests?.isNotEmpty ?? false) &&
-        guests?[guestIndex].identityStatus != "Rejected";
+        guests?[guestIndex].identityStatus != "Rejected" && guests?[guestIndex].identityStatus != "Approved";
   }
 
   bool get paidRent {
@@ -379,13 +403,13 @@ class BookingDetailsModel {
   }
 
   bool get readyToVerifyIdentity {
-    return  continueForCheckIn && !isSelfie;
+    return continueForCheckIn && !isSelfie;
   }
 
   bool get shouldPayRent {
     return monthlyInvoiceIsCash
         ? false
-        :  continueForCheckIn && !paidRent && canResumeBookingAsMainTenant;
+        : continueForCheckIn && !paidRent && canResumeBookingAsMainTenant;
   }
 
   bool get readyToSignHandOver {
@@ -428,7 +452,7 @@ class BookingDetailsModel {
 
   bool get guestNeedToUploadProfileImage {
     return (guests?.isNotEmpty ?? false) &&
-        (guests?[guestIndex].guestImageUploaded ?? true);
+        !(guests?[guestIndex].guestImageUploaded ?? true);
   }
 
   bool get readyToCheckout {
@@ -458,7 +482,7 @@ class BookingDetailsModel {
 
   bool get checkOutSheetIsReady {
     return (guests?.isNotEmpty ?? false) &&
-        (guests?[guestIndex].isCheckoutSheetReady ?? false);
+        !(guests?[guestIndex].isCheckoutSheetReady ?? false);
   }
 
   bool get cashDeposit {
@@ -466,23 +490,33 @@ class BookingDetailsModel {
         (guests?[guestIndex].isCashDeposit ?? false);
   }
 
-  bool get haveExtend{
+  bool get haveExtend {
     return (guests?.isNotEmpty ?? false) &&
-        (guests?[guestIndex].extendedFrom !=null);
+        (guests?[guestIndex].extendID != "00000000-0000-0000-0000-000000000000");
   }
 
-  bool get extendAccepted{
-    return (guests?[guestIndex].extendingStatus=="Approved");
+  bool get extendAccepted {
+    return (guests?[guestIndex].extendingStatus == "Approved");
   }
 
-  bool get extendReadyForSign{
-    return (guests?[guestIndex].extendingStatus=="Approved") && !(guests?[guestIndex].extendContractSigned??true);
-  }
-  String get extendStatus{
-    return
-        (guests?[guestIndex].extendingStatus??"");
+  bool get extendReadyForSign {
+    return extendAccepted &&
+        !(guests?[guestIndex].extendContractSigned ?? true);
   }
 
+  String get extendStatus {
+    return (guests?[guestIndex].extendingStatus ?? "");
+  }
+
+  String? get bookingCheckOut {
+    if (haveExtend &&
+        extendAccepted &&
+        (guests?[guestIndex].extendContractSigned ?? false)) {
+      return guests?[guestIndex].extendedTo;
+    } else {
+      return checkOut;
+    }
+  }
 }
 
 class Guest {
@@ -583,14 +617,14 @@ class Guest {
       this.isCheckoutSheetReady,
       this.checkoutDate,
       this.extendingStatus,
-        this.extendingRejectReason,
-        this.extendID,
-        this.extendContract,
-        this.extendContractSignature,
-        this.extendContractSigned,
-        this.extendContractSignedAt,
-        this.extendedFrom,
-        this.extendedTo,
+      this.extendingRejectReason,
+      this.extendID,
+      this.extendContract,
+      this.extendContractSignature,
+      this.extendContractSigned,
+      this.extendContractSignedAt,
+      this.extendedFrom,
+      this.extendedTo,
       this.isSelected = false});
 
   factory Guest.fromJson(Map<String, dynamic> json) => Guest(
