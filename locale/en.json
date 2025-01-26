@@ -635,6 +635,9 @@
   "invite_again" : "Invite Again",
   "reminder" : "Reminder",
   "checked_out" : "CheckedOut",
-  "club_activity" : "Club Activity"
+  "club_activity" : "Club Activity",
+  "cancelled" : "Cancelled",
+  "un_enroll" : "UnEnroll",
+  "add_to_calender" : "Add To Calender"
 
 }

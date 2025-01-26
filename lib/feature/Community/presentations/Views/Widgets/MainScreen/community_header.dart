@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart'
     show BaseStatelessWidget;
 import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/invite_frindes.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/my_plan.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
@@ -99,7 +100,9 @@ class CommunityHeader extends BaseStatelessWidget {
                   asset: AppAssetPaths.myActivityIcon,
                   title: LocalizationKeys.myActivity,
                   multiLang: true,
-                  action: () {}),
+                  action: () {
+                    MyActivities.open(context, false);
+                  }),
               SizedBox(
                 width: SizeManager.sizeSp16,
               ),

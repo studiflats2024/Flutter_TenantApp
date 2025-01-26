@@ -13,14 +13,20 @@ class CustomAppBar extends BaseStatelessWidget implements PreferredSize {
   bool withBackButton;
   Widget? leading;
   bool centerTitle;
+  bool multiLan;
+  double? heightBar;
+  PreferredSizeWidget? bottom;
   Function()? onBack;
 
   CustomAppBar({
     required this.title,
     required this.withBackButton,
-    required this.centerTitle,
+    this.centerTitle = true,
+    this.multiLan = true,
     this.leading,
     this.onBack,
+    this.bottom,
+    this.heightBar,
     super.key,
   });
 
@@ -32,26 +38,29 @@ class CustomAppBar extends BaseStatelessWidget implements PreferredSize {
   @override
   Widget get child {
     return AppBar(
-      centerTitle: true,
+      centerTitle: centerTitle,
       systemOverlayStyle:
           const SystemUiOverlayStyle(statusBarColor: AppColors.textWhite),
-      leading: leading ?? (withBackButton
+      leading: leading ??
+          (withBackButton
               ? TextButton(
                   onPressed: onBack,
                   child: SvgPicture.asset(
                     AppAssetPaths.backIcon,
+
                   ),
                 )
               : null),
       title: TextApp(
         text: title,
-        multiLang: true,
+        multiLang: multiLan,
         fontWeight: FontWeight.w500,
         fontSize: SizeManager.sizeSp16,
       ),
+      bottom: bottom,
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(heightBar ?? kToolbarHeight);
 }

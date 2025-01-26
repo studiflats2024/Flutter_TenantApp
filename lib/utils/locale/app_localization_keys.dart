@@ -711,4 +711,7 @@ class LocalizationKeys {
   static const inviteAgain = "invite_again";
   static const reminder = "reminder";
   static const clubActivity = "club_activity";
+  static const cancelled = "cancelled";
+  static const unEnroll = "un_enroll";
+  static const addToCalender = "add_to_calender";
 }

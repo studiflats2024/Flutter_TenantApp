@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ClubActivity/club_activity.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/history_invitation.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/invite_frindes.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/my_plan.dart';
 import 'package:vivas/feature/app_pages/screen/faq_list_screen.dart';
 import 'package:vivas/feature/app_pages/screen/privacy_privacy_screen.dart';
@@ -175,6 +176,7 @@ class AppRoute {
     InviteFriends.routeName: (ctx) => InviteFriends(),
     MyPlan.routeName: (ctx) => MyPlan(),
     HistoryInviteFriends.routeName: (ctx) => HistoryInviteFriends(),
-    ClubActivity.routeName : (ctx) => ClubActivity()
+    ClubActivity.routeName : (ctx) => ClubActivity(),
+    MyActivities.routeName : (ctx) => MyActivities(),
   };
 }

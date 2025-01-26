@@ -7,7 +7,7 @@ class ActivityModel {
   String reviews;
   int seats;
   String? time;
-  ActivitiesStatus activitiesStatus;
+  ActivitiesType activitiesStatus;
 
   ActivityModel({
     required this.name,
@@ -22,4 +22,4 @@ class ActivityModel {
   });
 }
 
-enum ActivitiesStatus { course, workshop, event, consultant }
+enum ActivitiesType { course, workshop, event, consultant }

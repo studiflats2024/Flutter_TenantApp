@@ -63,7 +63,7 @@ class ClubActivity extends BaseStatelessWidget {
       endDate: "Feb 25 ,2025",
       reviews: "100",
       seats: 0,
-      activitiesStatus: ActivitiesStatus.course,
+      activitiesStatus: ActivitiesType.course,
     ),
     ActivityModel(
       name: "Learn German: Beginner Level",
@@ -73,7 +73,7 @@ class ClubActivity extends BaseStatelessWidget {
       endDate: "Feb 25 ,2025",
       reviews: "100",
       seats: 0,
-      activitiesStatus: ActivitiesStatus.workshop,
+      activitiesStatus: ActivitiesType.workshop,
     ),
     ActivityModel(
       name: "Learn German: Beginner Level",
@@ -84,7 +84,7 @@ class ClubActivity extends BaseStatelessWidget {
       reviews: "100",
       seats: 2,
       time: "10:00 AM",
-      activitiesStatus: ActivitiesStatus.event,
+      activitiesStatus: ActivitiesType.event,
     ),
     ActivityModel(
       name: "Learn German: Beginner Level",
@@ -94,7 +94,7 @@ class ClubActivity extends BaseStatelessWidget {
       endDate: "Feb 25 ,2025",
       reviews: "100",
       seats: 0,
-      activitiesStatus: ActivitiesStatus.consultant,
+      activitiesStatus: ActivitiesType.consultant,
     ),
   ];
 
@@ -287,31 +287,31 @@ class ClubActivity extends BaseStatelessWidget {
   }
 
   Color cardTypeColor(
-    ActivitiesStatus status,
+    ActivitiesType status,
   ) {
     switch (status) {
-      case ActivitiesStatus.course:
+      case ActivitiesType.course:
         return AppColors.cardBackgroundCourse;
-      case ActivitiesStatus.workshop:
+      case ActivitiesType.workshop:
         return AppColors.cardBackgroundWorkshop;
-      case ActivitiesStatus.event:
+      case ActivitiesType.event:
         return AppColors.cardBackgroundEvent;
-      case ActivitiesStatus.consultant:
+      case ActivitiesType.consultant:
         return AppColors.cardBackgroundConsultant;
     }
   }
 
   Color textActivityColor(
-    ActivitiesStatus status,
+    ActivitiesType status,
   ) {
     switch (status) {
-      case ActivitiesStatus.course:
+      case ActivitiesType.course:
         return AppColors.textCourse;
-      case ActivitiesStatus.workshop:
+      case ActivitiesType.workshop:
         return AppColors.textWorkshop;
-      case ActivitiesStatus.event:
+      case ActivitiesType.event:
         return AppColors.textEvent;
-      case ActivitiesStatus.consultant:
+      case ActivitiesType.consultant:
         return AppColors.textConsultant;
     }
   }
@@ -319,7 +319,7 @@ class ClubActivity extends BaseStatelessWidget {
   Widget footer(
     ActivityModel model,
   ) {
-    if (model.activitiesStatus == ActivitiesStatus.event) {
+    if (model.activitiesStatus == ActivitiesType.event) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -371,7 +371,7 @@ class ClubActivity extends BaseStatelessWidget {
           ),
         ],
       );
-    } else if (model.activitiesStatus == ActivitiesStatus.consultant){
+    } else if (model.activitiesStatus == ActivitiesType.consultant){
       return Row(
         children: [
           SvgPicture.asset(

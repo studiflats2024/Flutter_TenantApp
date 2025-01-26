@@ -129,4 +129,6 @@ class AppAssetPaths {
   static const onBoardingCommunity4 = 'assets/images/on_boarding_4.png';
   static const onBoardingCommunity5 = 'assets/images/on_boarding_5.png';
   static const reInviteImage = 'assets/icons/community/re_invite_image.svg';
+  static const editRateIcon = 'assets/icons/community/edit_rate.svg';
+  static const unEnrollIcon = 'assets/icons/community/un_enroll.svg';
 }

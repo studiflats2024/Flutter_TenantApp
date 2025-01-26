@@ -180,11 +180,13 @@ class AppColors {
   static const cardBackgroundWorkshop = Color(0xFFF9F0FD);
   static const cardBackgroundEvent = Color(0xFFE9F9F1);
   static const cardBackgroundConsultant = Color(0xFFFEF1F5);
+  static const cardBackgroundActivityCancelled = Color(0xFFFEF1F5);
   static const cardTextNatural700 = Color(0xFF727272);
 
   static const textCourse = Color(0xFF1151B4);
   static const textWorkshop = Color(0xFF4F1681);
   static const textEvent = Color(0xFF16814A);
+  static const textActivityCancelled = Color(0xFFD02831);
   static const textConsultant = Color(0xFFB4114A);
   static const textNatural400 = Color(0xFFafafaf);
   static const textNatural700 = Color(0xFF475467);
