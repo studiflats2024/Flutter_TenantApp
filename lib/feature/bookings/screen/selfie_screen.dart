@@ -118,6 +118,7 @@ class _SelfieScreenState extends BaseScreenState<SelfieScreenFull> {
                 context,
                 widget.bookingDetailsModel,
                 widget.onBack,
+                withReplacement: true,
               ).then((value) => widget.onBack);
             } else {
               if (widget.bookingDetailsModel.fullBooking ?? false) {

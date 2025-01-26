@@ -214,6 +214,7 @@ class LocalizationKeys {
   static const expiredBookings = "expired_bookings";
   static const checkIn = "check_in";
   static const checkOut = "check_out";
+  static const checkedOut = "checked_out";
   static const passport = "passport";
   static const pleaseUploadThePassportsOfEachTenantWithYouSoThatWeCanPrepareYourContract =
       "please_upload_the_passports_of_each_tenant_with_you_so_that_we_can_prepare_your_contract";
@@ -678,4 +679,36 @@ class LocalizationKeys {
   static const extendStatus = "extend_status";
   static const startEndDate= "start_end_date";
 
+  static const community = "community";
+  static const communityClub = "community_club";
+  static const qrCode = "qr_code";
+  static const myActivity = "my_activity";
+  static const myPlan = "my_plan";
+  static const inviteFriends = "invite_friends";
+  static const monthlyActivities = "monthly_activities";
+  static const clubActivities = "club_activities";
+  static const aboutCommunityClub = "about_community_club";
+  static const subscriptionPlans = "subscription_plans";
+  static const aboutClub = "about_club";
+  static const seats = "seat";
+  static const previous = "previous";
+  static const start = "start";
+  static const inviteYouHave = "invite_you_have";
+  static const friendsLeft = "friends_left";
+  static const friendsName = "friends_name";
+  static const friendsNameHint = "friends_name_hint";
+  static const friendsEmail = "friends_email";
+  static const friendsEmailHint = "friends_email_hint";
+  static const friendsPhone = "friends_phone";
+  static const invitationDate = "invitation_date";
+  static const invitationDateHint = "invitation_date_hint";
+  static const sendInvitations = "send_invitation";
+  static const sendInvitationsHint = "send_invitation_hint";
+  static const invitationTitle = "invite_title";
+  static const invitationDescription = "invite_description";
+  static const renewalDate = "renewal_date";
+  static const historyInvitation = "history_invitation";
+  static const inviteAgain = "invite_again";
+  static const reminder = "reminder";
+  static const clubActivity = "club_activity";
 }

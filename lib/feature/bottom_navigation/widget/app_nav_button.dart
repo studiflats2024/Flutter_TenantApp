@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show HapticFeedback;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'nav_button.dart';
 
@@ -106,7 +107,7 @@ class _GButtonState extends State<GButton> {
           style: widget.textStyle ??
               TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: 15,
+                fontSize: 14.sp,
                 color: widget.textColor,
               ),
         ),

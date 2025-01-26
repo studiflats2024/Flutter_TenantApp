@@ -26,7 +26,7 @@ class CheckoutSheet {
     paidSecuirty = json['paid_Secuirty'].toDouble();
     monthInvID = json['monthInvID'] as String?;
     invDate = DateTime.tryParse(json['invDate']) as DateTime;
-    invTotal = (json['invTotal'] as double?)!.toDouble();
+    invTotal = (json['invTotal']??0)!.toDouble();
 
     if (json['issue_Checkouts'] != null) {
       issueCheckouts = <IssueCheckouts>[];

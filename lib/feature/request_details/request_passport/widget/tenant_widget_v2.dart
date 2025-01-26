@@ -10,6 +10,7 @@ import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/utils/cached_network_image/app_cached_network_image.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
+import 'package:vivas/utils/size_manager.dart';
 
 // ignore: must_be_immutable
 class TenantWidgetV2 extends BaseStatelessWidget {
@@ -17,11 +18,11 @@ class TenantWidgetV2 extends BaseStatelessWidget {
   final bool canEdit;
   void Function(PassportRequestModel guestsRequestModel) afterEditCallBack;
 
-  TenantWidgetV2(
-      {required this.guestsRequestModel,
-        required this.afterEditCallBack,
-        required this.canEdit,
-        super.key});
+  TenantWidgetV2({required this.guestsRequestModel,
+    required this.afterEditCallBack,
+    required this.canEdit,
+    super.key});
+
   @override
   Widget baseBuild(BuildContext context) {
     return Container(
@@ -60,6 +61,18 @@ class TenantWidgetV2 extends BaseStatelessWidget {
                   children: [
                     Text(
                       guestsRequestModel.guestName,
+                      style: const TextStyle(
+                        color: Color(0xFF1B1B2F),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(
+                      width: SizeManager.sizeSp8,
+                    ),
+                    Text(
+                      guestsRequestModel.status != null ? "(${guestsRequestModel
+                          .status ?? ""})" : "",
                       style: const TextStyle(
                         color: Color(0xFF1B1B2F),
                         fontSize: 16,
@@ -140,14 +153,18 @@ class TenantWidgetV2 extends BaseStatelessWidget {
   }
 
   void _editTenantClicked(BuildContext context) {
-    AppBottomSheet.openAppBottomSheet(
-        context: context,
-        child: EditTenantWidgetV2(
-          saveCallBack: (tenantModel) {
-            afterEditCallBack(tenantModel);
-          },
-          guestsRequestModel: guestsRequestModel,
-        ),
-        title: translate(LocalizationKeys.editTenant)!);
+    print(guestsRequestModel.status);
+    if (guestsRequestModel.status == "Approved" ||
+        guestsRequestModel.status == "InReview") {} else {
+      AppBottomSheet.openAppBottomSheet(
+          context: context,
+          child: EditTenantWidgetV2(
+            saveCallBack: (tenantModel) {
+              afterEditCallBack(tenantModel);
+            },
+            guestsRequestModel: guestsRequestModel,
+          ),
+          title: translate(LocalizationKeys.editTenant)!);
+    }
   }
 }

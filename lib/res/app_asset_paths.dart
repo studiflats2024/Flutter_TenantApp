@@ -88,4 +88,45 @@ class AppAssetPaths {
   static const containerBg = 'assets/images/conatiner_bg.png';
   static const invoice = 'assets/images/invoice.png';
 
+  static const locationIcon = 'assets/icons/community/location.svg';
+  static const mapIcon = 'assets/icons/community/maps.svg';
+  static const qrIcon = 'assets/icons/community/qr.svg';
+  static const myActivityIcon = 'assets/icons/community/my_activity.svg';
+  static const myPlanIcon = 'assets/icons/community/my_plan.svg';
+  static const inviteFriendsIcon = 'assets/icons/community/invite_friends.svg';
+  static const seatIcon = 'assets/icons/community/seat.svg';
+  static const timerIcon = 'assets/icons/community/timer.svg';
+  static const rateIcon = 'assets/icons/community/rate.svg';
+  static const communityFav = 'assets/icons/community/community_fav.svg';
+  static const community = 'assets/icons/community/community_icon.svg';
+  static const calenderIcon = 'assets/icons/community/community_calender.svg';
+  static const calenderIcon2 = 'assets/icons/community/calender_2.svg';
+  static const calenderIconOutline =
+      'assets/icons/community/calender_icon_outline.svg';
+  static const playIcon = 'assets/icons/community/play.svg';
+  static const featureIcon = 'assets/icons/community/feature.svg';
+  static const personIcon = 'assets/icons/community/person.svg';
+  static const personIconForm = 'assets/icons/community/person_icon_form.svg';
+  static const informationIcon = 'assets/icons/community/information_icon.svg';
+  static const backIcon = 'assets/icons/community/icon_back.svg';
+  static const forwardIcon = 'assets/icons/community/icon_forward.svg';
+  static const forwardIconTop = 'assets/icons/community/forward_icon_top.svg';
+  static const reInviteIcon = 'assets/icons/community/re_invite_icon.svg';
+  static const messageIcon = 'assets/icons/community/message_icon.svg';
+  static const messageIconOutline = 'assets/icons/community/message_icon_outline.svg';
+  static const prizeIcon = 'assets/icons/community/prize_icon.svg';
+  static const menuIcon = 'assets/icons/community/menu_icon.svg';
+  static const reminderIcon = 'assets/icons/community/reminder_icon.svg';
+  static const consultantIcon = 'assets/icons/community/consultant.svg';
+  static const videoIcon = 'assets/icons/community/video_icon.svg';
+  static const workshopIcon = 'assets/icons/community/workshop.svg';
+
+  static const imageMonthlyActivities = 'assets/images/monthly_activities.png';
+  static const aboutCommunity = 'assets/images/about.png';
+  static const onBoardingCommunity1 = 'assets/images/on_boarding_1.png';
+  static const onBoardingCommunity2 = 'assets/images/on_boarding_2.png';
+  static const onBoardingCommunity3 = 'assets/images/on_boarding_3.png';
+  static const onBoardingCommunity4 = 'assets/images/on_boarding_4.png';
+  static const onBoardingCommunity5 = 'assets/images/on_boarding_5.png';
+  static const reInviteImage = 'assets/icons/community/re_invite_image.svg';
 }

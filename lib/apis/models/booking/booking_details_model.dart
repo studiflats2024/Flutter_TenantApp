@@ -44,34 +44,41 @@ class BookingDetailsModel {
   double? fullRent;
   double? fullService;
   double? fullSecurity;
+  String? availableFrom;
+  String? availableTo;
+  int? minStay;
 
   CheckInDetailsResponse? checkInDetailsResponse;
 
-  BookingDetailsModel(
-      {this.bookingId,
-      this.apartmentId,
-      this.bookingStatus,
-      this.bedId,
-      this.roomId,
-      this.checkIn,
-      this.checkOut,
-      this.apartmentCode,
-      this.apartmentName,
-      this.apartmentLocation,
-      this.apartmentMapLink,
-      this.apartmentShareStatus,
-      this.checkInDetailsResponse,
-      this.apartmentPicture,
-      this.bookingCode,
-      this.rejectReason,
-      this.guests,
-      this.fullBooking,
-      this.bookingGuestsNo,
-      this.isOffered,
-      this.hasExtendRequest,
-      this.fullRent,
-      this.fullSecurity,
-      this.fullService});
+  BookingDetailsModel({
+    this.bookingId,
+    this.apartmentId,
+    this.bookingStatus,
+    this.bedId,
+    this.roomId,
+    this.checkIn,
+    this.checkOut,
+    this.apartmentCode,
+    this.apartmentName,
+    this.apartmentLocation,
+    this.apartmentMapLink,
+    this.apartmentShareStatus,
+    this.checkInDetailsResponse,
+    this.apartmentPicture,
+    this.bookingCode,
+    this.rejectReason,
+    this.guests,
+    this.fullBooking,
+    this.bookingGuestsNo,
+    this.isOffered,
+    this.hasExtendRequest,
+    this.fullRent,
+    this.fullSecurity,
+    this.fullService,
+    this.availableFrom,
+    this.availableTo,
+    this.minStay,
+  });
 
   factory BookingDetailsModel.fromJson(Map<String, dynamic> json) =>
       BookingDetailsModel(
@@ -102,6 +109,9 @@ class BookingDetailsModel {
         fullRent: json["full_Rent"],
         fullService: json["full_Service"],
         fullSecurity: json["full_Secuirty"],
+        availableFrom: json["availabile_From"],
+        availableTo: json["availabile_To"],
+        minStay: json["min_Stay"] ?? 1,
       );
 
   Map<String, dynamic> toJson() => {
@@ -141,7 +151,9 @@ class BookingDetailsModel {
         Duration difference =
             AppDateFormat.appDateFormApiParse(bookingCheckOut ?? "")
                 .difference(DateTime.now());
-        if (difference.inDays > 31) {
+        if (difference.inDays > 31 &&
+            AppDateFormat.appDateFormApiParse(bookingCheckOut ?? "").month ==
+                DateTime.now().month) {
           return false;
         } else {
           return true;
@@ -249,7 +261,8 @@ class BookingDetailsModel {
 
   bool get isSelfie {
     return (guests?.isNotEmpty ?? false) &&
-        guests?[guestIndex].identityStatus != "Rejected" && guests?[guestIndex].identityStatus != "Approved";
+        guests?[guestIndex].identityStatus != "Rejected" &&
+        guests?[guestIndex].identityStatus != "Approved";
   }
 
   bool get paidRent {
@@ -403,7 +416,7 @@ class BookingDetailsModel {
   }
 
   bool get readyToVerifyIdentity {
-    return continueForCheckIn && !isSelfie;
+    return continueForCheckIn && isSelfie;
   }
 
   bool get shouldPayRent {
@@ -439,7 +452,10 @@ class BookingDetailsModel {
   }
 
   bool get waitingToConfirmPayRent {
-    return !paidRent && handOverSigned && canResumeBookingAsMainTenant;
+    return !paidRent &&
+        handOverSigned &&
+        rentalRulesSigned &&
+        canResumeBookingAsMainTenant;
   }
 
   bool get canResumeBookingAsMainTenant {
@@ -492,7 +508,7 @@ class BookingDetailsModel {
 
   bool get haveExtend {
     return (guests?.isNotEmpty ?? false) &&
-        (guests?[guestIndex].extendID != "00000000-0000-0000-0000-000000000000");
+        (guests?[guestIndex].extendedTo != null);
   }
 
   bool get extendAccepted {

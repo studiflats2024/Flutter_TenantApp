@@ -6,57 +6,74 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
+import 'package:vivas/res/font_size.dart';
 import 'package:vivas/utils/extensions/extension_string.dart';
 import 'package:vivas/utils/format/app_date_format.dart';
+import 'package:vivas/utils/size_manager.dart';
 
 // ignore: must_be_immutable
 class DateTimeFormFieldWidget extends StatelessWidget {
   final String title;
+  final TextStyle? titleStyle;
   final String languageKey;
   final bool requiredTitle;
   final String? hintText;
+  final TextStyle? hintStyle;
   final String? labelText;
   final String? helperText;
   final DateTime? initialValue;
   final FormFieldSetter<DateTime> onSaved;
   final FormFieldValidator<DateTime>? validator;
   final ValueChanged<DateTime?>? onChangedDate;
-
   final DateTime? value;
   final DateTime? maximumDate;
   final DateTime? minimumDate;
   final bool showFullDay;
+  final bool iconStart;
+  final Color? borderColor;
 
-  const DateTimeFormFieldWidget({
-    super.key,
-    required this.title,
-    this.requiredTitle = true,
-    this.hintText,
-    this.labelText,
-    this.helperText,
-    this.initialValue,
-    this.value,
-    required this.onSaved,
-    this.languageKey = "en",
-    this.validator,
-    this.onChangedDate,
-    this.maximumDate,
-    this.minimumDate,
-    this.showFullDay = false,
-  });
+  const DateTimeFormFieldWidget(
+      {super.key,
+      required this.title,
+      this.titleStyle,
+      this.requiredTitle = true,
+      this.hintText,
+      this.labelText,
+      this.helperText,
+      this.hintStyle,
+      this.initialValue,
+      this.value,
+      required this.onSaved,
+      this.languageKey = "en",
+      this.validator,
+      this.onChangedDate,
+      this.maximumDate,
+      this.minimumDate,
+        this.borderColor,
+      this.showFullDay = false,
+      this.iconStart = false});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          requiredTitle ? title.concatenateAsterisk : title,
-          style: const TextStyle(
-            fontSize: 14,
-            color: AppColors.appFormFieldTitle,
-            fontWeight: FontWeight.w500,
-          ),
+        RichText(
+          text: TextSpan(
+              text: requiredTitle ? title : title,
+              children: [
+                if(requiredTitle)...[
+                  TextSpan(text: " *",style: TextStyle(
+                      fontSize: FontSize.fontSize14,
+                      color: AppColors.appFormFieldErrorIBorder,
+                      fontWeight: FontWeight.w600))
+                ]
+              ],
+              style: titleStyle ??
+                  TextStyle(
+                      fontSize: FontSize.fontSize12,
+                      color: AppColors.appFormFieldTitle,
+                      fontWeight: FontWeight.w600)),
         ),
         const SizedBox(height: 10),
         _DateSelectionFormField(
@@ -67,7 +84,10 @@ class DateTimeFormFieldWidget extends StatelessWidget {
           languageKey: languageKey,
           maximumDate: maximumDate,
           minimumDate: minimumDate,
+          hintStyle: hintStyle,
           showFullDay: showFullDay,
+          iconStart: iconStart,
+          borderColor: borderColor,
         ),
       ],
     );
@@ -81,10 +101,13 @@ class _DateSelectionFormField extends FormField<DateTime> {
     FormFieldValidator<DateTime>? validator,
     DateTime? initialValue,
     String? hintText,
+    Color? borderColor,
+    TextStyle? hintStyle,
     DateTime? maximumDate,
     DateTime? minimumDate,
     required String languageKey,
     required bool showFullDay,
+    bool iconStart = false,
   }) : super(
           key: key,
           onSaved: onSaved,
@@ -156,15 +179,25 @@ class _DateSelectionFormField extends FormField<DateTime> {
                         border: Border.all(
                             color: state.hasError
                                 ? Theme.of(context).colorScheme.error
-                                : AppColors.enabledAppFormFieldBorder),
+                                : borderColor??AppColors.enabledAppFormFieldBorder),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 12.w, vertical: 12.h),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: iconStart
+                              ? MainAxisAlignment.start
+                              : MainAxisAlignment.spaceBetween,
                           children: [
+                            if (iconStart) ...[
+                              SvgPicture.asset(
+                                AppAssetPaths.calenderIconOutline,
+                              ),
+                              SizedBox(
+                                width: SizeManager.sizeSp8,
+                              )
+                            ],
                             Text(
                               state.value != null
                                   ? showFullDay
@@ -173,11 +206,14 @@ class _DateSelectionFormField extends FormField<DateTime> {
                                       : AppDateFormat.formattingOnlyMonthDay(
                                           state.value!, languageKey)
                                   : hintText ?? "",
-                              style: const TextStyle(fontSize: 18.0),
+                              style:
+                                  hintStyle ?? const TextStyle(fontSize: 18.0),
                             ),
-                            SvgPicture.asset(AppAssetPaths.datePicker,
-                                colorFilter: const ColorFilter.mode(
-                                    AppColors.suffixIcon, BlendMode.srcIn)),
+                            if (!iconStart) ...[
+                              SvgPicture.asset(AppAssetPaths.datePicker,
+                                  colorFilter: const ColorFilter.mode(
+                                      AppColors.suffixIcon, BlendMode.srcIn))
+                            ],
                           ],
                         ),
                       ),

@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/app_linking.dart';
+import 'package:vivas/feature/Community/presentations/Views/community_screen.dart';
 import 'package:vivas/feature/bookings/screen/bookings_screen.dart';
 import 'package:vivas/feature/bottom_navigation/bloc/bottom_navigation_bloc.dart';
 import 'package:vivas/feature/bottom_navigation/widget/app_g_nav.dart';
@@ -19,6 +20,7 @@ import 'package:vivas/feature/wishlist/screen/wishlist_screen.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
+import 'package:vivas/utils/size_manager.dart';
 
 import '../../profile/profile_screen/profile_screen.dart';
 import '../widget/app_nav_button.dart';
@@ -123,7 +125,8 @@ class _BottomNavigationScreenState
               if (state is HomeClickedSte) {
                 return _homeWidget();
               } else if (state is WishlistClickedSte) {
-                return _wishlistWidget();
+                // return _wishlistWidget();
+                return _communityWidget();
               } else if (state is BookingsClickedSte) {
                 return _bookingsWidget();
               } else if (state is ProfileClickedSte) {
@@ -131,14 +134,13 @@ class _BottomNavigationScreenState
               } else {
                 switch (_selectedBottomNavigationIndex) {
                   case 1:
-                    return _wishlistWidget();
+                    // return _wishlistWidget();
+                    return _communityWidget();
                   case 2:
                     return _bookingsWidget();
                   case 3:
                     return _profileWidget();
                   default:
-                    print(
-                        "_selectedBottomNavigationIndex $_selectedBottomNavigationIndex");
                     return _homeWidget();
                 }
               }
@@ -186,9 +188,14 @@ class _BottomNavigationScreenState
                         iconAssetPath: AppAssetPaths.navHomeIcon,
                         text: translate(LocalizationKeys.home)!,
                       ),
+                      // GButton(
+                      //   iconAssetPath: AppAssetPaths.navWishlistIcon,
+                      //   text: translate(LocalizationKeys.wishlist)!,
+                      // ),
                       GButton(
-                        iconAssetPath: AppAssetPaths.navWishlistIcon,
-                        text: translate(LocalizationKeys.wishlist)!,
+                        iconAssetPath: AppAssetPaths.community,
+                        iconSize: SizeManager.sizeSp25,
+                        text: translate(LocalizationKeys.community)!,
                       ),
                       GButton(
                         iconAssetPath: AppAssetPaths.navBookmarkIcon,
@@ -226,6 +233,10 @@ class _BottomNavigationScreenState
 
   Widget _bookingsWidget() {
     return BookingsScreen();
+  }
+
+  Widget _communityWidget() {
+    return const CommunityScreen();
   }
 
   ///////////////////////////////////////////////////////////

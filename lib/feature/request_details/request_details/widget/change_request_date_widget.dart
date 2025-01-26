@@ -3,18 +3,27 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vivas/_core/widgets/base_stateful_widget.dart';
 import 'package:vivas/feature/widgets/app_buttons/app_buttons.dart';
 import 'package:vivas/feature/widgets/text_field/date_picker_form_filed_widget.dart';
+import 'package:vivas/utils/feedback/feedback_message.dart';
 import 'package:vivas/utils/format/app_date_format.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
+import 'package:vivas/utils/validations/validator.dart';
 
 // ignore: must_be_immutable
 class ChangeRequestDateWidget extends BaseStatefulWidget {
   final DateTime startDate;
   final DateTime endDate;
+  final DateTime? availableFrom;
+  final DateTime? availableTo;
+  final int? minStay;
   void Function(DateTime startDate, DateTime endDate) saveCallBack;
+
   ChangeRequestDateWidget({
     required this.startDate,
     required this.endDate,
     required this.saveCallBack,
+    this.availableFrom,
+    this.availableTo,
+    this.minStay,
     super.key,
   });
 
@@ -31,6 +40,7 @@ class _EditTenantWidgetState extends BaseState<ChangeRequestDateWidget> {
 
   late DateTime _startDate = startDateInit;
   late DateTime _endDate = _initialEndDate;
+
   @override
   void initState() {
     super.initState();
@@ -50,9 +60,20 @@ class _EditTenantWidgetState extends BaseState<ChangeRequestDateWidget> {
             controller: _startDateController,
             title: translate(LocalizationKeys.startDate)!,
             hintText: translate(LocalizationKeys.startDate),
-            onSaved: (p0) {},
-            maximumDate: maxDateInit,
-            minimumDate: startDateInit,
+            onSaved: (p0) {
+
+            },
+            validator: (value) {
+              if (value != null) {
+                return Validator.validateTimeRange(
+                    DateTimeRange(start: value, end: _endDate),
+                    minStay: widget.minStay!);
+              } else {
+                return null;
+              }
+            },
+            maximumDate: widget.availableTo!,
+            minimumDate: widget.availableFrom!,
             startDate: _startDate,
           ),
           SizedBox(height: 10.h),
@@ -61,8 +82,13 @@ class _EditTenantWidgetState extends BaseState<ChangeRequestDateWidget> {
             title: translate(LocalizationKeys.endDate)!,
             hintText: translate(LocalizationKeys.endDate),
             onSaved: (p0) {},
-            maximumDate: maxDateInit,
-            minimumDate: _initialEndDate,
+            validator: (value) {
+              return Validator.validateTimeRange(
+                  DateTimeRange(start: _startDate, end: value!),
+                  minStay: widget.minStay!);
+            },
+            maximumDate: widget.availableTo!,
+            minimumDate: widget.availableFrom!,
             startDate: _endDate,
           ),
           SizedBox(height: 24.h),
@@ -93,6 +119,7 @@ class _EditTenantWidgetState extends BaseState<ChangeRequestDateWidget> {
   }
 
   late final maxDateInit = _startDate.add(const Duration(days: 365 * 5));
+
   void _setInitialData() {
     _startDate = widget.startDate;
     _endDate = widget.endDate;
@@ -140,12 +167,13 @@ class _EditTenantWidgetState extends BaseState<ChangeRequestDateWidget> {
   }
 
   void _savedClicked() {
-    if (formKey.currentState?.validate() ?? false) {
-      formKey.currentState!.save();
-      widget.saveCallBack(_startDate, _endDate);
-      Navigator.of(context).pop();
-    } else {
-      autovalidateMode = AutovalidateMode.always;
-    }
+
+      if (formKey.currentState?.validate() ?? false) {
+        formKey.currentState!.save();
+        widget.saveCallBack(_startDate, _endDate);
+        Navigator.of(context).pop();
+      } else {
+        autovalidateMode = AutovalidateMode.always;
+      }
   }
 }

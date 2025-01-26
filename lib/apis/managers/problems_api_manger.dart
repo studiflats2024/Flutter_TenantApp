@@ -53,9 +53,9 @@ class ProblemsApiManger {
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio.get(ApiKeys.getIssueDetailsUrl,
         queryParameters: {"Issue_ID": problemId}).then((response) async {
-      List<dynamic> extractedData = response.data as List<dynamic>;
+      Map<String,dynamic> extractedData = response.data as Map<String,dynamic>;
       ProblemDetailsApiModel wrapper =
-          ProblemDetailsApiModel.fromJson(extractedData[0]);
+          ProblemDetailsApiModel.fromJson(extractedData);
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(error: error, context: context));

@@ -212,12 +212,10 @@ class RequestWidgetV2 extends BaseStatelessWidget {
     if (status == "Pending") {
       return translate(
           LocalizationKeys.onceYourRequestIsApprovedYouCanContinue);
-    }
-    else if (apartmentRequestsApiModel.canResumeBookingProcess &&
+    } else if (apartmentRequestsApiModel.canResumeBookingProcess &&
         apartmentRequestsApiModel.readyToCheckout &&
         !apartmentRequestsApiModel.checkOutSheetIsReady) {
-      return translate(
-          LocalizationKeys.preparingCheckout);
+      return translate(LocalizationKeys.preparingCheckout);
     } else {
       return null;
     }
@@ -228,12 +226,23 @@ class RequestWidgetV2 extends BaseStatelessWidget {
       return AppColors.divider;
     } else if (apartmentRequestsApiModel.extendReadyForSign ?? false) {
       return null;
-    } else if (apartmentRequestsApiModel.canResumeBookingProcess &&
-        apartmentRequestsApiModel.readyToCheckout &&
-        !apartmentRequestsApiModel.checkOutSheetIsReady) {
-      return AppColors.divider;
-    } else if (apartmentRequestsApiModel.readyToCheckout) {
+    } else if ((apartmentRequestsApiModel.canResumeBookingProcess ?? false) &&
+        (apartmentRequestsApiModel.haveRejectPassport ?? false)) {
       return null;
+    }
+    // else if (apartmentRequestsApiModel.canResumeBookingProcess &&
+    //     apartmentRequestsApiModel.readyToCheckout &&
+    //     apartmentRequestsApiModel.isReviewed &&
+    //     !apartmentRequestsApiModel.checkOutSheetIsReady) {
+    //   return AppColors.divider;
+    // }
+    else if (apartmentRequestsApiModel.readyToCheckout) {
+      if (apartmentRequestsApiModel.isReviewed &&
+          !apartmentRequestsApiModel.checkOutSheetIsReady) {
+        return AppColors.divider;
+      } else {
+        return null;
+      }
     } else if (DateFormat("MM/dd/yyyy")
             .parse(apartmentRequestsApiModel.checkIn ?? "")
             .isAfter(DateTime.now()) &&
@@ -542,7 +551,8 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                       : DateFormat("M/d/yyyy").parse(
                           apartmentRequestsApiModel.checkOut ?? "", false),
                 ),
-                updateData),
+                updateData,
+                DateTime.parse(apartmentRequestsApiModel.availableTo!)),
           ),
           title: translate(LocalizationKeys.extendContract)!);
     }

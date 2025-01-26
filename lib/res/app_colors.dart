@@ -33,8 +33,7 @@ class AppColors {
 
   static const _cloudBurst = Color(0xff183059);
   static const _wildSand = Color(0xffF5F5F5);
-
-  static const _toryBlue = Color(0xff1151B4);
+  static const _toryBlue = Color(0xFF1151B4);
 
   static const _gray = Color(0xff667085);
 
@@ -57,7 +56,8 @@ class AppColors {
   static const colorSchemeSeed = _cloudBurst;
   static const colorPrimary = _toryBlue;
   static const focus = colorPrimary;
-  static const scaffoldBackground = _wildSand;
+  // static const scaffoldBackground = _wildSand;
+  static const scaffoldBackground = _white;
   static const iconTheme = colorPrimary;
   static const placeholder = _nobel;
 
@@ -170,4 +170,26 @@ class AppColors {
 
   // new Colors \\
   static const cardColor = Color(0xffEBEBEB);
+  static const cardCommunityActionShadow = Color(0xffA1A1A1);
+  static const cardBorderGreen = Color(0xff21C36F);
+  static const cardBorderGold = Color(0xffEFBF4D);
+  static const cardBorderBlue = Color(0xff6136EF);
+  static const cardBorderBrown = Color(0xffA85D02);
+  static const cardBorderPrimary100 = Color(0xFFE7EEF8);
+  static const cardBackgroundCourse = Color(0xFFE7EEF8);
+  static const cardBackgroundWorkshop = Color(0xFFF9F0FD);
+  static const cardBackgroundEvent = Color(0xFFE9F9F1);
+  static const cardBackgroundConsultant = Color(0xFFFEF1F5);
+  static const cardTextNatural700 = Color(0xFF727272);
+
+  static const textCourse = Color(0xFF1151B4);
+  static const textWorkshop = Color(0xFF4F1681);
+  static const textEvent = Color(0xFF16814A);
+  static const textConsultant = Color(0xFFB4114A);
+  static const textNatural400 = Color(0xFFafafaf);
+  static const textNatural700 = Color(0xFF475467);
+  static const textRed = Color(0xFFC1111A);
+  static const textShade3 = Color(0xFF9CA8BA);
+  static const textMainColor = Color(0xFF0a0c0f);
+  static const dotsNotActive = _linkWaterApprox;
 }

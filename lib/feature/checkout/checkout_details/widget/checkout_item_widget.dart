@@ -47,78 +47,76 @@ class CheckOutItemWidget extends BaseStatelessWidget {
           ],
         ),
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        child: Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                maxLines: 1,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              maxLines: 1,
+              style: const TextStyle(
+                color: Color(0xFF605D62),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              child: Text(
+                description,
                 style: const TextStyle(
-                  color: Color(0xFF605D62),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF484649),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                child: Text(
-                  description,
+            ),
+            images!.isNotEmpty
+                ? Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.h),
+              child: SizedBox(
+                height: 100.h,
+                child: GalleryImage(
+                  key: UniqueKey(),
+                  imageUrls: images ?? [],
+                  childAspectRatio: 1,
+                  numOfShowImages:
+                  images!.length > 3 ? 3 : images!.length,
+                ),
+              ),
+            )
+                : const SizedBox(),
+            Row(
+              children: [
+                Text(
+                  translate(LocalizationKeys.costOfProblem)!,
+                  maxLines: 1,
                   style: const TextStyle(
-                    color: Color(0xFF484649),
+                    color: Color(0xFF605D62),
                     fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ),
-              images!.isNotEmpty
-                  ? Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.h),
-                      child: SizedBox(
-                        height: 100.h,
-                        child: GalleryImage(
-                          key: UniqueKey(),
-                          imageUrls: images ?? [],
-                          childAspectRatio: 1,
-                          numOfShowImages:
-                              images!.length > 3 ? 3 : images!.length,
-                        ),
-                      ),
-                    )
-                  : const SizedBox(),
-              Row(
-                children: [
-                  Text(
-                    translate(LocalizationKeys.costOfProblem)!,
-                    maxLines: 1,
-                    style: const TextStyle(
-                      color: Color(0xFF605D62),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
+                const SizedBox(width: 8),
+                Text(
+                  "$price €",
+                  maxLines: 1,
+                  style: const TextStyle(
+                    color: Color(0xFF313033),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    "$price €",
-                    maxLines: 1,
-                    style: const TextStyle(
-                      color: Color(0xFF313033),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-              hasLink!
-                  ? Padding(
-                      //if download url not null
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
-                      child: _downloadButton(),
-                    )
-                  : SizedBox(height: 8.h)
-            ],
-          ),
+                ),
+              ],
+            ),
+            hasLink!
+                ? Padding(
+              //if download url not null
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              child: _downloadButton(),
+            )
+                : SizedBox(height: 8.h)
+          ],
         ),
       ),
     );

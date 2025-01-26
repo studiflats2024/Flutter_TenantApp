@@ -45,7 +45,8 @@ class RequestPassportScreenV2 extends StatelessWidget {
     return BlocProvider<RequestPassportBloc>(
       create: (context) => RequestPassportBloc(RequestPassportRepository(
         preferencesManager: GetIt.I<PreferencesManager>(),
-        apartmentRequestsApiManger: ApartmentRequestsApiManger(dioApiManager, context),
+        apartmentRequestsApiManger:
+            ApartmentRequestsApiManger(dioApiManager, context),
       )),
       child: RequestPassportScreenWithBloc(
           apartmentRequestsApiModel(context), closeAfterUpdate(context)),
@@ -93,20 +94,39 @@ class _RequestPassportScreenWithBloc
               guestName: e.guestName ?? "",
               guestId: e.guestId ?? "",
               bedId: e.bedId ?? "",
-              passportImgRejected: e.guestPassport,
+              status: e.passportStatus == "Uploading" ? null : e.passportStatus,
+              passportImgRejected: e.guestPassport==null || e.guestPassport!.isNotEmpty? e.guestPassport : null,
               validPassport: e.passportStatus != "Rejected",
               invalidReason: e.passportRejectReason));
         }
       }
     } else {
-      guestList = widget.apartmentRequestsApiModel.guests!
-          .map((e) => PassportRequestModel(
+      for (int x = 0;
+      x < (widget.apartmentRequestsApiModel.guests?.length ?? 0);
+      x++) {
+        var e = widget.apartmentRequestsApiModel.guests![x];
+        if (e.passportStatus != "Approved") {
+          guestList.add(PassportRequestModel(
               guestName: e.guestName ?? "",
               guestId: e.guestId ?? "",
               bedId: e.bedId ?? "",
+              status: e.passportStatus == "Uploading" ? null : e.passportStatus,
+              passportImgRejected: e.guestPassport==null || e.guestPassport!.isNotEmpty? e.guestPassport : null,
               validPassport: e.passportStatus != "Rejected",
-              invalidReason: e.passportRejectReason))
-          .toList();
+              invalidReason: e.passportRejectReason));
+        }
+      }
+      // guestList = widget.apartmentRequestsApiModel.guests!
+      //     .map((e) => PassportRequestModel(
+      //         guestName: e.guestName ?? "",
+      //         guestId: e.guestId ?? "",
+      //         bedId: e.bedId ?? "",
+      //         status: e.passportStatus == "Uploading" ? null :e.passportStatus,
+      //         passportImg:e.guestPassport==null || e.guestPassport!.isNotEmpty? e.guestPassport : null,
+      //         validPassport: e.passportStatus != "Rejected",
+      //         invalidReason: e.passportRejectReason)
+      // )
+      //     .toList();
     }
 
     _checkFirstTimeUpdate();
@@ -173,9 +193,11 @@ class _RequestPassportScreenWithBloc
                         .map(
                           (e) => e.isInValidData
                               ? TenantWidgetV2(
-                                  canEdit: widget.fromRejected
-                                      ? e.isInValidData
-                                      : false,
+                                  canEdit: e.status == "Approved"
+                                      ? false
+                                      : widget.fromRejected
+                                          ? e.isInValidData
+                                          : false,
                                   guestsRequestModel: PassportRequestModel(
                                     guestId: e.guestId,
                                     bedId: e.bedId ?? "",
@@ -197,8 +219,11 @@ class _RequestPassportScreenWithBloc
                   ] else ...[
                     ...guestList
                         .map((e) => TenantWidgetV2(
-                              canEdit:
-                                  widget.fromRejected ? e.isInValidData : false,
+                              canEdit: e.status == "Approved"
+                                  ? false
+                                  : widget.fromRejected
+                                      ? e.isInValidData
+                                      : false,
                               guestsRequestModel: PassportRequestModel(
                                 guestId: e.guestId,
                                 bedId: e.bedId ?? "",
@@ -206,6 +231,7 @@ class _RequestPassportScreenWithBloc
                                 passportImg: e.passportImg,
                                 invalidReason: e.invalidReason,
                                 validName: e.validName,
+                                status: e.status,
                                 validPassport: e.validPassport,
                               ),
                               afterEditCallBack:

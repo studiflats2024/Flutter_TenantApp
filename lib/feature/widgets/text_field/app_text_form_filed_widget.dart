@@ -3,6 +3,7 @@ import 'package:vivas/_core/themer.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:vivas/res/font_size.dart';
 import 'package:vivas/utils/extensions/extension_string.dart';
 
 class AppTextFormField extends StatefulWidget {
@@ -31,6 +32,7 @@ class AppTextFormField extends StatefulWidget {
   final Color? focusColor;
   final FocusNode? focusNode;
   final IconData? suffixIcon;
+  final Widget? prefix;
   final Function()? onTapSuffixIcon;
   final Iterable<String>? autofillHints;
   final TextStyle? titleStyle;
@@ -65,6 +67,7 @@ class AppTextFormField extends StatefulWidget {
     this.focusColor,
     this.focusNode,
     this.suffixIcon,
+    this.prefix,
     this.onTapSuffixIcon,
     this.autofillHints,
     this.titleStyle,
@@ -94,16 +97,24 @@ class _AppTextFormFieldState extends State<AppTextFormField> with Themer {
       children: [
         widget.label != null
             ? widget.label ?? Container()
-            : Text(
-                widget.requiredTitle
-                    ? widget.title?.concatenateAsterisk ?? ""
-                    : widget.title ?? "",
-                style: widget.titleStyle ??
-                    const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.appFormFieldTitle,
-                      fontWeight: FontWeight.w500,
-                    ),
+            : RichText(
+                text: TextSpan(
+                    text: widget.requiredTitle ? widget.title : widget.title,
+                    children: [
+                      if (widget.requiredTitle) ...[
+                        TextSpan(
+                            text: " *",
+                            style: textTheme.titleMedium?.copyWith(
+                                fontSize: FontSize.fontSize14,
+                                color: AppColors.appFormFieldErrorIBorder,
+                                fontWeight: FontWeight.w600))
+                      ]
+                    ],
+                    style: widget.titleStyle ??
+                        textTheme.titleMedium?.copyWith(
+                            fontSize: FontSize.fontSize12,
+                            color: AppColors.appFormFieldTitle,
+                            fontWeight: FontWeight.w600)),
               ),
         const SizedBox(height: 10),
         TextFormField(
@@ -171,10 +182,14 @@ class _AppTextFormFieldState extends State<AppTextFormField> with Themer {
                     : widget.suffixIcon != null
                         ? Padding(
                             padding: const EdgeInsetsDirectional.only(end: 30),
-                            child: Icon(widget.suffixIcon,
-                                color: AppColors.suffixIcon, size: 15, ),
+                            child: Icon(
+                              widget.suffixIcon,
+                              color: AppColors.suffixIcon,
+                              size: 15,
+                            ),
                           )
                         : null,
+            prefixIcon: widget.prefix,
           ),
           onChanged: widget.onChanged,
           onFieldSubmitted: widget.onFieldSubmitted,

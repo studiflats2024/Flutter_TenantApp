@@ -238,7 +238,7 @@ class _RequestDetailsScreenScreenWithBloc
       return translate(LocalizationKeys.waitingForCheckIn)!;
     } else if (_bookingDetailsModel?.readyForCheckIn ?? false) {
       return translate(LocalizationKeys.checkIn2)!;
-    } else if (!(_bookingDetailsModel?.readyToVerifyIdentity ?? false)) {
+    } else if ((_bookingDetailsModel?.readyToVerifyIdentity ?? false)) {
       return translate(LocalizationKeys.verificationIdentity)!;
     } else if ((_bookingDetailsModel?.shouldPayRent ?? false)) {
       return translate(LocalizationKeys.payRent)!;
@@ -246,7 +246,15 @@ class _RequestDetailsScreenScreenWithBloc
       return translate(LocalizationKeys.signHandoverProtocols)!;
     } else if (_bookingDetailsModel?.readyToSignApartmentRules ?? false) {
       return translate(LocalizationKeys.signRentalRules)!;
-    } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Pending") {
+    }  else if (_bookingDetailsModel?.extendReadyForSign ?? false) {
+      return translate(LocalizationKeys.signYourExtendedContract)!;
+    } else if (_bookingDetailsModel!.monthlyInvoiceIsCash) {
+      return translate(LocalizationKeys.confirmCashPayment)!;
+    } else if (_bookingDetailsModel?.getMonthlyInvoice != null) {
+      return translate(LocalizationKeys.monthlyRent)!;
+    } else if (_bookingDetailsModel?.waitingToConfirmPayRent ?? false) {
+      return translate(LocalizationKeys.confirmCashPayment)!;
+    }else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Pending") {
       return translate(LocalizationKeys.bookingReview)!;
     } else if ((_bookingDetailsModel?.bookingStatus ?? "") == "Rejected") {
       return translate(LocalizationKeys.rejectReason)!;
@@ -261,18 +269,15 @@ class _RequestDetailsScreenScreenWithBloc
         !_bookingDetailsModel!.checkOutSheetIsReady &&
         _bookingDetailsModel!.isReviewed) {
       return translate(LocalizationKeys.waitingCheckoutSheet);
+    } else if (_bookingDetailsModel!.isCheckedOut &&
+        _bookingDetailsModel!.cashDeposit) {
+      return translate(LocalizationKeys.waitingForRefund);
+    } else if (_bookingDetailsModel!.isCheckedOut) {
+      return translate(LocalizationKeys.checkedOut);
     } else if (_bookingDetailsModel!.readyToCheckout &&
         _bookingDetailsModel!.checkOutSheetIsReady &&
         _bookingDetailsModel!.isReviewed) {
       return translate(LocalizationKeys.continueForCheckout);
-    } else if (_bookingDetailsModel?.extendReadyForSign ?? false) {
-      return translate(LocalizationKeys.signYourExtendedContract)!;
-    } else if (_bookingDetailsModel!.monthlyInvoiceIsCash) {
-      return translate(LocalizationKeys.confirmCashPayment)!;
-    } else if (_bookingDetailsModel?.getMonthlyInvoice != null) {
-      return translate(LocalizationKeys.monthlyRent)!;
-    } else if (_bookingDetailsModel?.waitingToConfirmPayRent ?? false) {
-      return translate(LocalizationKeys.confirmCashPayment)!;
     } else {
       return translate(LocalizationKeys.waitingForMonthlyInvoices)!;
     }
@@ -298,7 +303,7 @@ class _RequestDetailsScreenScreenWithBloc
       _openArrivingDetails();
     } else if (_bookingDetailsModel?.readyForCheckIn ?? false) {
       _openBookingSummary();
-    } else if (!(_bookingDetailsModel?.readyToVerifyIdentity ?? false)) {
+    } else if ((_bookingDetailsModel?.readyToVerifyIdentity ?? false)) {
       _openVerifyIdentity();
     } else if ((_bookingDetailsModel?.shouldPayRent ?? false)) {
       _openToPayRent();
@@ -310,11 +315,15 @@ class _RequestDetailsScreenScreenWithBloc
       _showRejectedReason();
     } else if (_bookingDetailsModel?.extendReadyForSign ?? false) {
       _openSignExtend();
-    } else if (_bookingDetailsModel!.readyToCheckout) {
-      _checkReviewAndGoToCheckout();
     } else if (_bookingDetailsModel!.getMonthlyInvoice != null &&
         _bookingDetailsModel!.canResumeBookingAsMainTenant) {
       _showNextInvoiceSheet();
+    } else if (_bookingDetailsModel!.isCheckedOut &&
+        _bookingDetailsModel!.cashDeposit) {
+    } else if (_bookingDetailsModel!.isCheckedOut) {
+
+    } else if (_bookingDetailsModel!.readyToCheckout) {
+      _checkReviewAndGoToCheckout();
     } else {}
   }
 
@@ -354,6 +363,11 @@ class _RequestDetailsScreenScreenWithBloc
               _bookingDetailsModel!.checkIn ?? ""),
           endDate: AppDateFormat.appDateFormApiParse(
               _bookingDetailsModel!.checkOut ?? ""),
+          availableFrom: AppDateFormat.appDateFormApiParse(
+              _bookingDetailsModel!.availableFrom ?? ""),
+          availableTo: AppDateFormat.appDateFormApiParse(
+              _bookingDetailsModel!.availableTo ?? ""),
+          minStay: _bookingDetailsModel!.minStay,
         ),
         title: translate(LocalizationKeys.changeDates)!);
   }

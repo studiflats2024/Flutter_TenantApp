@@ -7,6 +7,7 @@ class PassportRequestModel extends Equatable {
   String bedId;
 
   String? passportImg;
+  String? status;
   String? passportImgRejected;
   bool validName;
   bool validPassport;
@@ -16,6 +17,7 @@ class PassportRequestModel extends Equatable {
     required this.guestName,
     required this.guestId,
     required this.bedId,
+    this.status,
     this.passportImg,
     this.passportImgRejected,
     this.validName = true,

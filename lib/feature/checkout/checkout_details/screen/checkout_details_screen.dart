@@ -152,6 +152,7 @@ class _CheckoutDetailsScreenWithBloc
           children: [
             ListView.builder(
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) => CheckOutItemWidget(
                   _checkoutSheetResponse?.issueCheckouts?[index].issueCode ??
                       "",
@@ -181,6 +182,7 @@ class _CheckoutDetailsScreenWithBloc
         SizedBox(height: 16.h),
         ListView.builder(
           shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) => CheckOutItemWidget(
               _checkoutSheetResponse?.expenseCheckouts?[index].expenseType ??
                   "",
@@ -229,9 +231,13 @@ class _CheckoutDetailsScreenWithBloc
             ),
           ),
         ),
+
         SubmitButtonWidget(
           title: translate(LocalizationKeys.continuee)!,
           onClicked: _onContinueClicked,
+          backgroundColor: Colors.transparent,
+          withoutCustomShape: true,
+          withoutShape: true,
         )
       ]),
     );

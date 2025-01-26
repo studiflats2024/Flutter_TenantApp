@@ -15,6 +15,7 @@ class PhoneNumberFormFiledWidget extends BaseStatelessWidget {
   final String? hintText;
   final String? labelText;
   final String? helperText;
+  final TextStyle? titleStyle;
   final IsoCode? isoCode;
   final PhoneNumber? initialValue;
   final void Function(PhoneNumber?) onSaved;
@@ -37,6 +38,7 @@ class PhoneNumberFormFiledWidget extends BaseStatelessWidget {
     this.requiredTitle = true,
     required this.onSaved,
     this.helperText,
+    this.titleStyle,
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
     this.labelText,
     this.hintText,
@@ -61,13 +63,22 @@ class PhoneNumberFormFiledWidget extends BaseStatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          requiredTitle ? title.concatenateAsterisk : title,
-          style: textTheme.titleMedium?.copyWith(
-              fontSize: FontSize.fontSize12,
-              color: AppColors.appFormFieldTitle,
-              fontWeight: FontWeight.w600
-          ),
+        RichText(
+          text: TextSpan(
+              text: requiredTitle ? title : title,
+              children: [
+                if(requiredTitle)...[
+                   TextSpan(text: " *",style: textTheme.titleMedium?.copyWith(
+                      fontSize: FontSize.fontSize14,
+                      color: AppColors.appFormFieldErrorIBorder,
+                      fontWeight: FontWeight.w600))
+                ]
+              ],
+              style: titleStyle ??
+                  textTheme.titleMedium?.copyWith(
+                      fontSize: FontSize.fontSize12,
+                      color: AppColors.appFormFieldTitle,
+                      fontWeight: FontWeight.w600)),
         ),
         const SizedBox(height: 10),
         Directionality(
@@ -77,7 +88,7 @@ class PhoneNumberFormFiledWidget extends BaseStatelessWidget {
             autovalidateMode: autovalidateMode,
             autofillHints: const [AutofillHints.telephoneNumber],
             countrySelectorNavigator:
-            const CountrySelectorNavigator.draggableBottomSheet(),
+                const CountrySelectorNavigator.draggableBottomSheet(),
             defaultCountry: isoCode ?? IsoCode.DE,
             decoration: InputDecoration(
               labelText: labelText,
@@ -86,7 +97,7 @@ class PhoneNumberFormFiledWidget extends BaseStatelessWidget {
               fillColor: AppColors.appFormFieldFill,
               filled: true,
               contentPadding:
-              EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+                  EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
               hintStyle: textTheme.labelMedium?.copyWith(
                 color: AppColors.formFieldHintText,
                 fontWeight: FontWeight.w400,
@@ -96,7 +107,7 @@ class PhoneNumberFormFiledWidget extends BaseStatelessWidget {
                 borderRadius: BorderRadius.circular(radius),
                 borderSide: BorderSide(
                   color:
-                  enableBorderColor ?? AppColors.enabledAppFormFieldBorder,
+                      enableBorderColor ?? AppColors.enabledAppFormFieldBorder,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
@@ -112,24 +123,24 @@ class PhoneNumberFormFiledWidget extends BaseStatelessWidget {
             ),
             enabled: enable,
             countryButtonStyle: CountryButtonStyle(
-                textStyle: textTheme.bodyMedium?.copyWith(color: AppColors.formFieldText),
+                textStyle: textTheme.bodyMedium
+                    ?.copyWith(color: AppColors.formFieldText),
                 flagSize: 20.r,
                 showFlag: true,
-                showDropdownIcon: false
-            ),
+                showDropdownIcon: false),
             validator: _getValidator(context),
             cursorColor: Theme.of(context).colorScheme.primary,
             onSaved: onSaved,
             onChanged: onChanged,
             textInputAction: textInputAction,
-            isCountrySelectionEnabled:true,
+            isCountrySelectionEnabled: true,
             isCountryButtonPersistent: true,
             focusNode: focusNode,
             initialValue: initialValue,
             inputFormatters: inputFormatters,
             onSubmitted: onFieldSubmitted,
             style:
-            textTheme.bodyMedium?.copyWith(color: AppColors.formFieldText),
+                textTheme.bodyMedium?.copyWith(color: AppColors.formFieldText),
           ),
         ),
       ],
@@ -140,7 +151,7 @@ class PhoneNumberFormFiledWidget extends BaseStatelessWidget {
     List<PhoneNumberInputValidator> validators = [];
 
     validators.add(PhoneValidator.validMobile(
-      //allowEmpty: allowEmpty,
+        //allowEmpty: allowEmpty,
         context,
         errorText: translate(LocalizationKeys.phoneNumberInvalid)));
     return validators.isNotEmpty ? PhoneValidator.compose(validators) : null;

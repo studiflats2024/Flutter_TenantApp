@@ -189,10 +189,13 @@ class Validator {
       } else {
         failed = "* Minimum Rental Period is $minStay Months";
       }
+      print("object : $failed");
       return failed;
     } else {
+
       return null;
     }
+
   }
 
   DateTime addMonths(DateTime date, int monthsToAdd) {
@@ -220,6 +223,16 @@ class Validator {
     // Include partial month if the end day is greater than or equal to the start day
     if (dayRange.end.day >= dayRange.start.day) {
       totalMonths += 1;
+      // if(dayRange.end.month == dayRange.start.month){
+      //   if(dayRange.duration.inDays >= 30){
+      //     totalMonths += 1;
+      //   }else if(dayRange.start.month == 2 && dayRange.duration.inDays>= 28){
+      //     totalMonths += 1;
+      //   }
+      // }else{
+      //   totalMonths += 1;
+      // }
+
     }
 
     return totalMonths;

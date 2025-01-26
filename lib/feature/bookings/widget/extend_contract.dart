@@ -26,8 +26,10 @@ import 'package:vivas/utils/locale/app_localization_keys.dart';
 class ExtendContract extends BaseStatelessWidget {
   final ExtendContractModel extendContractModel;
   final Function() afterChange;
+  final DateTime availableTo;
 
-  ExtendContract(this.extendContractModel ,this.afterChange);
+  ExtendContract(this.extendContractModel, this.afterChange, this.availableTo,
+      {super.key});
 
   PreferencesManager preferencesManager = GetIt.I<PreferencesManager>();
   DioApiManager dioApiManager = GetIt.I<DioApiManager>();
@@ -44,15 +46,21 @@ class ExtendContract extends BaseStatelessWidget {
                 ),
               ),
             ),
-        child: ExtendContractScreen(extendContractModel, afterChange));
+        child: ExtendContractScreen(
+            extendContractModel, afterChange, availableTo));
   }
 }
 
 class ExtendContractScreen extends BaseStatefulScreenWidget {
   final ExtendContractModel extendContractModel;
   final Function() afterChange;
+  final DateTime availableTo;
 
-  ExtendContractScreen(this.extendContractModel, this.afterChange);
+  const ExtendContractScreen(
+    this.extendContractModel,
+    this.afterChange,
+    this.availableTo,
+  );
 
   @override
   BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() {
@@ -70,9 +78,11 @@ class _ExtendContractScreen extends BaseScreenState<ExtendContractScreen> {
   @override
   void initState() {
     extendContractModel = widget.extendContractModel;
-    calculating =!DateManager.hasThirtyOneDays(
-        extendContractModel.startDate?.year ?? DateTime.now().year,
-        extendContractModel.startDate?.month ?? DateTime.now().month) ? (31 - (extendContractModel.startDate?.day ?? 0)): (30 - (extendContractModel.startDate?.day ?? 0));
+    calculating = !DateManager.hasThirtyOneDays(
+            extendContractModel.startDate?.year ?? DateTime.now().year,
+            extendContractModel.startDate?.month ?? DateTime.now().month)
+        ? (31 - (extendContractModel.startDate?.day ?? 0))
+        : (30 - (extendContractModel.startDate?.day ?? 0));
     days = !DateManager.hasThirtyOneDays(
             extendContractModel.startDate?.year ?? DateTime.now().year,
             extendContractModel.startDate?.month ?? DateTime.now().month)
@@ -98,10 +108,11 @@ class _ExtendContractScreen extends BaseScreenState<ExtendContractScreen> {
         }
         if (state is SetEndDateState) {
           extendContractModel.endDate = state.endDate;
-        }
-        if(state is ExtendContractSuccessState){
+        } else if (state is ExtendContractSuccessState) {
           widget.afterChange();
           Navigator.of(context).pop();
+        } else if (state is ExtendContractFailedState) {
+          showFeedbackMessage(state.errorApiModel.message);
         }
       },
       builder: (context, state) {
@@ -110,7 +121,7 @@ class _ExtendContractScreen extends BaseScreenState<ExtendContractScreen> {
           children: [
             Row(
               children: [
-                Text(
+                const Text(
                   "Start Date :",
                   style: TextStyle(fontWeight: FontWeight.w600),
                 ),
@@ -123,13 +134,8 @@ class _ExtendContractScreen extends BaseScreenState<ExtendContractScreen> {
             ),
             DatePickerFormFiledWidget(
                 title: "EndDate",
-                controller: _endDateController ,
-                maximumDate: extendContractModel.startDate
-                        ?.add(
-                          Duration(days: days),
-                        )
-                        ?.add(const Duration(days: 365)) ??
-                    DateTime.now().add(const Duration(days: 365)),
+                controller: _endDateController,
+                maximumDate: widget.availableTo,
                 minimumDate: extendContractModel.startDate?.add(
                       Duration(days: days),
                     ) ??
@@ -146,13 +152,13 @@ class _ExtendContractScreen extends BaseScreenState<ExtendContractScreen> {
             Center(
               child: AppElevatedButton(
                 onPressed: () {
-                  if(_endDateController.text.isNotEmpty) {
+                  if (_endDateController.text.isNotEmpty) {
                     extendContractModel.endDate =
                         AppDateFormat.appDatePickerParse(
                             _endDateController.text,
                             appLocale.locale.languageCode);
                     currentBloc.add(ExtendContractEvent(extendContractModel));
-                  }else{
+                  } else {
                     showFeedbackMessage("choose your end date first");
                   }
                 },
@@ -169,6 +175,4 @@ class _ExtendContractScreen extends BaseScreenState<ExtendContractScreen> {
       },
     );
   }
-
-
 }
