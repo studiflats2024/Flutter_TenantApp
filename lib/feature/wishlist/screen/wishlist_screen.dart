@@ -27,6 +27,22 @@ class WishlistScreen extends StatelessWidget {
   static const routeName = '/wishlist-screen';
 
   final DioApiManager dioApiManager = GetIt.I<DioApiManager>();
+
+  static Future<void> open(
+      BuildContext context,
+      bool replacement,
+      ) async {
+    if (replacement) {
+      await Navigator.of(context).pushReplacementNamed(
+        routeName,
+      );
+    } else {
+      await Navigator.of(context).pushNamed(
+        routeName,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<WishlistBloc>(

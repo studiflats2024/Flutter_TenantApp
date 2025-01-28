@@ -182,6 +182,7 @@ class AppColors {
   static const cardBackgroundConsultant = Color(0xFFFEF1F5);
   static const cardBackgroundActivityCancelled = Color(0xFFFEF1F5);
   static const cardTextNatural700 = Color(0xFF727272);
+  static const  cardCountdown =  Color(0xffFDF9ED);
 
   static const textCourse = Color(0xFF1151B4);
   static const textWorkshop = Color(0xFF4F1681);

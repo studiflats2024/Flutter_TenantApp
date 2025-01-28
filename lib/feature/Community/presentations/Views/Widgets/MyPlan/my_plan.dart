@@ -82,15 +82,15 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
       body: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp16),
+
         children: [
           Container(
             decoration: BoxDecoration(
               color: AppColors.textWhite,
-                borderRadius: BorderRadius.all(SizeManager.circularRadius10),
-                border: Border(
-                  top: BorderSide(
-                      color: AppColors.cardBorderBrown, width: 4.r),
-                ),
+              borderRadius: BorderRadius.all(SizeManager.circularRadius10),
+              border: Border(
+                top: BorderSide(color: AppColors.cardBorderBrown, width: 4.r),
+              ),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0x3FA1A1A1),
@@ -167,10 +167,14 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
               ],
             ),
           ),
-          Container(
-              margin: EdgeInsets.all(SizeManager.sizeSp12),
-              height: 400.r,
-              child: const CountdownTimer())
+          SizedBox(
+            height: SizeManager.sizeSp24,
+          ),
+          SizedBox(
+            height: 230.r,
+
+            child: const CountdownTimer(),
+          )
         ],
       ),
     );
@@ -183,7 +187,7 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
           child: Column(
             children: [
               Padding(
-                padding:  EdgeInsets.symmetric(vertical: SizeManager.sizeSp16),
+                padding: EdgeInsets.symmetric(vertical: SizeManager.sizeSp16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -207,7 +211,7 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
         expanded: Column(
           children: [
             Padding(
-              padding:  EdgeInsets.symmetric(vertical: SizeManager.sizeSp16),
+              padding: EdgeInsets.symmetric(vertical: SizeManager.sizeSp16),
               child: ExpandableButton(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -222,7 +226,6 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                 ),
               ),
             ),
-
             Column(
               children: List.generate(
                 features.length,
@@ -253,7 +256,6 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                 },
               ),
             ),
-
             Container(
               height: 1.sp,
               margin: EdgeInsets.symmetric(vertical: SizeManager.sizeSp4),
@@ -300,7 +302,6 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w400,
                       color: AppColors.textMainColor,
-
                     ),
                   ],
                 )

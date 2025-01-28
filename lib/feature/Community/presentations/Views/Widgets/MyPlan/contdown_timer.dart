@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
+import 'package:vivas/feature/widgets/text_app.dart';
+import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
+import 'package:vivas/res/font_size.dart';
 import 'package:vivas/utils/size_manager.dart';
 
 class CountdownTimer extends BaseStatefulScreenWidget {
@@ -27,7 +30,7 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
     super.initState();
 
     // Set the target end time (7 days and 11 hours from now)
-    endTime = DateTime.now().add(const Duration(hours: 0,minutes: 2));
+    endTime = DateTime.now().add(const Duration(days: 7,hours: 0, minutes: 0));
     dateTimeRange = DateTimeRange(start: DateTime.now(), end: endTime);
     totalDuration = dateTimeRange.duration;
     _updateRemainingTime(); // Initialize remaining time
@@ -71,90 +74,196 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
 
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.all(SizeManager.sizeSp16),
-        child: Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              CircularPercentIndicator(
-                radius: hours == 0 ? 140.0.r : 130.0.r,
-                lineWidth: 10.0,
-                percent: progress.clamp(0.0, 1.0),
-                // Ensure progress stays valid
-                circularStrokeCap: CircularStrokeCap.round,
-                backgroundColor: Colors.grey.shade300,
-                linearGradient: const LinearGradient(
-                  colors: [
-                    AppColors.colorPrimary,
-                    AppColors.cardBorderPrimary100,
-                  ],
-                  begin: Alignment.centerRight,
-                  end: Alignment.centerLeft,
-                ),
-                center: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 10),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style:  TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
+        height: 230.r,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppColors.textWhite,
+          border: Border.all(color: AppColors.cardBorderPrimary100),
+          borderRadius: BorderRadius.all(SizeManager.circularRadius10),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+                padding: EdgeInsets.all(SizeManager.sizeSp4),
+                decoration: BoxDecoration(
+                    color: AppColors.cardCountdown,
+                    borderRadius:
+                        BorderRadius.all(SizeManager.circularRadius4)),
+                child: SvgPicture.asset(
+                  AppAssetPaths.communityCountdownIcon,
+                )),
+            SizedBox(
+              height: SizeManager.sizeSp24,
+            ),
+            TextApp(
+              fontSize: FontSize.fontSize14,
+              color: AppColors.textMainColor,
+              text: "Only 7 days left in your free trial! ",
+            ),
+            SizedBox(
+              height: SizeManager.sizeSp24,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (days != 0) ...[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      timeItem(days, 3),
+                      SizedBox(
+                        height: SizeManager.sizeSp4,
+                      ),
+                      TextApp(
+                        text: "Days",
+                        fontSize: FontSize.fontSize14,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    width: SizeManager.sizeSp8,
+                  ),
+                  Column(
+                    children: [
+                      TextApp(
+                        text: ":",
+                        fontSize: FontSize.fontSize40,
+                      ),
+                      SizedBox(
+                        height: SizeManager.sizeSp24,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    width: SizeManager.sizeSp8,
+                  ),
+                ],
+                if (hours != 0) ...[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      timeItem(hours, 2),
+                      SizedBox(
+                        height: SizeManager.sizeSp4,
+                      ),
+                      TextApp(
+                        text: "Hours",
+                        fontSize: FontSize.fontSize14,
+                      )
+                    ],
+                  ),
+                  if (days == 0) ...[
+                    SizedBox(
+                      width: SizeManager.sizeSp8,
+                    ),
+                    Column(
+                      children: [
+                        TextApp(
+                          text: ":",
+                          fontSize: FontSize.fontSize32,
                         ),
-                        children: [
-                          if (days != 0) ...[
-                            TextSpan(text: '$days '),
-                            const TextSpan(
-                              text: 'days',
-                              style: TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                          if (hours != 0) ...[
-                            TextSpan(text:days == 0?'$hours ' : ' : $hours '),
-                            const TextSpan(
-                              text: 'hours',
-                              style: TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                          if (days == 0 && minutes != 0) ...[
-                            TextSpan(
-                                text: hours != 0 ? ' : $minutes' : '$minutes '),
-                            const TextSpan(
-                              text: 'minutes',
-                              style: TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                          if (hours == 0 && seconds != 0) ...[
-                            TextSpan(
-                                text: minutes == 0
-                                    ? '$seconds '
-                                    : ' : $seconds '),
-                            const TextSpan(
-                              text: 'Seconds',
-                              style: TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ],
-                      ),
+                        SizedBox(
+                          height: SizeManager.sizeSp24,
+                        )
+                      ],
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Only $days days left in your free trial!',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textNatural700,
-                      ),
+                    SizedBox(
+                      width: SizeManager.sizeSp8,
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+                  ]
+                ],
+                if (days == 0) ...[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      timeItem(minutes, 2),
+                      SizedBox(
+                        height: SizeManager.sizeSp4,
+                      ),
+                      TextApp(
+                        text: "Minutes",
+                        fontSize: FontSize.fontSize14,
+                      )
+                    ],
+                  ),
+                  if (hours == 0) ...[
+                    SizedBox(
+                      width: SizeManager.sizeSp8,
+                    ),
+                    Column(
+                      children: [
+                        TextApp(
+                          text: ":",
+                          fontSize: FontSize.fontSize32,
+                        ),
+                        SizedBox(
+                          height: SizeManager.sizeSp24,
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: SizeManager.sizeSp8,
+                    ),
+                  ]
+                ],
+                if (hours == 0) ...[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      timeItem(seconds, 2),
+                      SizedBox(
+                        height: SizeManager.sizeSp4,
+                      ),
+                      TextApp(
+                        text: "Seconds",
+                        fontSize: FontSize.fontSize14,
+                      )
+                    ],
+                  ),
+                ]
+              ],
+            )
+          ],
         ),
       ),
     );
   }
+
+  Widget timeItem(time, characters) {
+    var timeLength = time.toString().characters.length;
+    String timer = timeLength == 1 ? "0$time" : "$time";
+    return Row(
+      children: List.generate(timer.length, (index) {
+        return timerItem(index, timer);
+      }),
+    );
+  }
+
+  Widget timerItem(
+    index,
+    time,
+  ) {
+    return Container(
+      margin: EdgeInsets.only(
+          right: index != (time.toString().characters.length - 1)
+              ? SizeManager.sizeSp8
+              : 0),
+      padding: EdgeInsets.symmetric(
+          vertical: SizeManager.sizeSp10, horizontal: SizeManager.sizeSp10),
+      decoration: BoxDecoration(
+          border: Border.all(
+            color: AppColors.cardBorderPrimary100,
+          ),
+          borderRadius: BorderRadius.all(SizeManager.circularRadius4)),
+      child: Center(
+        child: TextApp(
+          text: time.toString().characters.elementAt(index),
+          fontSize: FontSize.fontSize20,
+          color: AppColors.colorPrimary,
+        ),
+      ),
+    );
+  }
+
 }

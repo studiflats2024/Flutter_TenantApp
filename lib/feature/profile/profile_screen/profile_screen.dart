@@ -21,6 +21,7 @@ import 'package:vivas/feature/widgets/app_buttons/app_text_button.dart';
 import 'package:vivas/feature/widgets/delete_bottom_sheet_widget.dart';
 import 'package:vivas/feature/profile/profile_screen/widget/profile_view.dart';
 import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
+import 'package:vivas/feature/wishlist/screen/wishlist_screen.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/utils/extensions/extension_string.dart';
@@ -45,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return BlocProvider<ProfileBloc>(
       create: (context) => ProfileBloc(ProfileRepository(
-        profileApiManger: ProfileApiManger(dioApiManager , context),
+        profileApiManger: ProfileApiManger(dioApiManager, context),
         preferencesManager: GetIt.I<PreferencesManager>(),
       )),
       child: const ProfileScreenWithBloc(),
@@ -99,10 +100,8 @@ class _ProfileScreenWithBloc extends BaseScreenState<ProfileScreenWithBloc> {
             }
           },
           builder: (context, state) {
-
-           return buildPersonalInformationWidget(profileInfo);
+            return buildPersonalInformationWidget(profileInfo);
           },
-
         ));
   }
 
@@ -143,6 +142,10 @@ class _ProfileScreenWithBloc extends BaseScreenState<ProfileScreenWithBloc> {
                       title: translate(LocalizationKeys.personalInformation)!,
                       onActionClicked: () =>
                           {_openEditPersonalInfoScreen(profileInfo)}),
+                  _buildProfileSection(
+                      assetPath: AppAssetPaths.navWishlistIcon,
+                      title: translate(LocalizationKeys.wishlist)!,
+                      onActionClicked: () => {_wishlistWidget()}),
                   _buildProfileSection(
                       assetPath: AppAssetPaths.paymentIcon,
                       title: translate(LocalizationKeys.invoices)!,
@@ -368,7 +371,8 @@ class _ProfileScreenWithBloc extends BaseScreenState<ProfileScreenWithBloc> {
 
   Future<void> _openEditPersonalInfoScreen(ProfileInfoApiModel? profile) async {
     if (profile != null) {
-      await PersonalInformation.open(context, profile).then((value) => _getProfileData());
+      await PersonalInformation.open(context, profile)
+          .then((value) => _getProfileData());
       /*
       await EditPersonalInformationScreen.open(context, profile)
           .then((value) => _getProfileData());
@@ -377,9 +381,12 @@ class _ProfileScreenWithBloc extends BaseScreenState<ProfileScreenWithBloc> {
     }
   }
 
+  void _wishlistWidget() {
+    WishlistScreen.open(context, false);
+  }
+
   void _openLoginScreen() {
     LoginScreen.open(context);
-
   }
 
   void _deletedAccount() {
@@ -414,5 +421,4 @@ class _ProfileScreenWithBloc extends BaseScreenState<ProfileScreenWithBloc> {
         child: const ChangeLanguageWidget(),
         title: translate(LocalizationKeys.changeLanguage)!);
   }
-
 }

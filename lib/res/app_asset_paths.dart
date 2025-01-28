@@ -126,6 +126,7 @@ class AppAssetPaths {
   static const communityEndDateIcon = 'assets/icons/community/calender_end_date.svg';
   static const communityVideoIcon = 'assets/icons/community/community_video_icon.svg';
   static const communityEditPinIcon = 'assets/icons/community/community_edit_pin.svg';
+  static const communityCountdownIcon = 'assets/icons/community/community_countdown_plan.svg';
 
   static const imageMonthlyActivities = 'assets/images/monthly_activities.png';
   static const aboutCommunity = 'assets/images/about.png';

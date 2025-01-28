@@ -81,6 +81,7 @@ import 'package:vivas/feature/unit_details/screen/apartment_contents_screen.dart
 import 'package:vivas/feature/unit_details/screen/unit_details_screen.dart';
 import 'package:vivas/feature/unit_list/screen/unit_list_screen.dart';
 import 'package:vivas/feature/widgets/MaintenanceApp/maintenance_app.dart';
+import 'package:vivas/feature/wishlist/screen/wishlist_screen.dart';
 import 'package:vivas/welcome_screen.dart';
 
 import 'feature/payment/screen/success_payment_screen_v2.dart';
@@ -182,5 +183,6 @@ class AppRoute {
     MyActivities.routeName: (ctx) => const MyActivities(),
     ActivityDetails.routeName: (ctx) => ActivityDetails(),
     CommunityQrDetails.routeName: (ctx) => CommunityQrDetails(),
+    WishlistScreen.routeName : (ctx) => WishlistScreen(),
   };
 }
