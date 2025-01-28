@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
+import 'package:vivas/app_route.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/activity_details.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ClubActivity/club_activity.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
@@ -38,7 +40,6 @@ class CommunityClubActivities extends BaseStatelessWidget {
                     fontWeight: FontWeight.w600,
                     color: AppColors.colorPrimary,
                   ),
-
                 ),
               ),
             ),
@@ -60,7 +61,6 @@ class CommunityClubActivities extends BaseStatelessWidget {
                   seats: "6",
                   rate: 4.51,
                   type: "Course",
-                  action: () {},
                   actionFavourite: () {}),
               SizedBox(
                 width: SizeManager.sizeSp16,
@@ -72,7 +72,6 @@ class CommunityClubActivities extends BaseStatelessWidget {
                   seats: "5",
                   rate: 3.45,
                   type: "WorkShop",
-                  action: () {},
                   actionFavourite: () {})
             ],
           ),
@@ -88,12 +87,13 @@ class CommunityClubActivities extends BaseStatelessWidget {
     required String seats,
     required String type,
     required num rate,
-    required Function() action,
     required Function() actionFavourite,
   }) {
     var width = 270.r;
     return GestureDetector(
-      onTap: action,
+      onTap: () {
+        ActivityDetails.open(AppRoute.mainNavigatorKey.currentContext!, false);
+      },
       child: Container(
         width: width,
         decoration: BoxDecoration(
@@ -286,5 +286,4 @@ class CommunityClubActivities extends BaseStatelessWidget {
       ),
     );
   }
-
 }

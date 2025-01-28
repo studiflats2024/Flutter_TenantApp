@@ -6,6 +6,7 @@ import 'package:vivas/utils/size_manager.dart';
 
 class SubmitButtonWidget extends StatelessWidget {
   final String title;
+  final Widget? child;
   final String? hint;
   final double? fontSize;
   final EdgeInsetsGeometry? padding;
@@ -38,6 +39,7 @@ class SubmitButtonWidget extends StatelessWidget {
       this.sizeTop,
       this.sizeBottom,
       this.shadows,
+        this.child,
       this.withoutShape = false,
       this.withoutCustomShape = true});
 
@@ -93,7 +95,7 @@ class SubmitButtonWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 5.h),
             child: AppElevatedButton(
-              label: Text(
+              label: child?? Text(
                 title,
                 textAlign: TextAlign.center,
                 style: titleStyle ??

@@ -8,6 +8,8 @@ class SizeManager {
   static final double sizeSp8 = 8.r;
   static final double sizeSp10 = 10.r;
   static final double sizeSp12 = 12.r;
+  static final double sizeSp13 = 13.r;
+  static final double sizeSp14 = 14.r;
   static final double sizeSp15 = 15.r;
   static final double sizeSp16 = 16.r;
   static final double sizeSp18 = 18.r;

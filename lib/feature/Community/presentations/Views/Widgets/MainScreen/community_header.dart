@@ -6,6 +6,7 @@ import 'package:vivas/_core/widgets/base_stateless_widget.dart'
 import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/invite_frindes.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/my_plan.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/QrDetails/qr_details.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
@@ -91,7 +92,12 @@ class CommunityHeader extends BaseStatelessWidget {
                   asset: AppAssetPaths.qrIcon,
                   title: LocalizationKeys.qrCode,
                   multiLang: true,
-                  action: () {}),
+                  action: () {
+                    CommunityQrDetails.open(
+                      context,
+                      false,
+                    );
+                  }),
               SizedBox(
                 width: SizeManager.sizeSp16,
               ),

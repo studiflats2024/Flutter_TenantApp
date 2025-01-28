@@ -14,19 +14,30 @@ class CustomAppBar extends BaseStatelessWidget implements PreferredSize {
   Widget? leading;
   bool centerTitle;
   bool multiLan;
-  double? heightBar;
+  double? heightBar, leadingWidth;
   PreferredSizeWidget? bottom;
   Function()? onBack;
+  List<Widget>? actions;
+  Widget? flexibleSpace;
+  Color? backgroundColor, iconColor, titleColor;
+  SystemUiOverlayStyle? systemOverlayStyle;
 
   CustomAppBar({
     required this.title,
     required this.withBackButton,
     this.centerTitle = true,
+    this.titleColor,
     this.multiLan = true,
     this.leading,
     this.onBack,
     this.bottom,
     this.heightBar,
+    this.actions,
+    this.flexibleSpace,
+    this.leadingWidth,
+    this.backgroundColor,
+    this.systemOverlayStyle,
+    this.iconColor,
     super.key,
   });
 
@@ -39,7 +50,10 @@ class CustomAppBar extends BaseStatelessWidget implements PreferredSize {
   Widget get child {
     return AppBar(
       centerTitle: centerTitle,
-      systemOverlayStyle:
+      flexibleSpace: flexibleSpace,
+      backgroundColor: backgroundColor,
+      actions: actions,
+      systemOverlayStyle: systemOverlayStyle ??
           const SystemUiOverlayStyle(statusBarColor: AppColors.textWhite),
       leading: leading ??
           (withBackButton
@@ -47,13 +61,15 @@ class CustomAppBar extends BaseStatelessWidget implements PreferredSize {
                   onPressed: onBack,
                   child: SvgPicture.asset(
                     AppAssetPaths.backIcon,
-
+                    color: iconColor,
                   ),
                 )
               : null),
+      leadingWidth: leadingWidth,
       title: TextApp(
         text: title,
         multiLang: multiLan,
+        color: titleColor,
         fontWeight: FontWeight.w500,
         fontSize: SizeManager.sizeSp16,
       ),

@@ -120,6 +120,12 @@ class AppAssetPaths {
   static const consultantIcon = 'assets/icons/community/consultant.svg';
   static const videoIcon = 'assets/icons/community/video_icon.svg';
   static const workshopIcon = 'assets/icons/community/workshop.svg';
+  static const communityShareIcon = 'assets/icons/community/community_share.svg';
+  static const communityAddIcon = 'assets/icons/community/community_add.svg';
+  static const communityStartDateIcon = 'assets/icons/community/calender_start_date.svg';
+  static const communityEndDateIcon = 'assets/icons/community/calender_end_date.svg';
+  static const communityVideoIcon = 'assets/icons/community/community_video_icon.svg';
+  static const communityEditPinIcon = 'assets/icons/community/community_edit_pin.svg';
 
   static const imageMonthlyActivities = 'assets/images/monthly_activities.png';
   static const aboutCommunity = 'assets/images/about.png';

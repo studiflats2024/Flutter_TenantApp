@@ -28,7 +28,7 @@ class _ReadMoreTextState extends BaseState<ReadMoreText> {
   @override
   Widget baseBuild(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
@@ -65,11 +65,11 @@ class _ReadMoreTextState extends BaseState<ReadMoreText> {
                     ? translate(widget.useSeeMore
                         ? LocalizationKeys.seeLess
                         : LocalizationKeys.readLess)!
-                    : "${translate(
+                    : "...${translate(
                         widget.useSeeMore
                             ? LocalizationKeys.seeMore
                             : LocalizationKeys.readMore,
-                      )!}...",
+                      )!}",
                 style: const TextStyle(
                   color: Color(0xFF4C4DDC),
                   fontWeight: FontWeight.w400,

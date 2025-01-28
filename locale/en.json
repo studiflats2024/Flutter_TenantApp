@@ -638,6 +638,12 @@
   "club_activity" : "Club Activity",
   "cancelled" : "Cancelled",
   "un_enroll" : "UnEnroll",
-  "add_to_calender" : "Add To Calender"
+  "add_to_calender" : "Add To Calender",
+  "view_all" : "View All",
+  "enroll_now" : "Enroll Now",
+  "session" : "Session",
+  "sessions" : "Sessions",
+  "days" : "Days",
+  "my_qr_code" : "My Qr Code"
 
 }

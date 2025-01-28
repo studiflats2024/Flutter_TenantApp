@@ -714,4 +714,10 @@ class LocalizationKeys {
   static const cancelled = "cancelled";
   static const unEnroll = "un_enroll";
   static const addToCalender = "add_to_calender";
+  static const viewAll = "view_all";
+  static const sessions = "sessions";
+  static const session = "session";
+  static const days = "days";
+  static const enrollNow = "enroll_now";
+  static const myQrCode = "my_qr_code";
 }
