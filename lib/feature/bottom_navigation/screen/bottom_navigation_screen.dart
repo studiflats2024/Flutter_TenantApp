@@ -236,7 +236,7 @@ class _BottomNavigationScreenState
   }
 
   Widget _communityWidget() {
-    return const CommunityScreen();
+    return  CommunityScreen();
   }
 
   ///////////////////////////////////////////////////////////

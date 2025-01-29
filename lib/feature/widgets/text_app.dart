@@ -9,6 +9,7 @@ class TextApp extends BaseStatelessWidget {
   final Color? color;
   final double? fontSize;
   final double? lineHeight;
+  int? maxLines;
   final TextAlign? textAlign;
   final FontWeight? fontWeight;
   final TextOverflow? overflow;
@@ -24,6 +25,7 @@ class TextApp extends BaseStatelessWidget {
     this.style,
     this.fontSize,
     this.lineHeight,
+    this.maxLines,
     super.key,
   });
 
@@ -33,6 +35,7 @@ class TextApp extends BaseStatelessWidget {
       multiLang ? translate(text)! : text,
       overflow: overflow,
       textAlign: textAlign,
+      maxLines: maxLines,
       style: style ??
           textTheme.titleMedium?.copyWith(
             color: color ?? AppColors.formFieldText,

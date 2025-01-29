@@ -413,8 +413,8 @@ class _MyActivities extends BaseScreenState<MyActivities>
   }
 
   Color cardTypeColor(
-    ActivitiesType status,
-  ) {
+      ActivitiesType status,
+      ) {
     switch (status) {
       case ActivitiesType.course:
         return AppColors.cardBackgroundCourse;
@@ -424,12 +424,13 @@ class _MyActivities extends BaseScreenState<MyActivities>
         return AppColors.cardBackgroundEvent;
       case ActivitiesType.consultant:
         return AppColors.cardBackgroundConsultant;
+      default: return AppColors.cardBackgroundCourse;
     }
   }
 
   Color textActivityColor(
-    ActivitiesType status,
-  ) {
+      ActivitiesType status,
+      ) {
     switch (status) {
       case ActivitiesType.course:
         return AppColors.textCourse;
@@ -439,6 +440,7 @@ class _MyActivities extends BaseScreenState<MyActivities>
         return AppColors.textEvent;
       case ActivitiesType.consultant:
         return AppColors.textConsultant;
+      default: return AppColors.textCourse;
     }
   }
 

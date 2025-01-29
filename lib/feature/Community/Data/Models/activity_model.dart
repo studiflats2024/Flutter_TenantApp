@@ -22,4 +22,21 @@ class ActivityModel {
   });
 }
 
-enum ActivitiesType { course, workshop, event, consultant }
+enum ActivitiesType {
+  all("All"),
+  course("Courses"),
+  workshop("Workshops"),
+  event("Events"),
+  consultant("Consultant");
+
+  final String code;
+
+  const ActivitiesType(this.code);
+
+  static ActivitiesType? fromValue(String value) {
+    return ActivitiesType.values.firstWhere(
+      (s) => s.code == value,
+      orElse: () => ActivitiesType.all,
+    );
+  }
+}

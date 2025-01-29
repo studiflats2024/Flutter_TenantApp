@@ -156,4 +156,10 @@ class ApiKeys {
   static const getExtendContract = '$baseApiUrl/ApartmentV2/Get_Extend_Booking_Contract';
   static const signExtendContract = '$baseApiUrl/ApartmentV2/Sign_Extend_Request_Contract';
   static const changeCheckOutDate = '$baseApiUrl/ApartmentV2/UpdateCheckout_Date';
+
+  //================================== Community ===============================
+  static const getCommunityMonthlyActivities = '$baseApiUrl/Gateway/GetMonthly_Activites';
+  static const getCommunityPaginatedActivities = '$baseApiUrl/Gateway/GetPaginatedActivites';
+  static const getCommunitySubscriptionsPlan = '$baseApiUrl/Gateway/GetSubscriptionPlans';
+  static const getCommunityQr = '$baseApiUrl/Gateway/GetMyQr';
 }

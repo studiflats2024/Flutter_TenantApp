@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/feature/Community/Data/Models/plan_model.dart';
+import 'package:vivas/feature/Community/Data/Models/subscription_plans_model.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
@@ -12,7 +13,9 @@ import 'package:vivas/utils/locale/app_localization_keys.dart';
 import 'package:vivas/utils/size_manager.dart';
 
 class CommunitySubscription extends BaseStatefulScreenWidget {
-  const CommunitySubscription({super.key});
+  final List<SubscriptionPlansModel> subscriptions;
+
+  const CommunitySubscription(this.subscriptions, {super.key});
 
   @override
   BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() {
@@ -71,18 +74,18 @@ class _CommunitySubscription extends BaseScreenState<CommunitySubscription> {
             height: SizeManager.sizeSp16,
           ),
           CarouselSlider.builder(
-            itemCount: 3,
+            itemCount: widget.subscriptions.length,
             itemBuilder: (context, index, currentPage) {
-              var plan = plans[index];
+              var plan = widget.subscriptions[index];
               return itemPlan(
                   index == currentIndex,
-                  plan.name,
-                  plan.description,
-                  plan.type,
-                  plan.price,
-                  plan.features,
-                  plan.asset,
-                  plan.color);
+                  plan.planName ?? "",
+                  plan.planType ?? "",
+                  plan.planDuration ?? "",
+                  plan.planFianlPrice ?? 0,
+                  plan.planFeatures ?? [],
+                  getAsset(plan),
+                  getColor(plan));
             },
             options: CarouselOptions(
                 enlargeCenterPage: true,
@@ -99,15 +102,14 @@ class _CommunitySubscription extends BaseScreenState<CommunitySubscription> {
           SizedBox(
             height: SizeManager.sizeSp18,
           ),
-          Center(
-            child: Padding(
-              padding: EdgeInsets.all(SizeManager.sizeSp8),
-              child: SizedBox(
-                width: 100.r,
-                child: SmoothIndicator(
-                  offset: currentIndex.toDouble(),
-                  count: plans.length,
-                  size: Size(SizeManager.sizeSp4, SizeManager.sizeSp4),
+          Padding(
+            padding: EdgeInsets.all(SizeManager.sizeSp8),
+            child: Center(
+              child: Expanded(
+                child: AnimatedSmoothIndicator(
+                  activeIndex: currentIndex,
+                 count: widget.subscriptions.length,
+                 // count: 3,
                   effect: CustomizableEffect(
                     dotDecoration: DotDecoration(
                       width: SizeManager.sizeSp22,
@@ -131,6 +133,28 @@ class _CommunitySubscription extends BaseScreenState<CommunitySubscription> {
         ],
       ),
     );
+  }
+
+  String getAsset(SubscriptionPlansModel item) {
+    switch (item.planDurationInMonths!) {
+      case 12:
+        return AppAssetPaths.rateIcon;
+      case 1:
+        return AppAssetPaths.personIcon;
+      default:
+        return AppAssetPaths.calenderIcon2;
+    }
+  }
+
+  Color getColor(SubscriptionPlansModel item) {
+    switch (item.planDurationInMonths!) {
+      case 12:
+        return AppColors.cardBorderGold;
+      case 1:
+        return AppColors.cardBorderGreen;
+      default:
+        return AppColors.colorPrimary;
+    }
   }
 
   itemPlan(bool isActive, String plan, String description, String type,

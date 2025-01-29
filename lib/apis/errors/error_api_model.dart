@@ -3,6 +3,7 @@ import 'package:vivas/apis/errors/error_api_helper.dart';
 import 'package:vivas/apis/errors/locale_dio_exceptions.dart';
 import 'package:vivas/apis/models/_base/details_model.dart';
 import 'package:vivas/apis/models/auth/login/login_fail_response.dart';
+import 'package:vivas/app_route.dart';
 import 'package:vivas/feature/widgets/MaintenanceApp/maintenance_app.dart';
 import 'package:vivas/utils/build_type/build_type.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,8 @@ class ErrorApiModel {
         if (codeError == 1009 && context != null) {
           if (context != null) {
             MaintenanceApp.open(context);
+          } else if (AppRoute.mainNavigatorKey.currentContext != null) {
+            MaintenanceApp.open(AppRoute.mainNavigatorKey.currentContext!);
           } else {
             showFeedbackMessage(
                 "Our app in maintenance now please try again Later");

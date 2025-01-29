@@ -1,17 +1,25 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
+import 'package:vivas/app_route.dart';
+import 'package:vivas/feature/Community/Data/Models/activity_model.dart';
+import 'package:vivas/feature/Community/Data/Models/club_activity_model.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/activity_details.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
 import 'package:vivas/utils/size_manager.dart';
+import 'package:vivas/utils/extensions/extension_string.dart';
 
 // ignore: must_be_immutable
 class CommunityActivities extends BaseStatelessWidget {
-  CommunityActivities({super.key});
 
+  CommunityActivities(this.clubActivityModel, {super.key});
+
+  ClubActivityModel clubActivityModel;
   @override
   Widget baseBuild(BuildContext context) {
     return Column(
@@ -26,30 +34,19 @@ class CommunityActivities extends BaseStatelessWidget {
         ),
         SizedBox(
           height: 250.r,
-          child: ListView(
+          child: ListView.separated(
+            itemCount: clubActivityModel.data?.length ?? 0,
             clipBehavior: Clip.none,
             scrollDirection: Axis.horizontal,
-            children: [
-              itemActions(
-                  asset: AppAssetPaths.imageMonthlyActivities,
-                  title: "Learn German: Beginner ",
-                  time: "Feb 10 2025 - Feb 20 2025",
-                  seats: "3",
-                  rate: 4.5,
-                  type: "Course",
-                  action: () {},
-                  actionFavourite: () {}),
-              SizedBox(width: SizeManager.sizeSp16,),
-              itemActions(
-                  asset: AppAssetPaths.imageMonthlyActivities,
-                  title: "Learn German: Beginner Level",
-                  time: "Feb 10 2025 - Feb 20 2025",
-                  seats: "3",
-                  rate: 4.5,
-                  type: "WorkShop",
-                  action: () {},
-                  actionFavourite: () {})
-            ],
+            itemBuilder: (context, index) {
+              var item = clubActivityModel.data![index];
+              return itemClubActivity(item);
+            },
+            separatorBuilder: (context, index) {
+              return SizedBox(
+                width: SizeManager.sizeSp16,
+              );
+            },
           ),
         ),
 
@@ -57,19 +54,14 @@ class CommunityActivities extends BaseStatelessWidget {
     );
   }
 
-  itemActions({
-    required String asset,
-    required String title,
-    required String time,
-    required String seats,
-    required String type,
-    required num rate,
-    required Function() action,
-    required Function() actionFavourite,
-  }) {
+  itemClubActivity(
+      ActivitiesModel activityItem,
+      ) {
     var width = 270.r;
     return GestureDetector(
-      onTap: action,
+      onTap: () {
+        ActivityDetails.open(AppRoute.mainNavigatorKey.currentContext!, false);
+      },
       child: Container(
         width: width,
         decoration: BoxDecoration(
@@ -95,8 +87,11 @@ class CommunityActivities extends BaseStatelessWidget {
                   width: double.infinity,
                   height: 150.r,
                   decoration: BoxDecoration(
-                    image: const DecorationImage(
-                      image: AssetImage(AppAssetPaths.imageMonthlyActivities),
+                    image: (activityItem.activityMedia?.isLink ?? false)
+                        ? null
+                        : const DecorationImage(
+                      image: AssetImage(
+                          AppAssetPaths.imageMonthlyActivities),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.only(
@@ -104,6 +99,17 @@ class CommunityActivities extends BaseStatelessWidget {
                       topRight: SizeManager.circularRadius10,
                     ),
                   ),
+                  child: (activityItem.activityMedia?.isLink ?? false)
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: SizeManager.circularRadius10,
+                      topRight: SizeManager.circularRadius10,
+                    ),
+                    child: CachedNetworkImage(
+                      imageUrl: activityItem.activityMedia!,
+                      fit: BoxFit.cover,),
+                  )
+                      : null,
                 ),
                 Positioned(
                   top: 15.r,
@@ -118,28 +124,31 @@ class CommunityActivities extends BaseStatelessWidget {
                           vertical: SizeManager.sizeSp6,
                         ),
                         decoration: BoxDecoration(
-                            color: AppColors.cardBorderPrimary100,
+                            color: cardTypeColor(activityItem.activityType ??
+                                ActivitiesType.course),
                             borderRadius:
                             BorderRadius.all(SizeManager.circularRadius4)),
                         child: TextApp(
                           multiLang: false,
-                          text: type,
+                          text: activityItem.activityType?.code ?? "",
                           style: textTheme.bodyLarge?.copyWith(
-                            color: AppColors.colorPrimary,
+                            color: textActivityColor(
+                                activityItem.activityType ??
+                                    ActivitiesType.course),
                             fontWeight: FontWeight.w600,
                             fontSize: 12.sp,
                           ),
                         ),
                       ),
-                      Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: SizeManager.sizeSp8,
-                            vertical: SizeManager.sizeSp4,
-                          ),
-                          decoration: const BoxDecoration(
-                              color: AppColors.textWhite,
-                              shape: BoxShape.circle),
-                          child: SvgPicture.asset(AppAssetPaths.communityFav)),
+                      // Container(
+                      //     padding: EdgeInsets.symmetric(
+                      //       horizontal: SizeManager.sizeSp8,
+                      //       vertical: SizeManager.sizeSp4,
+                      //     ),
+                      //     decoration: const BoxDecoration(
+                      //         color: AppColors.textWhite,
+                      //         shape: BoxShape.circle),
+                      //     child: SvgPicture.asset(AppAssetPaths.communityFav)),
                     ],
                   ),
                 ),
@@ -162,7 +171,7 @@ class CommunityActivities extends BaseStatelessWidget {
                         width: (2 / 3 * width),
                         child: TextApp(
                           multiLang: false,
-                          text: title,
+                          text: activityItem.activityName ?? "",
                           fontSize: 14.sp,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -175,7 +184,8 @@ class CommunityActivities extends BaseStatelessWidget {
                           ),
                           TextApp(
                             multiLang: false,
-                            text: rate.toStringAsFixed(2),
+                            text: (activityItem.activityRating ?? 0.0)
+                                .toStringAsFixed(2),
                             style: textTheme.bodyMedium?.copyWith(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,
@@ -201,15 +211,19 @@ class CommunityActivities extends BaseStatelessWidget {
                           SizedBox(
                             width: SizeManager.sizeSp8,
                           ),
-                          TextApp(
-                            multiLang: false,
-                            text: "Mitta Berlin ",
-                            style: textTheme.bodyMedium?.copyWith(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.textNatural700,
-                            ),
-                          )
+                          SizedBox(
+                              width: (1 / 3 * width),
+                              child: TextApp(
+                                multiLang: false,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                text: activityItem.activityLocation ?? "",
+                                style: textTheme.bodyMedium?.copyWith(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.w400,
+                                  color: AppColors.textNatural700,
+                                ),
+                              )),
                         ],
                       ),
                       Row(
@@ -220,7 +234,8 @@ class CommunityActivities extends BaseStatelessWidget {
                           ),
                           TextApp(
                             multiLang: false,
-                            text: "$seats ${translate(LocalizationKeys.seats)}",
+                            text:
+                            "${activityItem.activitySeats} ${translate(LocalizationKeys.seats)}",
                             style: textTheme.bodyMedium?.copyWith(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
@@ -245,7 +260,7 @@ class CommunityActivities extends BaseStatelessWidget {
                       ),
                       TextApp(
                         multiLang: false,
-                        text: time,
+                        text: activityItem.activityDate ?? "",
                         style: textTheme.bodyMedium?.copyWith(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,
@@ -261,6 +276,40 @@ class CommunityActivities extends BaseStatelessWidget {
         ),
       ),
     );
+  }
+
+  Color cardTypeColor(
+      ActivitiesType status,
+      ) {
+    switch (status) {
+      case ActivitiesType.course:
+        return AppColors.cardBackgroundCourse;
+      case ActivitiesType.workshop:
+        return AppColors.cardBackgroundWorkshop;
+      case ActivitiesType.event:
+        return AppColors.cardBackgroundEvent;
+      case ActivitiesType.consultant:
+        return AppColors.cardBackgroundConsultant;
+      default:
+        return AppColors.cardBackgroundCourse;
+    }
+  }
+
+  Color textActivityColor(
+      ActivitiesType status,
+      ) {
+    switch (status) {
+      case ActivitiesType.course:
+        return AppColors.textCourse;
+      case ActivitiesType.workshop:
+        return AppColors.textWorkshop;
+      case ActivitiesType.event:
+        return AppColors.textEvent;
+      case ActivitiesType.consultant:
+        return AppColors.textConsultant;
+      default:
+        return AppColors.textCourse;
+    }
   }
 
 

@@ -298,6 +298,7 @@ class ClubActivity extends BaseStatelessWidget {
         return AppColors.cardBackgroundEvent;
       case ActivitiesType.consultant:
         return AppColors.cardBackgroundConsultant;
+      default: return AppColors.cardBackgroundCourse;
     }
   }
 
@@ -313,6 +314,7 @@ class ClubActivity extends BaseStatelessWidget {
         return AppColors.textEvent;
       case ActivitiesType.consultant:
         return AppColors.textConsultant;
+      default: return AppColors.textCourse;
     }
   }
 
