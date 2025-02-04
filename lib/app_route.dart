@@ -5,6 +5,8 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrinde
 import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/invite_frindes.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/my_plan.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/pay_subscription.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/plan_details.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/QrDetails/qr_details.dart';
 import 'package:vivas/feature/app_pages/screen/faq_list_screen.dart';
 import 'package:vivas/feature/app_pages/screen/privacy_privacy_screen.dart';
@@ -183,6 +185,8 @@ class AppRoute {
     MyActivities.routeName: (ctx) => const MyActivities(),
     ActivityDetails.routeName: (ctx) => ActivityDetails(),
     CommunityQrDetails.routeName: (ctx) => CommunityQrDetails(),
-    WishlistScreen.routeName : (ctx) => WishlistScreen(),
+    WishlistScreen.routeName: (ctx) => WishlistScreen(),
+    PlanDetails.routeName: (ctx) => PlanDetails(),
+    PaySubscription.routeName: (ctx) => PaySubscription(),
   };
 }

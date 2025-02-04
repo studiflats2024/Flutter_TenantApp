@@ -1,6 +1,6 @@
 import 'package:vivas/apis/models/meta/paging_send_model.dart';
+import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
 import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
-import 'package:vivas/feature/Community/Data/Models/activity_model.dart';
 import 'package:vivas/feature/Community/Data/Repository/CommunityScreen/community_repository.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/community_bloc.dart';
 

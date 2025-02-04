@@ -1,10 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
-import 'package:vivas/feature/Community/Data/Models/activity_model.dart';
-import 'package:vivas/feature/Community/Data/Models/category_model.dart';
+import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
+import 'package:vivas/feature/Community/Data/Models/club_activity_model.dart';
 import 'package:vivas/feature/Community/presentations/Component/custom_app_bar.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/ClubActivity/club_activity_bloc.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
@@ -36,70 +38,32 @@ class ClubActivity extends BaseStatelessWidget {
     }
   }
 
-  int currentIndex = 0;
-
-  List<CategoryModel> categories = [
-    CategoryModel(name: "All", asset: "", withImage: false),
-    CategoryModel(
-        name: "Courses", asset: AppAssetPaths.videoIcon, withImage: true),
-    CategoryModel(
-        name: "Workshop", asset: AppAssetPaths.workshopIcon, withImage: true),
-    CategoryModel(
-        name: "Events",
-        asset: AppAssetPaths.calenderIconOutline,
-        withImage: true),
-    CategoryModel(
-        name: "Consultant",
-        asset: AppAssetPaths.consultantIcon,
-        withImage: true),
-  ];
-
-  List<ActivityModel> activities = [
-    ActivityModel(
-      name: "Learn German: Beginner Level",
-      image: AppAssetPaths.imageMonthlyActivities,
-      rate: "4.89",
-      startDate: "Feb 15 ,2025",
-      endDate: "Feb 25 ,2025",
-      reviews: "100",
-      seats: 0,
-      activitiesStatus: ActivitiesType.course,
-    ),
-    ActivityModel(
-      name: "Learn German: Beginner Level",
-      image: AppAssetPaths.imageMonthlyActivities,
-      rate: "4.89",
-      startDate: "Feb 15 ,2025",
-      endDate: "Feb 25 ,2025",
-      reviews: "100",
-      seats: 0,
-      activitiesStatus: ActivitiesType.workshop,
-    ),
-    ActivityModel(
-      name: "Learn German: Beginner Level",
-      image: AppAssetPaths.imageMonthlyActivities,
-      rate: "4.89",
-      startDate: "Feb 15 ,2025",
-      endDate: "Feb 25 ,2025",
-      reviews: "100",
-      seats: 2,
-      time: "10:00 AM",
-      activitiesStatus: ActivitiesType.event,
-    ),
-    ActivityModel(
-      name: "Learn German: Beginner Level",
-      image: AppAssetPaths.imageMonthlyActivities,
-      rate: "4.89",
-      startDate: "Sunday ,Monday ,Wednesday",
-      endDate: "Feb 25 ,2025",
-      reviews: "100",
-      seats: 0,
-      activitiesStatus: ActivitiesType.consultant,
-    ),
-  ];
-
   @override
   Widget baseBuild(BuildContext context) {
+    return BlocProvider(
+        create: (context) => ClubActivityBloc(),
+        child: const ClubActivityWithBloc());
+  }
+}
+
+class ClubActivityWithBloc extends BaseStatefulScreenWidget {
+  const ClubActivityWithBloc({super.key});
+
+  @override
+  BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() {
+    return _ClubActivityWithBloc();
+  }
+}
+
+class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc> {
+  int currentIndex = 0;
+
+  ClubActivityModel activities = ClubActivityModel();
+
+  ActivitiesType currentType = ActivitiesType.all;
+
+  @override
+  Widget baseScreenBuild(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         title: LocalizationKeys.clubActivity,
@@ -109,47 +73,44 @@ class ClubActivity extends BaseStatelessWidget {
           Navigator.pop(context);
         },
       ),
-      body: BlocProvider(
-        create: (context) => ClubActivityBloc(),
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            SizedBox(
-              height: SizeManager.sizeSp8,
+      body: ListView(
+        shrinkWrap: true,
+        children: [
+          SizedBox(
+            height: SizeManager.sizeSp8,
+          ),
+          Container(
+            height: 32.r,
+            margin: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp16),
+            child: ListView.separated(
+              shrinkWrap: true,
+              clipBehavior: Clip.none,
+              scrollDirection: Axis.horizontal,
+              itemCount: ActivitiesType.values.length,
+              itemBuilder: (context, index) {
+                return itemCategory(ActivitiesType.values[index]);
+              },
+              separatorBuilder: (context, index) {
+                return SizedBox(
+                  width: SizeManager.sizeSp8,
+                );
+              },
             ),
-            Container(
-              height: 32.r,
-              margin: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp16),
-              child: ListView.separated(
-                shrinkWrap: true,
-                clipBehavior: Clip.none,
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  return itemCategory(index, categories[index]);
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(
-                    width: SizeManager.sizeSp8,
-                  );
-                },
-              ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(SizeManager.sizeSp16),
+            child: Column(
+              children: List.generate((activities.data?.length ?? 0), (index) {
+                return itemActivity(activities.data![index]);
+              }),
             ),
-            Padding(
-              padding: EdgeInsets.all(SizeManager.sizeSp16),
-              child: Column(
-                children: List.generate(activities.length, (index) {
-                  return itemActivity(activities[index]);
-                }),
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
 
-  Widget itemActivity(ActivityModel model) {
+  Widget itemActivity(ActivitiesModel model) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.cardBorderPrimary100),
@@ -164,14 +125,26 @@ class ClubActivity extends BaseStatelessWidget {
               Container(
                 width: 115.r,
                 height: 87.r,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(
-                          model.image,
-                        ),
-                        fit: BoxFit.cover),
-                    borderRadius:
-                        BorderRadius.all(SizeManager.circularRadius10)),
+                decoration: (model.activityMedia?.isLink ?? false)
+                    ? null
+                    : BoxDecoration(
+                        image: const DecorationImage(
+                            image: AssetImage(
+                              AppAssetPaths.imageMonthlyActivities,
+                            ),
+                            fit: BoxFit.cover),
+                        borderRadius:
+                            BorderRadius.all(SizeManager.circularRadius10),
+                      ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(SizeManager.circularRadius10),
+                  child: (model.activityMedia?.isLink ?? false)
+                      ? CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          imageUrl: (model.activityMedia ?? ""),
+                        )
+                      : null,
+                ),
               ),
               SizedBox(
                 width: SizeManager.sizeSp16,
@@ -186,14 +159,16 @@ class ClubActivity extends BaseStatelessWidget {
                         vertical: SizeManager.sizeSp6,
                       ),
                       decoration: BoxDecoration(
-                          color: cardTypeColor(model.activitiesStatus),
+                          color: cardTypeColor(
+                              model.activityType ?? ActivitiesType.course),
                           borderRadius:
                               BorderRadius.all(SizeManager.circularRadius4)),
                       child: TextApp(
                         multiLang: false,
-                        text: model.activitiesStatus.name.capitalize,
+                        text: model.activityType?.name.capitalize ?? "",
                         style: textTheme.bodyLarge?.copyWith(
-                          color: textActivityColor(model.activitiesStatus),
+                          color: textActivityColor(
+                              model.activityType ?? ActivitiesType.course),
                           fontWeight: FontWeight.w600,
                           fontSize: 12.sp,
                         ),
@@ -206,7 +181,7 @@ class ClubActivity extends BaseStatelessWidget {
                   SizedBox(
                     width: 170.r,
                     child: TextApp(
-                      text: model.name,
+                      text: model.activityName ?? "",
                       fontSize: FontSize.fontSize12,
                       overflow: TextOverflow.ellipsis,
                       color: AppColors.textMainColor,
@@ -219,20 +194,20 @@ class ClubActivity extends BaseStatelessWidget {
                     children: [
                       SvgPicture.asset(AppAssetPaths.rateIcon),
                       TextApp(
-                        text: " ${model.rate}",
+                        text: " ${model.activityRating ?? 0}",
                         fontSize: FontSize.fontSize12,
                         overflow: TextOverflow.ellipsis,
                         color: AppColors.textNatural700,
                       ),
                       TextApp(
-                        text: " (${model.reviews} Review)",
+                        text: " (${model.ratingCount} Review)",
                         fontSize: FontSize.fontSize12,
                         overflow: TextOverflow.ellipsis,
                         color: AppColors.textNatural700,
                       )
                     ],
                   ),
-                  if (model.seats != 0) ...[
+                  if (model.activitySeats != 0) ...[
                     SizedBox(
                       height: SizeManager.sizeSp4,
                     ),
@@ -255,7 +230,7 @@ class ClubActivity extends BaseStatelessWidget {
                         ),
                       ),
                       child: TextApp(
-                        text: "${model.seats} Seat Leave",
+                        text: "${model.activitySeats} Seat Leave",
                         fontSize: FontSize.fontSize10,
                         color: AppColors.textRed,
                         lineHeight: 1.3.r,
@@ -298,7 +273,8 @@ class ClubActivity extends BaseStatelessWidget {
         return AppColors.cardBackgroundEvent;
       case ActivitiesType.consultant:
         return AppColors.cardBackgroundConsultant;
-      default: return AppColors.cardBackgroundCourse;
+      default:
+        return AppColors.cardBackgroundCourse;
     }
   }
 
@@ -314,21 +290,23 @@ class ClubActivity extends BaseStatelessWidget {
         return AppColors.textEvent;
       case ActivitiesType.consultant:
         return AppColors.textConsultant;
-      default: return AppColors.textCourse;
+      default:
+        return AppColors.textCourse;
     }
   }
 
   Widget footer(
-    ActivityModel model,
+    ActivitiesModel model,
   ) {
-    if (model.activitiesStatus == ActivitiesType.event) {
+    if (model.activityType == ActivitiesType.event) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
-                border: Border(right: BorderSide(color: AppColors.cardBorderPrimary100)),
+                border: Border(
+                    right: BorderSide(color: AppColors.cardBorderPrimary100)),
               ),
               margin: EdgeInsets.only(right: SizeManager.sizeSp8),
               child: Row(
@@ -341,7 +319,7 @@ class ClubActivity extends BaseStatelessWidget {
                     width: SizeManager.sizeSp8,
                   ),
                   TextApp(
-                    text:  "${model.startDate} ",
+                    text: "${model.activityDate} ",
                     fontWeight: FontWeight.w400,
                     fontSize: 12.sp,
                     color: AppColors.textNatural700,
@@ -350,8 +328,7 @@ class ClubActivity extends BaseStatelessWidget {
               ),
             ),
           ),
-          Expanded
-            (
+          Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -363,7 +340,7 @@ class ClubActivity extends BaseStatelessWidget {
                   width: SizeManager.sizeSp8,
                 ),
                 TextApp(
-                  text:  "${model.time}",
+                  text: "${model.activityTime}",
                   fontWeight: FontWeight.w400,
                   fontSize: 12.sp,
                   color: AppColors.textNatural700,
@@ -373,7 +350,7 @@ class ClubActivity extends BaseStatelessWidget {
           ),
         ],
       );
-    } else if (model.activitiesStatus == ActivitiesType.consultant){
+    } else if (model.activityType == ActivitiesType.consultant) {
       return Row(
         children: [
           SvgPicture.asset(
@@ -384,7 +361,7 @@ class ClubActivity extends BaseStatelessWidget {
             width: SizeManager.sizeSp8,
           ),
           TextApp(
-            text:  model.startDate,
+            text: model.activityDate ?? "",
             fontWeight: FontWeight.w400,
             fontSize: 12.sp,
             color: AppColors.textNatural700,
@@ -402,7 +379,7 @@ class ClubActivity extends BaseStatelessWidget {
             width: SizeManager.sizeSp8,
           ),
           TextApp(
-            text:  "${model.startDate} - ${model.endDate}",
+            text: "${model.activityDate}",
             fontWeight: FontWeight.w400,
             fontSize: 12.sp,
             color: AppColors.textNatural700,
@@ -412,23 +389,23 @@ class ClubActivity extends BaseStatelessWidget {
     }
   }
 
-  Widget itemCategory(index, CategoryModel category) {
+  Widget itemCategory(ActivitiesType activityType) {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(SizeManager.circularRadius10),
           border: Border.all(color: AppColors.cardBorderPrimary100),
-          color: index == currentIndex
+          color: currentType == activityType
               ? AppColors.colorPrimary
               : AppColors.textWhite),
-      padding: category.withImage
+      padding: activityType.asset != null
           ? EdgeInsets.all(SizeManager.sizeSp8)
           : EdgeInsets.symmetric(
               vertical: SizeManager.sizeSp8, horizontal: SizeManager.sizeSp16),
       child: Row(
         children: [
-          if (category.withImage) ...[
+          if (activityType.asset != null) ...[
             SvgPicture.asset(
-              category.asset,
+              activityType.asset!,
               fit: BoxFit.contain,
               width: SizeManager.sizeSp16,
               height: SizeManager.sizeSp16,
@@ -438,9 +415,9 @@ class ClubActivity extends BaseStatelessWidget {
             ),
           ],
           TextApp(
-            text: category.name,
+            text: activityType.code,
             fontSize: FontSize.fontSize12,
-            color: index == currentIndex
+            color: currentType == activityType
                 ? AppColors.textWhite
                 : AppColors.textShade3,
           )

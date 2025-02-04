@@ -114,13 +114,22 @@ class ErrorApiModel {
 
   factory ErrorApiModel.fromResponse(DioException error,
       {BuildContext? context}) {
-    Map<String, dynamic> extractedData =
-        error.response?.data as Map<String, dynamic>;
-    return ErrorApiModel(
-        context: context,
-        code: error.response?.statusCode ?? 1007,
-        message: extractedData["message"] ?? "NO MESSAGE",
-        isMessageLocalizationKey: false);
+   try{
+     Map<String, dynamic> extractedData =
+     error.response?.data as Map<String, dynamic>;
+     return ErrorApiModel(
+         context: context,
+         code: error.response?.statusCode ?? 1007,
+         message: extractedData["message"] ?? "NO MESSAGE",
+         isMessageLocalizationKey: false);
+   }catch(e){
+    debugPrint("${error.response?.data}");
+     return ErrorApiModel(
+         context: context,
+         code: error.response?.statusCode ?? 1007,
+         message: "NO MESSAGE",
+         isMessageLocalizationKey: false);
+   }
   }
 
   factory ErrorApiModel.fromDetailsModel(DetailsModel detailsModel,

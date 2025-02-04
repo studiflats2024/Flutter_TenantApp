@@ -4,7 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/app_route.dart';
-import 'package:vivas/feature/Community/Data/Models/activity_model.dart';
+import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
+import 'package:vivas/feature/Community/Data/Models/SendModels/activity_details_send.dart';
 import 'package:vivas/feature/Community/Data/Models/club_activity_model.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/activity_details.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
@@ -16,10 +17,10 @@ import 'package:vivas/utils/extensions/extension_string.dart';
 
 // ignore: must_be_immutable
 class CommunityActivities extends BaseStatelessWidget {
-
   CommunityActivities(this.clubActivityModel, {super.key});
 
   ClubActivityModel clubActivityModel;
+
   @override
   Widget baseBuild(BuildContext context) {
     return Column(
@@ -49,18 +50,21 @@ class CommunityActivities extends BaseStatelessWidget {
             },
           ),
         ),
-
       ],
     );
   }
 
   itemClubActivity(
-      ActivitiesModel activityItem,
-      ) {
+    ActivitiesModel activityItem,
+  ) {
     var width = 270.r;
     return GestureDetector(
       onTap: () {
-        ActivityDetails.open(AppRoute.mainNavigatorKey.currentContext!, false);
+        ActivityDetails.open(
+            AppRoute.mainNavigatorKey.currentContext!,
+            false,
+            ActivityDetailsSendModel(activityItem.activityId ?? "",
+                activityItem.activityType ?? ActivitiesType.course));
       },
       child: Container(
         width: width,
@@ -90,10 +94,10 @@ class CommunityActivities extends BaseStatelessWidget {
                     image: (activityItem.activityMedia?.isLink ?? false)
                         ? null
                         : const DecorationImage(
-                      image: AssetImage(
-                          AppAssetPaths.imageMonthlyActivities),
-                      fit: BoxFit.cover,
-                    ),
+                            image: AssetImage(
+                                AppAssetPaths.imageMonthlyActivities),
+                            fit: BoxFit.cover,
+                          ),
                     borderRadius: BorderRadius.only(
                       topLeft: SizeManager.circularRadius10,
                       topRight: SizeManager.circularRadius10,
@@ -101,14 +105,15 @@ class CommunityActivities extends BaseStatelessWidget {
                   ),
                   child: (activityItem.activityMedia?.isLink ?? false)
                       ? ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: SizeManager.circularRadius10,
-                      topRight: SizeManager.circularRadius10,
-                    ),
-                    child: CachedNetworkImage(
-                      imageUrl: activityItem.activityMedia!,
-                      fit: BoxFit.cover,),
-                  )
+                          borderRadius: BorderRadius.only(
+                            topLeft: SizeManager.circularRadius10,
+                            topRight: SizeManager.circularRadius10,
+                          ),
+                          child: CachedNetworkImage(
+                            imageUrl: activityItem.activityMedia!,
+                            fit: BoxFit.cover,
+                          ),
+                        )
                       : null,
                 ),
                 Positioned(
@@ -127,7 +132,7 @@ class CommunityActivities extends BaseStatelessWidget {
                             color: cardTypeColor(activityItem.activityType ??
                                 ActivitiesType.course),
                             borderRadius:
-                            BorderRadius.all(SizeManager.circularRadius4)),
+                                BorderRadius.all(SizeManager.circularRadius4)),
                         child: TextApp(
                           multiLang: false,
                           text: activityItem.activityType?.code ?? "",
@@ -235,7 +240,7 @@ class CommunityActivities extends BaseStatelessWidget {
                           TextApp(
                             multiLang: false,
                             text:
-                            "${activityItem.activitySeats} ${translate(LocalizationKeys.seats)}",
+                                "${activityItem.activitySeats} ${translate(LocalizationKeys.seats)}",
                             style: textTheme.bodyMedium?.copyWith(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
@@ -279,8 +284,8 @@ class CommunityActivities extends BaseStatelessWidget {
   }
 
   Color cardTypeColor(
-      ActivitiesType status,
-      ) {
+    ActivitiesType status,
+  ) {
     switch (status) {
       case ActivitiesType.course:
         return AppColors.cardBackgroundCourse;
@@ -296,8 +301,8 @@ class CommunityActivities extends BaseStatelessWidget {
   }
 
   Color textActivityColor(
-      ActivitiesType status,
-      ) {
+    ActivitiesType status,
+  ) {
     switch (status) {
       case ActivitiesType.course:
         return AppColors.textCourse;
@@ -311,6 +316,4 @@ class CommunityActivities extends BaseStatelessWidget {
         return AppColors.textCourse;
     }
   }
-
-
 }

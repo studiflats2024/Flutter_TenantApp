@@ -149,8 +149,11 @@ class PhoneNumberFormFiledWidget extends BaseStatelessWidget {
 
   PhoneNumberInputValidator? _getValidator(BuildContext context) {
     List<PhoneNumberInputValidator> validators = [];
-
-    validators.add(PhoneValidator.validMobile(
+    if(!allowEmpty){
+      validators.add( PhoneValidator.required(context),);
+    }
+    validators.add(
+        PhoneValidator.validMobile(
         //allowEmpty: allowEmpty,
         context,
         errorText: translate(LocalizationKeys.phoneNumberInvalid)));

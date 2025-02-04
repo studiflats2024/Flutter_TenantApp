@@ -97,7 +97,6 @@ class TakeSelfieScreenFull extends BaseStatefulScreenWidget {
 class _TakeSelfieScreenState extends BaseScreenState<TakeSelfieScreenFull> {
   XFile? imageP;
   late SelfieBloc currentBloc;
-  CameraDevice cameraDevice = CameraDevice.front;
 
   @override
   void initState() {
@@ -200,8 +199,7 @@ class _TakeSelfieScreenState extends BaseScreenState<TakeSelfieScreenFull> {
                                 currentBloc.add(
                                   SelfieAddVerifyImageEvent(
                                     await imagePicker.pickImage(
-                                        source: ImageSource.camera,
-                                        preferredCameraDevice: cameraDevice),
+                                        source: ImageSource.camera,),
                                   ),
                                 );
                               },

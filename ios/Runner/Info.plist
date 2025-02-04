@@ -24,24 +24,37 @@
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>com.studiflats.app</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>studiflats</string>
-				<string>https</string>
-				<string>http</string>
-				<string>com.googleusercontent.apps.727951335686-vr21a12hn8bl4q485h635qdct003kjqe</string>
-			</array>
-		</dict>
+	<dict>
+		<key>CFBundleTypeRole</key>
+		<string>Editor</string>
+		<key>CFBundleURLName</key>
+		<string>com.studiflats.app</string>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>studiflats</string>
+			<string>devapi.studiflats.com</string>
+			<string>api.studiflats.com</string>
+			<string>dev.studiflats.com</string>
+			<string>studiflats.com</string>
+			<string>studiflats.de</string>
+			<string>com.googleusercontent.apps.727951335686-vr21a12hn8bl4q485h635qdct003kjqe</string>
+		</array>
+	</dict>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	<string>studiflats</string>
+	<string>devapi.studiflats.com</string>
+    <string>api.studiflats.com</string>
+    <string>dev.studiflats.com</string>
+    <string>studiflats.com</string>
+    <string>studiflats.de</string>
+	</array>
+	<key>FlutterDeepLinkingEnabled</key>
+    	<true/>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>FlutterDeepLinkingEnabled</key>
-	<true/>
+
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
@@ -65,10 +78,10 @@
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+	    <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -79,13 +92,6 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>com.apple.developer.associated-domains</key>
-	<array>
-		<string>applinks:studiflats.com</string>
-		<string>applinks:studiflats.de</string>
-		<string>applinks:dev.studiflats.com</string>
-		<string>applinks:api.studiflats.com</string>
-		<string>applinks:devapi.studiflats.com</string>
-	</array>
+
 </dict>
 </plist>

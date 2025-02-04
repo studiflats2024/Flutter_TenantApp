@@ -1,4 +1,4 @@
-import 'package:vivas/feature/Community/Data/Models/activity_model.dart';
+import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/community_bloc.dart';
 
 abstract class CommunityRepository {

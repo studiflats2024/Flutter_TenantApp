@@ -131,7 +131,10 @@ class _DateSelectionFormField extends FormField<DateTime> {
                         );
 
                         if (picked != null && picked != state.value) {
-                          state.didChange(picked);
+                         if( onSaved != null){
+                           onSaved(picked);
+                         }else{}
+                         state.didChange(picked);
                         }
                       }
                       if (Platform.isIOS) {
@@ -165,6 +168,9 @@ class _DateSelectionFormField extends FormField<DateTime> {
                                 showDayOfWeek: true,
                                 // This is called when the user changes the date.
                                 onDateTimeChanged: (DateTime picked) {
+                                  if( onSaved != null){
+                                    onSaved(picked);
+                                  }else{}
                                   state.didChange(picked);
                                 },
                               ),

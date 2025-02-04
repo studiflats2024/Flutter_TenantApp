@@ -5,9 +5,10 @@ part 'club_activity_event.dart';
 part 'club_activity_state.dart';
 
 class ClubActivityBloc extends Bloc<ClubActivityEvent, ClubActivityState> {
+
   ClubActivityBloc() : super(ClubActivityInitial()) {
     on<ClubActivityEvent>((event, emit) {
-      // TODO: implement event handler
+
     });
   }
 }

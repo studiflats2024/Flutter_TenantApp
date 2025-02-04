@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:vivas/feature/Community/Data/Models/activity_model.dart';
+import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
 import 'package:vivas/utils/extensions/extension_string.dart';
 
 class PagingListSendModel extends Equatable {

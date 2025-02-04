@@ -416,7 +416,7 @@ class BookingDetailsModel {
   }
 
   bool get readyToVerifyIdentity {
-    return continueForCheckIn && isSelfie;
+    return continueForCheckIn && !isSelfie;
   }
 
   bool get shouldPayRent {
@@ -468,7 +468,7 @@ class BookingDetailsModel {
 
   bool get guestNeedToUploadProfileImage {
     return (guests?.isNotEmpty ?? false) &&
-        !(guests?[guestIndex].guestImageUploaded ?? true);
+        (guests?[guestIndex].guestImageUploaded ?? true);
   }
 
   bool get readyToCheckout {

@@ -47,7 +47,8 @@ class AppLinksDeepLink {
       (uriValue) async {
         await onGetLink(uriValue);
       },
-      onError: (err) {},
+      onError: (err) {
+      },
       onDone: () {
         _linkSubscription?.cancel();
       },
@@ -55,27 +56,28 @@ class AppLinksDeepLink {
   }
 
   onGetLink(Uri uri) async {
-    PreferencesManager preferencesManager = GetIt.I<PreferencesManager>();
-    final token = await preferencesManager.getAccessToken();
-    if (uri.path == ApiKeys.ssoLoginUrl && token == null) {
-      if (AppRoute.mainNavigatorKey.currentContext != null) {
-        _deepLinkBloc.add(
-          LogInEvent(
-            token: token,
-            loginSuccessfulResponse: LoginSuccessfulResponse(
-                "Fast Login Successfully",
-                uri.queryParameters["token"] ?? "",
-                uri.queryParameters["refresh"] ?? "",
-                uri.queryParameters["expire"] ?? "",
-                uri.queryParameters["uuid"] ?? "",
-                true),
-          ),
-        );
-        LoginScreen.open(AppRoute.mainNavigatorKey.currentContext!);
-      }
-    } else if (uri.path == ApiKeys.ssoLoginUrl && token != null) {
-      showFeedbackMessage("You can't use this link because you are login");
-    } else if (uri.path.contains("Share")) {
+    // PreferencesManager preferencesManager = GetIt.I<PreferencesManager>();
+    // final token = await preferencesManager.getAccessToken();
+    // if (uri.path == ApiKeys.ssoLoginUrl && token == null) {
+    //   if (AppRoute.mainNavigatorKey.currentContext != null) {
+    //     _deepLinkBloc.add(
+    //       LogInEvent(
+    //         token: token,
+    //         loginSuccessfulResponse: LoginSuccessfulResponse(
+    //             "Fast Login Successfully",
+    //             uri.queryParameters["token"] ?? "",
+    //             uri.queryParameters["refresh"] ?? "",
+    //             uri.queryParameters["expire"] ?? "",
+    //             uri.queryParameters["uuid"] ?? "",
+    //             true),
+    //       ),
+    //     );
+    //     LoginScreen.open(AppRoute.mainNavigatorKey.currentContext!);
+    //   }
+    // } else if (uri.path == ApiKeys.ssoLoginUrl && token != null) {
+    //   showFeedbackMessage("You can't use this link because you are login");
+    // } else
+      if (uri.path.contains("Share") || uri.toString().contains("apartment") || uri.toString().contains("Apartment") ) {
       if (AppRoute.mainNavigatorKey.currentContext != null) {
         UnitDetailsScreen.open(AppRoute.mainNavigatorKey.currentContext!,
             uri.path.split("/").last);
@@ -87,3 +89,5 @@ class AppLinksDeepLink {
     }
   }
 }
+
+// studiflats://apartment/5fb93250-34b3-405c-a5ac-420bf9817dc6

@@ -55,6 +55,7 @@ class AppColors {
   /// app main theme ...
   static const colorSchemeSeed = _cloudBurst;
   static const colorPrimary = _toryBlue;
+  static const colorPrimaryLight = Color(0xFFF6F9FE);
   static const focus = colorPrimary;
   // static const scaffoldBackground = _wildSand;
   static const scaffoldBackground = _white;
@@ -183,6 +184,7 @@ class AppColors {
   static const cardBackgroundActivityCancelled = Color(0xFFFEF1F5);
   static const cardTextNatural700 = Color(0xFF727272);
   static const  cardCountdown =  Color(0xffFDF9ED);
+  static const  sessionCircleColor =  colorPrimaryLight;
 
   static const textCourse = Color(0xFF1151B4);
   static const textWorkshop = Color(0xFF4F1681);

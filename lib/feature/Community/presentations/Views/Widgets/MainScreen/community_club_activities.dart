@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/app_route.dart';
+import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
+import 'package:vivas/feature/Community/Data/Models/SendModels/activity_details_send.dart';
 import 'package:vivas/feature/Community/Data/Models/club_activity_model.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/activity_details.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ClubActivity/club_activity.dart';
@@ -13,8 +15,6 @@ import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/utils/extensions/extension_string.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
 import 'package:vivas/utils/size_manager.dart';
-
-import '../../../../Data/Models/activity_model.dart';
 
 // ignore: must_be_immutable
 class CommunityClubActivities extends BaseStatelessWidget {
@@ -82,7 +82,11 @@ class CommunityClubActivities extends BaseStatelessWidget {
     var width = 270.r;
     return GestureDetector(
       onTap: () {
-        ActivityDetails.open(AppRoute.mainNavigatorKey.currentContext!, false);
+        ActivityDetails.open(
+            AppRoute.mainNavigatorKey.currentContext!,
+            false,
+            ActivityDetailsSendModel(activityItem.activityId ?? "",
+                activityItem.activityType ?? ActivitiesType.course));
       },
       child: Container(
         width: width,
@@ -123,14 +127,15 @@ class CommunityClubActivities extends BaseStatelessWidget {
                   ),
                   child: (activityItem.activityMedia?.isLink ?? false)
                       ? ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: SizeManager.circularRadius10,
-                      topRight: SizeManager.circularRadius10,
-                    ),
-                        child: CachedNetworkImage(
+                          borderRadius: BorderRadius.only(
+                            topLeft: SizeManager.circularRadius10,
+                            topRight: SizeManager.circularRadius10,
+                          ),
+                          child: CachedNetworkImage(
                             imageUrl: activityItem.activityMedia!,
-                                            fit: BoxFit.cover,),
-                      )
+                            fit: BoxFit.cover,
+                          ),
+                        )
                       : null,
                 ),
                 Positioned(

@@ -720,4 +720,6 @@ class LocalizationKeys {
   static const days = "days";
   static const enrollNow = "enroll_now";
   static const myQrCode = "my_qr_code";
+  static const subscription = "subscription";
+  static const invitationSent = "invitation_sent";
 }

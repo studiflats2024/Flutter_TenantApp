@@ -644,6 +644,8 @@
   "session" : "Session",
   "sessions" : "Sessions",
   "days" : "Days",
-  "my_qr_code" : "My Qr Code"
+  "my_qr_code" : "My Qr Code",
+  "subscription" : "Subscription",
+  "invitation_sent" : "Your Invitation has been sent"
 
 }

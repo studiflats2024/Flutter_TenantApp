@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
@@ -125,8 +124,8 @@ class _BottomNavigationScreenState
               if (state is HomeClickedSte) {
                 return _homeWidget();
               } else if (state is WishlistClickedSte) {
-                // return _wishlistWidget();
-                return _communityWidget();
+                 return _wishlistWidget();
+               // return _communityWidget();
               } else if (state is BookingsClickedSte) {
                 return _bookingsWidget();
               } else if (state is ProfileClickedSte) {
@@ -134,8 +133,8 @@ class _BottomNavigationScreenState
               } else {
                 switch (_selectedBottomNavigationIndex) {
                   case 1:
-                    // return _wishlistWidget();
-                    return _communityWidget();
+                     return _wishlistWidget();
+                    // return _communityWidget();
                   case 2:
                     return _bookingsWidget();
                   case 3:
@@ -188,15 +187,15 @@ class _BottomNavigationScreenState
                         iconAssetPath: AppAssetPaths.navHomeIcon,
                         text: translate(LocalizationKeys.home)!,
                       ),
-                      // GButton(
-                      //   iconAssetPath: AppAssetPaths.navWishlistIcon,
-                      //   text: translate(LocalizationKeys.wishlist)!,
-                      // ),
                       GButton(
-                        iconAssetPath: AppAssetPaths.community,
-                        iconSize: SizeManager.sizeSp25,
-                        text: translate(LocalizationKeys.community)!,
+                        iconAssetPath: AppAssetPaths.navWishlistIcon,
+                        text: translate(LocalizationKeys.wishlist)!,
                       ),
+                      // GButton(
+                      //   iconAssetPath: AppAssetPaths.community,
+                      //   iconSize: SizeManager.sizeSp25,
+                      //   text: translate(LocalizationKeys.community)!,
+                      // ),
                       GButton(
                         iconAssetPath: AppAssetPaths.navBookmarkIcon,
                         text: translate(LocalizationKeys.bookings)!,
