@@ -53,7 +53,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase with the default options for the current platform.
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  if(Platform.isIOS){
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  }else{
+    await Firebase.initializeApp();
+  }
 
   // Set up error handling for Flutter errors using Firebase Crashlytics.
   if (isReleaseMode()) {

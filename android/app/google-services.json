@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "727951335686",
     "project_id": "vivas-apratments",
-    "storage_bucket": "vivas-apratments.appspot.com"
+    "storage_bucket": "vivas-apratments.firebasestorage.app"
   },
   "client": [
     {
@@ -13,6 +13,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "727951335686-f1s3eakd4b1hc1l2jjpjglq609o9s77j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.studiflats.app",
+            "certificate_hash": "645e81fdd13f01c330aaaefc0db9d97c1ea31363"
+          }
+        },
         {
           "client_id": "727951335686-hi2cbuagt7si92d4kul3gv3073l2pl9k.apps.googleusercontent.com",
           "client_type": 1,
@@ -37,6 +45,43 @@
             "certificate_hash": "5f4e4579c6728ec7db90fa9c91b21ec249938fef"
           }
         },
+        {
+          "client_id": "727951335686-psv9svhulcsrpv2sc1aqjs7oc87ggg61.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7SammzoenY1_Z-N16I23CSnQpjsXD2n8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "727951335686-2ldicnh60h85hkbsasakdto3cllg5lon.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "727951335686-e55jcvjakqela6767bsaapbc951aubvl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.studiflats.app",
+                "app_store_id": "6474908385"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:727951335686:android:1b80297df16ecb792afe87",
+        "android_client_info": {
+          "package_name": "com.studiflats.worker"
+        }
+      },
+      "oauth_client": [
         {
           "client_id": "727951335686-psv9svhulcsrpv2sc1aqjs7oc87ggg61.apps.googleusercontent.com",
           "client_type": 3

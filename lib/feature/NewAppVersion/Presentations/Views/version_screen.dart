@@ -78,7 +78,7 @@ class VersionScreen extends StatelessWidget {
     if (Platform.isAndroid) {
       url = "https://play.google.com/store/apps/details?id=$packageName";
     } else if (Platform.isIOS) {
-      url = "https://apps.apple.com/app/id";
+      url = "https://apps.apple.com/de/app/studiflats/id6474908385";
     } else {
       throw "Unsupported platform";
     }
