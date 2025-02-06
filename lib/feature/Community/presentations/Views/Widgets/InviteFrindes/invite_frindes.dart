@@ -87,7 +87,15 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
   );
   DateTime? dateTime;
 
+  num invitesNumber = 0;
+
   InviteFriendSendModel model = InviteFriendSendModel.create();
+
+  @override
+  void initState() {
+    super.initState();
+    currentBloc.add(GetMyPlanEvent());
+  }
 
   @override
   Widget baseScreenBuild(BuildContext context) {
@@ -99,7 +107,11 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
           hideLoading();
         }
 
+        if (state is GetMyPlanState) {
+          invitesNumber = state.model.invitationNOs ?? 0;
+        }
         if (state is InviteFriendState) {
+          invitesNumber = invitesNumber - 1;
           showFeedbackMessage(
             translate(LocalizationKeys.invitationSent) ?? "",
           );
@@ -154,7 +166,7 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                           ),
                           TextApp(
                             text:
-                                "${translate(LocalizationKeys.inviteYouHave)}4${translate(LocalizationKeys.friendsLeft)}",
+                                "${translate(LocalizationKeys.inviteYouHave)}$invitesNumber${translate(LocalizationKeys.friendsLeft)}",
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                             color: AppColors.textColor,
@@ -291,9 +303,7 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                               dateTime = v;
                             });
                           },
-                          onChangedDate: (v) {
-
-                          },
+                          onChangedDate: (v) {},
                         ),
                       ],
                     ),

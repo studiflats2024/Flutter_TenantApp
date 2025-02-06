@@ -6,10 +6,13 @@ import 'package:vivas/apis/errors/error_api_model.dart';
 import 'package:vivas/apis/models/_base/base_model.dart';
 import 'package:vivas/apis/models/meta/paging_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/activity_details_send.dart';
+import 'package:vivas/feature/Community/Data/Models/SendModels/enroll_activity_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/invite_frind_send_model.dart';
+import 'package:vivas/feature/Community/Data/Models/SendModels/paginated_club_activity_model.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/pay_subscription_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/activity_details_model.dart';
 import 'package:vivas/feature/Community/Data/Models/club_activity_model.dart';
+import 'package:vivas/feature/Community/Data/Models/my_plan_model.dart';
 import 'package:vivas/feature/Community/Data/Models/plan_details_model.dart';
 import 'package:vivas/feature/Community/Data/Models/plan_subscribe_model.dart';
 import 'package:vivas/feature/Community/Data/Models/subscription_plans_model.dart';
@@ -124,12 +127,28 @@ class CommunityManager {
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
         .get(
-      ApiKeys.getCommunityPlanDetails,
+      ApiKeys.getCommunityQr,
     )
         .then((response) async {
       List extractedData = response.data as List;
       List<String> wrapper = extractedData.map((x) => x.toString()).toList();
       success(wrapper);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(
+        error: error,
+      ));
+    });
+  }
+
+  Future<void> getDoorLock(
+      void Function(String) success, void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio
+        .get(
+      ApiKeys.openDoorLock,
+    )
+        .then((response) async {
+      String doorLock = response.data as String;
+      success(doorLock);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
         error: error,
@@ -182,6 +201,41 @@ class CommunityManager {
       BaseMessageModel baseModel =
           baseMessageModelFromJson(json.encode(extractedData));
       success(baseModel);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(
+        error: error,
+      ));
+    });
+  }
+
+  Future<void> getMyPlan(void Function(MyPlanModel) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio.get(ApiKeys.getMyPlan).then((response) async {
+      Map<String, dynamic> extractedData =
+          response.data as Map<String, dynamic>;
+      MyPlanModel plan = myPlanModelFromJson(json.encode(extractedData));
+      success(plan);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(
+        error: error,
+      ));
+    });
+  }
+
+  Future<void> enrollActivity(
+      EnrollActivitySendModel model,
+      void Function(BaseMessageModel) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio
+        .post(
+      ApiKeys.enrollActivity,
+      data: model.toMap(),
+    ).then((response) async {
+      Map<String, dynamic> extractedData =
+          response.data as Map<String, dynamic>;
+      BaseMessageModel data =
+          baseMessageModelFromJson(json.encode(extractedData));
+      success(data);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
         error: error,

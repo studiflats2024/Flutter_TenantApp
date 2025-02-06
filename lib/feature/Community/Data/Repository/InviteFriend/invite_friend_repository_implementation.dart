@@ -27,4 +27,17 @@ class InviteFriendRepositoryImplementation implements InviteFriendRepository {
 
     return state;
   }
+
+  @override
+  Future<InviteFrindesState> getMyPlan() async {
+    InviteFrindesState state = InviteFrindesInitial();
+
+    await communityManager.getMyPlan((details) {
+      state = GetMyPlanState(details);
+    }, (fail) {
+      state =
+          ErrorInviteFriendState(fail.message, fail.isMessageLocalizationKey);
+    });
+    return state;
+  }
 }

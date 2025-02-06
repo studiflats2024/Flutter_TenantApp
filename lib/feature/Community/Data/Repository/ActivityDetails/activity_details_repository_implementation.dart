@@ -1,5 +1,6 @@
 import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/activity_details_send.dart';
+import 'package:vivas/feature/Community/Data/Models/SendModels/enroll_activity_send_model.dart';
 import 'package:vivas/feature/Community/Data/Repository/ActivityDetails/activity_details_repository.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/ActivityDetails/activity_details_bloc.dart';
 
@@ -16,6 +17,18 @@ class ActivityDetailsRepositoryImplementation
     await communityManager.getActivityDetails(activityDetailsSendModel,
         (detailsModel) {
       activityDetailsState = GetActivityDetailsState(detailsModel);
+    }, (fail) {
+      activityDetailsState = ActivityDetailsErrorState(
+          fail.message, fail.isMessageLocalizationKey);
+    });
+    return activityDetailsState;
+  }
+
+  @override
+  Future<ActivityDetailsState> enroll(EnrollActivitySendModel model) async {
+    ActivityDetailsState activityDetailsState = ActivityDetailsInitial();
+    await communityManager.enrollActivity(model, (response) {
+      activityDetailsState = SuccessEnrollState(response);
     }, (fail) {
       activityDetailsState = ActivityDetailsErrorState(
           fail.message, fail.isMessageLocalizationKey);

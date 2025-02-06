@@ -1,9 +1,10 @@
 import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/pay_subscription_send_model.dart';
+import 'package:vivas/feature/Community/Data/Repository/PayRepository/pay_repository.dart';
 import 'package:vivas/feature/Community/Data/Repository/Plans/PlanDetails/plan_details_repository.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/Plans/PlanDetails/plan_details_bloc.dart';
 
-class PlanDetailsRepositoryImplementation extends PlanDetailsRepository {
+class PlanDetailsRepositoryImplementation implements PlanDetailsRepository , PayRepository<PlanDetailsState>{
   CommunityManager communityManager;
 
   PlanDetailsRepositoryImplementation(this.communityManager);

@@ -3,17 +3,23 @@ part of 'activity_details_bloc.dart';
 @immutable
 sealed class ActivityDetailsState {}
 
-final class ActivityDetailsInitial extends ActivityDetailsState {}
+class ActivityDetailsInitial extends ActivityDetailsState {}
 
-final class ActivityDetailsLoadingState extends ActivityDetailsState {}
+class ActivityDetailsLoadingState extends ActivityDetailsState {}
 
-final class GetActivityDetailsState extends ActivityDetailsState {
-  ActivityDetailsModel activityDetailsModel;
+class GetActivityDetailsState extends ActivityDetailsState {
+  final ActivityDetailsModel activityDetailsModel;
 
   GetActivityDetailsState(this.activityDetailsModel);
 }
 
-final class ActivityDetailsErrorState extends ActivityDetailsState {
+class SuccessEnrollState extends ActivityDetailsState {
+  final BaseMessageModel model;
+
+  SuccessEnrollState(this.model);
+}
+
+class ActivityDetailsErrorState extends ActivityDetailsState {
   final String errorMassage;
   final bool isLocalizationKey;
 

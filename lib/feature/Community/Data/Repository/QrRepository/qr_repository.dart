@@ -2,4 +2,6 @@ import 'package:vivas/feature/Community/presentations/ViewModel/QrDetails/qr_blo
 
 abstract class QrRepository {
   Future<QrState> getQrDetails();
+
+  Future<QrState> openDoorLock();
 }

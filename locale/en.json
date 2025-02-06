@@ -646,6 +646,9 @@
   "days" : "Days",
   "my_qr_code" : "My Qr Code",
   "subscription" : "Subscription",
-  "invitation_sent" : "Your Invitation has been sent"
+  "invitation_sent" : "Your Invitation has been sent",
+  "features" : "Features",
+  "upgrade_now" : "Upgrade Now",
+  "generate_door_lock" : "Open DoorLock"
 
 }

@@ -18,4 +18,15 @@ class QrRepositoryImplementation implements QrRepository {
     return qrState;
   }
 
+  @override
+  Future<QrState> openDoorLock() async{
+    QrState qrState = QrInitial();
+    await communityManager.getDoorLock((details) {
+      qrState = OpenDoorLockState(details);
+    }, (fail) {
+      qrState = QrErrorState(fail.message, fail.isMessageLocalizationKey);
+    });
+    return qrState;
+  }
+
 }

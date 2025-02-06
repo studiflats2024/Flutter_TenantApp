@@ -162,9 +162,12 @@ class ApiKeys {
   static const getCommunityPaginatedActivities = '$baseApiUrl/Gateway/GetPaginatedActivites';
   static const getCommunitySubscriptionsPlan = '$baseApiUrl/Gateway/GetSubscriptionPlans';
   static const getCommunityQr = '$baseApiUrl/Gateway/GetMyQr';
+  static const openDoorLock = '$baseApiUrl/Gateway/OpenDoorLock';
   static const getCommunityActivityDetails = '$baseApiUrl/Gateway/GetActivityDetails';
   static const getCommunityPlanDetails = '$baseApiUrl/Gateway/GetPlanDetails';
   static const subscribePlan = '$baseApiUrl/Gateway/Subscripe_to_Plan';
   static const paySubscribePlan = '$baseApiUrl/Gateway/PaySubscription_Invoice';
   static const inviteFriend = '$baseApiUrl/Gateway/InviteFriend';
+  static const getMyPlan = '$baseApiUrl/Gateway/GetMyPlan';
+  static const enrollActivity = '$baseApiUrl/Gateway/Enroll_Activity';
 }

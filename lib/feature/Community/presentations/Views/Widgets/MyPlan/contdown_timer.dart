@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
@@ -11,7 +11,10 @@ import 'package:vivas/res/font_size.dart';
 import 'package:vivas/utils/size_manager.dart';
 
 class CountdownTimer extends BaseStatefulScreenWidget {
-  const CountdownTimer({super.key});
+  final String endDate;
+  final String planName;
+
+  const CountdownTimer(this.endDate, this.planName, {super.key});
 
   @override
   BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() =>
@@ -28,9 +31,7 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
   @override
   void initState() {
     super.initState();
-
-    // Set the target end time (7 days and 11 hours from now)
-    endTime = DateTime.now().add(const Duration(days: 7,hours: 0, minutes: 0));
+    endTime = DateFormat("dd/MM/yyy").parse(widget.endDate);
     dateTimeRange = DateTimeRange(start: DateTime.now(), end: endTime);
     totalDuration = dateTimeRange.duration;
     _updateRemainingTime(); // Initialize remaining time
@@ -99,7 +100,7 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
             TextApp(
               fontSize: FontSize.fontSize14,
               color: AppColors.textMainColor,
-              text: "Only 7 days left in your free trial! ",
+              text: "Only 7 days left in your ${widget.planName}! ",
             ),
             SizedBox(
               height: SizeManager.sizeSp24,
@@ -265,5 +266,4 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
       ),
     );
   }
-
 }

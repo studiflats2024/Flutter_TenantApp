@@ -43,22 +43,22 @@ class ActivityDetailsHeader extends BaseStatelessWidget
     systemOverlayStyle:
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
     leadingWidth: 60.r,
-    actions: [
-      CircleAvatar(
-        backgroundColor: AppColors.textWhite,
-        child: SvgPicture.asset(AppAssetPaths.communityShareIcon),
-      ),
-      SizedBox(
-        width: SizeManager.sizeSp8,
-      ),
-      CircleAvatar(
-        backgroundColor: AppColors.textWhite,
-        child: SvgPicture.asset(AppAssetPaths.communityFav),
-      ),
-      SizedBox(
-        width: SizeManager.sizeSp16,
-      ),
-    ],
+    // actions: [
+    //   CircleAvatar(
+    //     backgroundColor: AppColors.textWhite,
+    //     child: SvgPicture.asset(AppAssetPaths.communityShareIcon),
+    //   ),
+    //   SizedBox(
+    //     width: SizeManager.sizeSp8,
+    //   ),
+    //   CircleAvatar(
+    //     backgroundColor: AppColors.textWhite,
+    //     child: SvgPicture.asset(AppAssetPaths.communityFav),
+    //   ),
+    //   SizedBox(
+    //     width: SizeManager.sizeSp16,
+    //   ),
+    // ],
   );
 
   @override

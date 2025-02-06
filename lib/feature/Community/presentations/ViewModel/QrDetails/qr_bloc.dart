@@ -11,10 +11,16 @@ class QrBloc extends Bloc<QrEvent, QrState> {
 
   QrBloc(this.qrRepository) : super(QrInitial()) {
     on<GetQrDetails>(_getQrDetails);
+    on<GetDoorLock>(_openDoorLock);
   }
 
   _getQrDetails(GetQrDetails event, Emitter<QrState> emit) async {
     emit(QrLoadingState());
     emit(await qrRepository.getQrDetails());
+  }
+
+  _openDoorLock(GetDoorLock event, Emitter<QrState> emit) async {
+    emit(QrLoadingState());
+    emit(await qrRepository.openDoorLock());
   }
 }

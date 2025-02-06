@@ -9,3 +9,5 @@ class InviteFriendEvent extends InviteFrindesEvent{
 
   InviteFriendEvent(this.model);
 }
+
+class GetMyPlanEvent extends InviteFrindesEvent{}

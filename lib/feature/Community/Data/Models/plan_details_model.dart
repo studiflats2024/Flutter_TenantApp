@@ -21,6 +21,10 @@ class PlanDetailsModel {
   List<String>? planFeatures;
   num? planDurationInMonths;
   bool? isTrial;
+  String? startDate;
+  String? endDate;
+  String? subscriptionStatus;
+  String? paymentInvoiceId;
 
   PlanDetailsModel({
     this.id,
@@ -35,6 +39,10 @@ class PlanDetailsModel {
     this.planFeatures,
     this.planDurationInMonths,
     this.isTrial,
+    this.startDate,
+    this.endDate,
+    this.paymentInvoiceId,
+    this.subscriptionStatus,
   });
 
   factory PlanDetailsModel.fromJson(Map<String, dynamic> json) => PlanDetailsModel(
@@ -50,6 +58,10 @@ class PlanDetailsModel {
     planFeatures: json["plan_Features"] == null ? [] : List<String>.from(json["plan_Features"]!.map((x) => x)),
     planDurationInMonths: json["planDurationInMonths"],
     isTrial: json["is_Trial"],
+    startDate: json["start_Date"],
+    endDate: json["end_Date"],
+    subscriptionStatus: json["subscription_Status"],
+    paymentInvoiceId: json["payment_Invoice_ID"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -65,5 +77,9 @@ class PlanDetailsModel {
     "plan_Features": planFeatures == null ? [] : List<dynamic>.from(planFeatures!.map((x) => x)),
     "planDurationInMonths": planDurationInMonths,
     "is_Trial": isTrial,
+    "start_Date": startDate,
+    "end_Date": endDate,
+    "subscription_Status": subscriptionStatus,
+    "payment_Invoice_ID": paymentInvoiceId,
   };
 }

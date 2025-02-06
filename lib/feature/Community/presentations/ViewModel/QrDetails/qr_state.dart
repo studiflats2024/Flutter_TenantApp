@@ -3,16 +3,21 @@ part of 'qr_bloc.dart';
 @immutable
 sealed class QrState {}
 
-final class QrInitial extends QrState {}
+class QrInitial extends QrState {}
 
-final class QrLoadingState extends QrState {}
+class QrLoadingState extends QrState {}
 
-final class QrLoadedState extends QrState {
-  List<String> details;
+class QrLoadedState extends QrState {
+  final List<String> details;
   QrLoadedState(this.details);
 }
 
-final class QrErrorState extends QrState {
+class OpenDoorLockState extends QrState {
+   final String doorLock;
+  OpenDoorLockState(this.doorLock);
+}
+
+class QrErrorState extends QrState {
   final String errorMassage;
   final bool isLocalizationKey;
 

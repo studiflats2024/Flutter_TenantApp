@@ -23,7 +23,7 @@ class InviteFriendSendModel {
       "friend_Name": name,
       "friend_Mail": email,
       "friend_Phone": phone,
-      "invitation_Date": invitationDate
+      "invitation_Date": invitationDate?.toIso8601String()
     };
   }
 }

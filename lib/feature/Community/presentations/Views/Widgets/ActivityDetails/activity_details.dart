@@ -1,3 +1,4 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +11,7 @@ import 'package:vivas/apis/_base/dio_api_manager.dart';
 import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
 import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/activity_details_send.dart';
+import 'package:vivas/feature/Community/Data/Models/SendModels/enroll_activity_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/activity_details_model.dart';
 import 'package:vivas/feature/Community/Data/Repository/ActivityDetails/activity_details_repository_implementation.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/ActivityDetails/activity_details_bloc.dart';
@@ -104,6 +106,15 @@ class _ActivityDetailsWithBloc
 
           if (state is GetActivityDetailsState) {
             activityDetailsModel = state.activityDetailsModel;
+          } else if (state is SuccessEnrollState) {
+            ArtSweetAlert.show(
+              context: context,
+              artDialogArgs: ArtDialogArgs(
+                type: ArtSweetAlertType.success,
+                title: "you are enroll successfully now",
+                text: "You can see the activity in your activity now",
+              ),
+            );
           }
         },
         builder: (context, state) {
@@ -379,7 +390,19 @@ class _ActivityDetailsWithBloc
         height: 110.r,
         child: SubmitButtonWidget(
           title: translate(LocalizationKeys.enrollNow)!,
-          onClicked: () {},
+          onClicked: () {
+            if (activityDetailsModel.activityType !=
+                ActivitiesType.consultant) {
+              currentBloc.add(
+                EnrollEvent(
+                  EnrollActivitySendModel(
+                    activityDetailsModel.activityId ?? '',
+                    activityDetailsModel.activityType!,
+                  ),
+                ),
+              );
+            }
+          },
           withoutShape: true,
           decoration: const BoxDecoration(
               color: AppColors.textWhite,

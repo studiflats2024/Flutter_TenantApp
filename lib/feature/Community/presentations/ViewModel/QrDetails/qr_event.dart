@@ -4,3 +4,5 @@ part of 'qr_bloc.dart';
 sealed class QrEvent {}
 
 class GetQrDetails extends QrEvent {}
+
+class GetDoorLock extends QrEvent {}
