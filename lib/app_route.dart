@@ -7,6 +7,7 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/my_plan.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/pay_subscription.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/plan_details.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_history.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/QrDetails/qr_details.dart';
 import 'package:vivas/feature/app_pages/screen/faq_list_screen.dart';
 import 'package:vivas/feature/app_pages/screen/privacy_privacy_screen.dart';
@@ -85,7 +86,6 @@ import 'package:vivas/feature/unit_list/screen/unit_list_screen.dart';
 import 'package:vivas/feature/widgets/MaintenanceApp/maintenance_app.dart';
 import 'package:vivas/feature/wishlist/screen/wishlist_screen.dart';
 import 'package:vivas/welcome_screen.dart';
-
 import 'feature/payment/screen/success_payment_screen_v2.dart';
 import 'feature/profile/edit_personal_information/otp/profile_otp_screen.dart';
 
@@ -188,5 +188,6 @@ class AppRoute {
     WishlistScreen.routeName: (ctx) => WishlistScreen(),
     PlanDetails.routeName: (ctx) => PlanDetails(),
     PaySubscription.routeName: (ctx) => PaySubscription(),
+    PlanHistory.routeName: (ctx) => PlanHistory()
   };
 }

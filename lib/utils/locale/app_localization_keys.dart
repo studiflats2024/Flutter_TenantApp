@@ -725,5 +725,8 @@ class LocalizationKeys {
   static const features = "features";
   static const upgradeNow = "upgrade_now";
   static const generateDoorLock = "generate_door_lock";
+  static const paymentHistory = "payment_history";
+  static const planPrice = "plan_price";
+  static const vat = "vat";
 }
 

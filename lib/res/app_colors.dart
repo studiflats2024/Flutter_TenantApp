@@ -57,8 +57,8 @@ class AppColors {
   static const colorPrimary = _toryBlue;
   static const colorPrimaryLight = Color(0xFFF6F9FE);
   static const focus = colorPrimary;
-  // static const scaffoldBackground = _wildSand;
   static const scaffoldBackground = _white;
+   static const scaffoldBackground2 = _wildSand;
   static const iconTheme = colorPrimary;
   static const placeholder = _nobel;
 

@@ -18,6 +18,7 @@ import 'package:vivas/feature/Community/Data/Repository/MyPlan/my_plan_repositor
 import 'package:vivas/feature/Community/presentations/ViewModel/MyPlan/my_plan_bloc.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/contdown_timer.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/pay_subscription.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_history.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
@@ -124,6 +125,18 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                 AppAssetPaths.backIcon,
               ),
             ),
+            actions: [
+              InkWell(
+                onTap: () {
+                  PlanHistory.open(context);
+                },
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: SizeManager.sizeSp8),
+                  child: SvgPicture.asset(AppAssetPaths.communityFilterIcon),
+                ),
+              )
+            ],
             title: TextApp(
               text: LocalizationKeys.myPlan,
               multiLang: true,
@@ -138,8 +151,7 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                   color: AppColors.textWhite,
                   borderRadius: BorderRadius.all(SizeManager.circularRadius10),
                   border: Border(
-                    top: BorderSide(
-                        color: getColor(planModel), width: 4.r),
+                    top: BorderSide(color: getColor(planModel), width: 4.r),
                   ),
                   boxShadow: const [
                     BoxShadow(
@@ -166,7 +178,7 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                           decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(SizeManager.circularRadius10),
-                            color:  getColor(planModel).withOpacity(0.1),
+                            color: getColor(planModel).withOpacity(0.1),
                           ),
                           child: SvgPicture.asset(
                             getAsset(planModel),

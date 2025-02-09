@@ -649,6 +649,8 @@
   "invitation_sent" : "Your Invitation has been sent",
   "features" : "Features",
   "upgrade_now" : "Upgrade Now",
-  "generate_door_lock" : "Open DoorLock"
-
+  "generate_door_lock" : "Open DoorLock",
+  "payment_history": "Payment History",
+  "plan_price" : "Plan Price",
+  "vat" : "Vat"
 }
