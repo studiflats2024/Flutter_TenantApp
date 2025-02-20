@@ -8,10 +8,13 @@ import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/res/font_size.dart';
+import 'package:vivas/utils/locale/app_localization_keys.dart';
 import 'package:vivas/utils/size_manager.dart';
 
 // ignore: must_be_immutable
 class ActivityDetailsSubHeader extends BaseStatelessWidget {
+  bool fromMyActivity;
+
   ActivityDetailsModel activityDetailsModel;
   List<String> images = [
     AppAssetPaths.profileDefaultAvatar,
@@ -21,7 +24,8 @@ class ActivityDetailsSubHeader extends BaseStatelessWidget {
     AppAssetPaths.communityAddIcon
   ];
 
-  ActivityDetailsSubHeader({
+  ActivityDetailsSubHeader(
+    this.fromMyActivity, {
     required this.activityDetailsModel,
     super.key,
   });
@@ -61,7 +65,7 @@ class ActivityDetailsSubHeader extends BaseStatelessWidget {
               children: [
                 SvgPicture.asset(AppAssetPaths.rateIcon),
                 TextApp(
-                  text:"${activityDetailsModel.activityRating??0.0}",
+                  text: "${activityDetailsModel.activityRating ?? 0.0}",
                   fontSize: FontSize.fontSize14,
                   overflow: TextOverflow.ellipsis,
                   color: AppColors.textNatural700,
@@ -70,6 +74,49 @@ class ActivityDetailsSubHeader extends BaseStatelessWidget {
             ),
           ],
         ),
+        if (fromMyActivity) ...[
+          Column(
+            children: [
+              SizedBox(
+                height: SizeManager.sizeSp12,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: AppColors.cardBorderPrimary100,
+                  ),
+                  borderRadius: BorderRadius.all(
+                    SizeManager.circularRadius8,
+                  ),
+                ),
+                padding: EdgeInsets.symmetric(
+                    horizontal: SizeManager.sizeSp16,
+                    vertical: SizeManager.sizeSp8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        SvgPicture.asset(AppAssetPaths.rateIcon, width: 20.r,height: 20.r,),
+                        SizedBox(
+                          width: SizeManager.sizeSp8,
+                        ),
+                        TextApp(
+                          text:
+                              "${translate(LocalizationKeys.rateThis)} ${activityDetailsModel.activityType?.filter}",
+                          fontSize: FontSize.fontSize16,
+                          color: AppColors.textMainColor,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ],
+                    ),
+                    SvgPicture.asset(AppAssetPaths.forwardIcon)
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
         SizedBox(
           height: SizeManager.sizeSp12,
         ),

@@ -728,5 +728,25 @@ class LocalizationKeys {
   static const paymentHistory = "payment_history";
   static const planPrice = "plan_price";
   static const vat = "vat";
+  static const leaveRating = "leave_a_rating";
+  static const howIsYourExperience = "how_is_your_experience";
+  static const yourOverallRating = "your_overall_rating";
+  static const addDetailedReview = "add_detailed_review";
+  static const submit = "submit";
+  static const chooseTime = "choose_time";
+  static const viewSchedule = "view_schedule";
+  static const availableTime = "available_time";
+  static const confirmRequest = "confirm_request";
+  static const emptyActivityTitle = "empty_activity_title";
+  static const emptyActivityDesc = "empty_activity_desc";
+  static const bedsLeft = "beds_left";
+  static const goToMyActivity = "go_to_my_activity";
+  static const viewPlans = "view_plans";
+  static const unHaveSubscription = "un_have_subscription";
+  static const enrollSuccessMessage = "enroll_success_title";
+  static const alreadyEnrolled = "already_enrolled";
+  static const rateThis = "rate_this";
+  static const plans = "plans";
+  static const getStarted = "get_started";
 }
 

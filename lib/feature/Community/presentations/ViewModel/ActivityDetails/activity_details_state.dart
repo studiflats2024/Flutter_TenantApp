@@ -19,6 +19,18 @@ class SuccessEnrollState extends ActivityDetailsState {
   SuccessEnrollState(this.model);
 }
 
+class ChooseDayTimeState extends ActivityDetailsState {
+  final ConsultDay day;
+
+  ChooseDayTimeState(this.day);
+}
+
+class ChooseTimeState extends ActivityDetailsState {
+  final String time;
+
+  ChooseTimeState(this.time);
+}
+
 class ActivityDetailsErrorState extends ActivityDetailsState {
   final String errorMassage;
   final bool isLocalizationKey;

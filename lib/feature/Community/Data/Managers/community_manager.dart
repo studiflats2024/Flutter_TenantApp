@@ -8,12 +8,18 @@ import 'package:vivas/apis/models/meta/paging_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/activity_details_send.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/enroll_activity_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/invite_frind_send_model.dart';
+import 'package:vivas/feature/Community/Data/Models/SendModels/my_activity_rating_send_model.dart';
+import 'package:vivas/feature/Community/Data/Models/SendModels/my_activity_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/paginated_club_activity_model.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/pay_subscription_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/activity_details_model.dart';
 import 'package:vivas/feature/Community/Data/Models/club_activity_model.dart';
+import 'package:vivas/feature/Community/Data/Models/invitations_history_model.dart';
+import 'package:vivas/feature/Community/Data/Models/invoice_club_details_model.dart';
+import 'package:vivas/feature/Community/Data/Models/my_activity_response.dart';
 import 'package:vivas/feature/Community/Data/Models/my_plan_model.dart';
 import 'package:vivas/feature/Community/Data/Models/plan_details_model.dart';
+import 'package:vivas/feature/Community/Data/Models/plan_history_model.dart';
 import 'package:vivas/feature/Community/Data/Models/plan_subscribe_model.dart';
 import 'package:vivas/feature/Community/Data/Models/subscription_plans_model.dart';
 
@@ -230,11 +236,143 @@ class CommunityManager {
         .post(
       ApiKeys.enrollActivity,
       data: model.toMap(),
+    )
+        .then((response) async {
+      Map<String, dynamic> extractedData =
+          response.data as Map<String, dynamic>;
+      BaseMessageModel data =
+          baseMessageModelFromJson(json.encode(extractedData));
+      success(data);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(
+        error: error,
+      ));
+    });
+  }
+
+  Future<void> myActivity(
+      MyActivitySendModel model,
+      void Function(MyActivityResponse) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio
+        .get(
+      ApiKeys.getMyActivity,
+      queryParameters: model.toMap(),
+    )
+        .then((response) async {
+      Map<String, dynamic> extractedData =
+          response.data as Map<String, dynamic>;
+      MyActivityResponse data =
+          myActivityResponseFromJson(json.encode(extractedData));
+      success(data);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(
+        error: error,
+      ));
+    });
+  }
+
+  Future<void> unEnrollActivity(
+      String id,
+      void Function(BaseMessageModel) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio.get(
+      ApiKeys.unEnrollActivity,
+      queryParameters: {"ID": id},
     ).then((response) async {
       Map<String, dynamic> extractedData =
           response.data as Map<String, dynamic>;
       BaseMessageModel data =
           baseMessageModelFromJson(json.encode(extractedData));
+      success(data);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(
+        error: error,
+      ));
+    });
+  }
+
+  Future<void> reviewActivity(
+      MyActivityRatingSendModel model,
+      void Function(BaseMessageModel) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio
+        .post(
+      ApiKeys.reviewActivity,
+      data: model.toMap(),
+    )
+        .then((response) async {
+      Map<String, dynamic> extractedData =
+          response.data as Map<String, dynamic>;
+      BaseMessageModel data =
+          baseMessageModelFromJson(json.encode(extractedData));
+      success(data);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(
+        error: error,
+      ));
+    });
+  }
+
+  Future<void> planHistoryTransaction(
+      PagingListSendModel model,
+      void Function(PlanHistoryModel) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio.get(
+      ApiKeys.getPlanTransactions,
+      queryParameters: {
+        "Page_No": model.pageNumber,
+        "Page_Size": model.pageSize
+      },
+    ).then((response) async {
+      Map<String, dynamic> extractedData =
+          response.data as Map<String, dynamic>;
+      PlanHistoryModel data =
+          planHistoryModelFromJson(json.encode(extractedData));
+      success(data);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(
+        error: error,
+      ));
+    });
+  }
+  Future<void> planTransactionDetails(
+      String id,
+      void Function(InvoiceClubDetailsModel) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio.get(
+      ApiKeys.getPlanTransactionDetails,
+      queryParameters: {
+        "Invoice_ID": id,
+      },
+    ).then((response) async {
+      Map<String, dynamic> extractedData =
+          response.data as Map<String, dynamic>;
+      InvoiceClubDetailsModel data =
+          invoiceClubDetailsModelFromJson(json.encode(extractedData));
+      success(data);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(
+        error: error,
+      ));
+    });
+  }
+
+  Future<void> invitationsHistory(
+      PagingListSendModel model,
+      void Function(InvitationsHistoryModel) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio.get(
+      ApiKeys.getInvitationsHistory,
+      queryParameters: {
+        "Page_No": model.pageNumber,
+        "Page_Size": model.pageSize
+      },
+    ).then((response) async {
+      Map<String, dynamic> extractedData =
+          response.data as Map<String, dynamic>;
+      InvitationsHistoryModel data =
+          invitationsHistoryModelFromJson(json.encode(extractedData));
       success(data);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(

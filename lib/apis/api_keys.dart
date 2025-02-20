@@ -21,7 +21,8 @@ class ApiKeys {
   static const baseStagingUrl = "https://stageapi.studiflats.com";
   static const baseProductionUrl = "https://api.studiflats.com";
 
-  static final currentEnvironment = isDevMode() ? baseDevUrl : baseProductionUrl;
+  static final currentEnvironment =
+      isDevMode() ? baseDevUrl : baseProductionUrl;
 
   static const apiKeyUrl = "api";
   static const baseApiUrl = '/$apiKeyUrl';
@@ -153,21 +154,34 @@ class ApiKeys {
   static const extendContractUrl = '$baseApiUrl/ApartmentV2/Extend_Contract';
   static const gVersionUrl = '$baseApiUrl/Basics/GetAppVersion';
   static const ssoLoginUrl = '$baseApiUrl/Users/sso-login';
-  static const getExtendContract = '$baseApiUrl/ApartmentV2/Get_Extend_Booking_Contract';
-  static const signExtendContract = '$baseApiUrl/ApartmentV2/Sign_Extend_Request_Contract';
-  static const changeCheckOutDate = '$baseApiUrl/ApartmentV2/UpdateCheckout_Date';
+  static const getExtendContract =
+      '$baseApiUrl/ApartmentV2/Get_Extend_Booking_Contract';
+  static const signExtendContract =
+      '$baseApiUrl/ApartmentV2/Sign_Extend_Request_Contract';
+  static const changeCheckOutDate =
+      '$baseApiUrl/ApartmentV2/UpdateCheckout_Date';
 
   //================================== Community ===============================
-  static const getCommunityMonthlyActivities = '$baseApiUrl/Gateway/GetMonthly_Activites';
-  static const getCommunityPaginatedActivities = '$baseApiUrl/Gateway/GetPaginatedActivites';
-  static const getCommunitySubscriptionsPlan = '$baseApiUrl/Gateway/GetSubscriptionPlans';
+  static const getCommunityMonthlyActivities =
+      '$baseApiUrl/Gateway/GetMonthly_Activites';
+  static const getCommunityPaginatedActivities =
+      '$baseApiUrl/Gateway/GetPaginatedActivites';
+  static const getCommunitySubscriptionsPlan =
+      '$baseApiUrl/Gateway/GetSubscriptionPlans';
   static const getCommunityQr = '$baseApiUrl/Gateway/GetMyQr';
   static const openDoorLock = '$baseApiUrl/Gateway/OpenDoorLock';
-  static const getCommunityActivityDetails = '$baseApiUrl/Gateway/GetActivityDetails';
+  static const getCommunityActivityDetails =
+      '$baseApiUrl/Gateway/GetActivityDetails';
   static const getCommunityPlanDetails = '$baseApiUrl/Gateway/GetPlanDetails';
   static const subscribePlan = '$baseApiUrl/Gateway/Subscripe_to_Plan';
   static const paySubscribePlan = '$baseApiUrl/Gateway/PaySubscription_Invoice';
   static const inviteFriend = '$baseApiUrl/Gateway/InviteFriend';
   static const getMyPlan = '$baseApiUrl/Gateway/GetMyPlan';
   static const enrollActivity = '$baseApiUrl/Gateway/Enroll_Activity';
+  static const getMyActivity = '$baseApiUrl/Gateway/GetMyActivity';
+  static const unEnrollActivity = '$baseApiUrl/Gateway/UnEnroll';
+  static const reviewActivity = '$baseApiUrl/Gateway/ReviewActivity';
+  static const getPlanTransactions = '$baseApiUrl/Gateway/GetClub_Invoice_User';
+  static const getPlanTransactionDetails = '$baseApiUrl/Gateway/GetClub_Invoice_Details';
+  static const getInvitationsHistory = '$baseApiUrl/Gateway/GetInvitations_Histroy';
 }

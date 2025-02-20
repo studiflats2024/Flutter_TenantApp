@@ -260,9 +260,7 @@ class BookingDetailsModel {
   }
 
   bool get isSelfie {
-    return (guests?.isNotEmpty ?? false) &&
-        guests?[guestIndex].identityStatus != "Rejected" &&
-        guests?[guestIndex].identityStatus != "Approved";
+    return (guests?.isNotEmpty ?? false) && guests?[guestIndex].identityStatus == "Approved";
   }
 
   bool get paidRent {
@@ -468,7 +466,7 @@ class BookingDetailsModel {
 
   bool get guestNeedToUploadProfileImage {
     return (guests?.isNotEmpty ?? false) &&
-        (guests?[guestIndex].guestImageUploaded ?? true);
+        !(guests?[guestIndex].guestImageUploaded ?? true);
   }
 
   bool get readyToCheckout {

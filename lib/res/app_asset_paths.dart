@@ -131,6 +131,10 @@ class AppAssetPaths {
   static const communityInvoiceIcon = 'assets/icons/community/community_invoice_icon.svg';
   static const communityArrowUp = 'assets/icons/community/community_arrow_up.svg';
   static const communityDownloadIcon = 'assets/icons/community/community_download_icon.svg';
+  static const communityRateOutline = 'assets/icons/community/community_rate_outline.svg';
+  static const communityNoActivities = 'assets/icons/community/no_activities.svg';
+  static const communityIconSuccess = 'assets/icons/community/community_icon_success.svg';
+  static const communityIconViewPlans = 'assets/icons/community/community_icon_view_plans.svg';
 
   static const imageMonthlyActivities = 'assets/images/monthly_activities.png';
   static const aboutCommunity = 'assets/images/about.png';

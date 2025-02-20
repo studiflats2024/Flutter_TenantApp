@@ -14,6 +14,7 @@ class ActivityDetailsModel {
   String? activityName;
   String? activityDescription;
   num? activitySeats;
+  num? availableSeats;
   String? activityLocation;
   String? activityDate;
   num? activityRating;
@@ -24,6 +25,9 @@ class ActivityDetailsModel {
   List<SessionsCourseWorkshop>? sessionsCourseWorkshop;
   List<Rating>? ratings;
   List<SessionsConsult>? sessionsConsults;
+  List<ConsultDay>? consultDays;
+  bool? hasEnrolled;
+  bool? hasPlan;
 
   ActivityDetailsModel({
     this.activityId,
@@ -32,6 +36,7 @@ class ActivityDetailsModel {
     this.activityName,
     this.activityDescription,
     this.activitySeats,
+    this.availableSeats,
     this.activityLocation,
     this.activityDate,
     this.activityRating,
@@ -42,6 +47,9 @@ class ActivityDetailsModel {
     this.sessionsCourseWorkshop,
     this.ratings,
     this.sessionsConsults,
+    this.consultDays,
+    this.hasEnrolled,
+    this.hasPlan,
   });
 
   factory ActivityDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -54,6 +62,7 @@ class ActivityDetailsModel {
         activityName: json["activity_Name"],
         activityDescription: json["activity_Description"],
         activitySeats: json["activity_Seats"],
+        availableSeats: num.parse(json["available_Seats"]),
         activityLocation: json["activity_Location"],
         activityDate: json["activity_Date"],
         activityRating: json["activity_Rating"],
@@ -76,6 +85,12 @@ class ActivityDetailsModel {
             ? []
             : List<SessionsConsult>.from(json["sessions_Consults"]!
                 .map((x) => SessionsConsult.fromJson(x))),
+        consultDays: json["consult_Days"] == null
+            ? []
+            : List<ConsultDay>.from(
+                json["consult_Days"]!.map((x) => ConsultDay.fromJson(x))),
+        hasEnrolled: json["has_Enrolled"] ?? false,
+        hasPlan: json["has_Plan"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {
@@ -85,6 +100,7 @@ class ActivityDetailsModel {
         "activity_Name": activityName,
         "activity_Description": activityDescription,
         "activity_Seats": activitySeats,
+        "available_Seats": availableSeats,
         "activity_Location": activityLocation,
         "activity_Date": activityDate,
         "activity_Rating": activityRating,
@@ -104,6 +120,8 @@ class ActivityDetailsModel {
         "sessions_Consults": sessionsConsults == null
             ? []
             : List<dynamic>.from(sessionsConsults!.map((x) => x.toJson())),
+        "has_Enrolled": hasEnrolled,
+        "has_Plan": hasPlan,
       };
 }
 
@@ -226,5 +244,53 @@ class SessionsCourseWorkshop {
         "start_Time": startTime,
         "end_Time": endTime,
         "has_Published": hasPublished,
+      };
+}
+
+class ConsultDay {
+  String? consultDay;
+  DateTime? consultDate;
+  Map<String, ConsultTime>? consultTime;
+
+  ConsultDay({
+    this.consultDay,
+    this.consultDate,
+    this.consultTime,
+  });
+
+  factory ConsultDay.fromJson(Map<String, dynamic> json) => ConsultDay(
+        consultDay: json["consult_Day"],
+        consultDate: json["consult_Date"] == null
+            ? null
+            : DateTime.parse(json["consult_Date"]),
+        consultTime: Map.from(json["consult_Time"]!).map((k, v) =>
+            MapEntry<String, ConsultTime>(k, ConsultTime.fromJson(v))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "consult_Day": consultDay,
+        "consult_Date": consultDate?.toIso8601String(),
+        "consult_Time": Map.from(consultTime!)
+            .map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
+      };
+}
+
+class ConsultTime {
+  String? timeRange;
+  bool? isAvailable;
+
+  ConsultTime({
+    this.timeRange,
+    this.isAvailable,
+  });
+
+  factory ConsultTime.fromJson(Map<String, dynamic> json) => ConsultTime(
+        timeRange: json["timeRange"],
+        isAvailable: json["isAvailable"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "timeRange": timeRange,
+        "isAvailable": isAvailable,
       };
 }

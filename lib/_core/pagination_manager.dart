@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 mixin PaginationManager<M> {
   final List<M> _models = [];
   bool _isLoadingNow = false;
@@ -26,7 +28,7 @@ mixin PaginationManager<M> {
 
   void alignPaginationWithApi(bool hasPrevious, bool hasNext, List<M> models) {
     _setData(hasPrevious, hasNext, models);
-    _fireCallbacks();
+    // _fireCallbacks();
   }
 
   void _setData(bool hasPrevious, bool hasNext, List<M> models) {

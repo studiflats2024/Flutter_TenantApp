@@ -42,7 +42,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   FutureOr<void> _getNotificationCountApiEvent(
       GetNotificationCountApiEvent event, Emitter<HomeState> emit) async {
-    emit(HomeLoadingState());
+    if (event.isFirst) {
+      emit(HomeLoadingState());
+    }
     emit(await homeRepository.getNotificationCountApi());
   }
 
@@ -51,6 +53,4 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(HomeLoadingState());
     emit(await homeRepository.getQrDetailsApi(qrCode: event.qrCode));
   }
-
-
 }

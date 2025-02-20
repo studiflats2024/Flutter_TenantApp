@@ -9,6 +9,7 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
+import 'package:vivas/res/font_size.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
 import 'package:vivas/utils/size_manager.dart';
 
@@ -212,7 +213,12 @@ class _CommunitySubscription extends BaseScreenState<CommunitySubscription> {
                         color: AppColors.colorPrimary,
                       ),
                     ),
-                    TextApp(multiLang: false, text: "/ $type")
+                    TextApp(
+                      multiLang: false,
+                      text: "/ $type",
+                      fontSize: FontSize.fontSize14,
+                      color: AppColors.textNatural700,
+                    )
                   ],
                 ),
                 SizedBox(
@@ -262,4 +268,5 @@ class _CommunitySubscription extends BaseScreenState<CommunitySubscription> {
       ),
     );
   }
+
 }

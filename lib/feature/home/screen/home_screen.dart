@@ -461,8 +461,8 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
     currentBloc.add(const GetSliderInfoApiEvent());
   }
 
-  void _getNotificationCountApi() {
-    currentBloc.add(const GetNotificationCountApiEvent());
+  void _getNotificationCountApi({bool isFirst = true}) {
+    currentBloc.add(GetNotificationCountApiEvent(isFirst: isFirst));
   }
 
   void _getBestOfferInfoApiEvent() {
@@ -509,8 +509,9 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
     }
   }
 
-  void _openNotificationScreen() {
-    NotificationListScreen.open(context);
+  void _openNotificationScreen() async {
+    NotificationListScreen.open(context)
+        .then((value) => _getNotificationCountApi(isFirst: false));
   }
 
   void _openChatScreen() {
@@ -560,12 +561,8 @@ class _HomeScreenWithBloc extends BaseScreenState<HomeScreenWithBloc>
                 onPressed: (model.extendContract?.extendContractSigned ?? false)
                     ? null
                     : () {
-                        SignExtendContractScreen.open(
-                          context,
-                          model.extendContract?.id ?? "",
-                          false,
-                            (){}
-                        );
+                        SignExtendContractScreen.open(context,
+                            model.extendContract?.id ?? "", false, () {});
                       },
                 child: Text(
                   (model.extendContract?.extendContractSigned ?? false)

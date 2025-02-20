@@ -11,3 +11,14 @@ class InviteFriendEvent extends InviteFrindesEvent{
 }
 
 class GetMyPlanEvent extends InviteFrindesEvent{}
+
+class ChooseDateEvent extends InviteFrindesEvent{
+  final DateTime? date;
+  ChooseDateEvent(this.date);
+}
+
+class GetInvitationsHistoryEvent extends InviteFrindesEvent{
+  final PagingListSendModel pagingListSendModel;
+
+  GetInvitationsHistoryEvent(this.pagingListSendModel);
+}

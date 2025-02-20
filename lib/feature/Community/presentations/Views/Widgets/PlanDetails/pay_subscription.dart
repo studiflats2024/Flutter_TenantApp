@@ -99,7 +99,7 @@ class _PaymentScreenScreenWithBloc
           } else if (state is PaymentUrlLoadedState) {
             paymentUrl = state.paymentUrl;
           } else if (state is PaymentPaidSuccessState) {
-
+            Navigator.pop(context);
           }
         },
         child: _detailsWidget(),

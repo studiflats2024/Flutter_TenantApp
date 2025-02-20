@@ -1,0 +1,122 @@
+// To parse this JSON data, do
+//
+//     final myActivityResponse = myActivityResponseFromJson(jsonString);
+
+import 'dart:convert';
+
+import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
+
+MyActivityResponse myActivityResponseFromJson(String str) =>
+    MyActivityResponse.fromJson(json.decode(str));
+
+String myActivityResponseToJson(MyActivityResponse data) =>
+    json.encode(data.toJson());
+
+class MyActivityResponse {
+  int? totalRecords;
+  int? totalPages;
+  int? currentPage;
+  int? pageSize;
+  List<MyActivitiesModel>? data;
+  String? nextPage;
+  String? previousPage;
+  String? firstPage;
+  String? lastPage;
+  bool? hasNextPage;
+  bool? hasPreviousPage;
+
+  MyActivityResponse({
+    this.totalRecords,
+    this.totalPages,
+    this.currentPage,
+    this.pageSize,
+    this.data,
+    this.nextPage,
+    this.previousPage,
+    this.firstPage,
+    this.lastPage,
+    this.hasNextPage,
+    this.hasPreviousPage,
+  });
+
+  factory MyActivityResponse.fromJson(Map<String, dynamic> json) =>
+      MyActivityResponse(
+        totalRecords: json["totalRecords"],
+        totalPages: json["totalPages"],
+        currentPage: json["currentPage"],
+        pageSize: json["pageSize"],
+        data: json["data"] == null
+            ? []
+            : List<MyActivitiesModel>.from(
+                json["data"]!.map((x) => MyActivitiesModel.fromJson(x))),
+        nextPage: json["nextPage"],
+        previousPage: json["previousPage"],
+        firstPage: json["firstPage"],
+        lastPage: json["lastPage"],
+        hasNextPage: json["hasNextPage"],
+        hasPreviousPage: json["hasPreviousPage"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "totalRecords": totalRecords,
+        "totalPages": totalPages,
+        "currentPage": currentPage,
+        "pageSize": pageSize,
+        "data": data == null
+            ? []
+            : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "nextPage": nextPage,
+        "previousPage": previousPage,
+        "firstPage": firstPage,
+        "lastPage": lastPage,
+        "hasNextPage": hasNextPage,
+        "hasPreviousPage": hasPreviousPage,
+      };
+}
+
+class MyActivitiesModel {
+  String? id;
+  String? activityId;
+  String? activityPhoto;
+  ActivitiesType? activityType;
+  String? activityName;
+  String? activityDate;
+  int? reviews;
+  String? activityStatus;
+
+  MyActivitiesModel({
+    this.id,
+    this.activityId,
+    this.activityPhoto,
+    this.activityType,
+    this.activityName,
+    this.activityDate,
+    this.reviews,
+    this.activityStatus,
+  });
+
+  factory MyActivitiesModel.fromJson(Map<String, dynamic> json) =>
+      MyActivitiesModel(
+        id: json["id"],
+        activityId: json["activity_ID"],
+        activityPhoto: json["activity_Photo"],
+        activityType: json["activity_Type"] != null
+            ? ActivitiesType.fromType(json["activity_Type"])
+            : null,
+        activityName: json["activity_Name"],
+        activityDate: json["activity_Date"],
+        reviews: json["reviews"],
+        activityStatus: json["activity_Status"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "activity_ID": activityId,
+        "activity_Photo": activityPhoto,
+        "activity_Type": activityType,
+        "activity_Name": activityName,
+        "activity_Date": activityDate,
+        "reviews": reviews,
+        "activity_Status": activityStatus,
+      };
+}

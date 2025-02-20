@@ -70,6 +70,8 @@ class CommunityQrDetailsWithBloc extends BaseStatefulScreenWidget {
 
 class CommunityQrDetailsWidget
     extends BaseScreenState<CommunityQrDetailsWithBloc> {
+  List<String> data = [];
+
   @override
   Widget baseScreenBuild(BuildContext context) {
     return Scaffold(
@@ -94,15 +96,22 @@ class CommunityQrDetailsWidget
             hideLoading();
           }
 
+          if (state is QrLoadedState) {
+            data = state.details;
+          }
           if (state is OpenDoorLockState) {
             ArtSweetAlert.show(
               context: context,
               artDialogArgs: ArtDialogArgs(
                 type: ArtSweetAlertType.success,
                 title: "DoorLock",
-                text: "this Code for doorLock : ${state.doorLock}",
+                text: state.doorLock,
               ),
             );
+          } else if (state is QrErrorState) {
+            showFeedbackMessage(state.isLocalizationKey
+                ? translate(state.errorMassage) ?? ""
+                : state.errorMassage);
           }
         },
         builder: (context, state) {
@@ -142,14 +151,14 @@ class CommunityQrDetailsWidget
                       )
                     ],
                   ),
-                  child: state is QrLoadedState
+                  child: data.isNotEmpty
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            if (state.details.length == 2) ...[
-                              state.details[1].isLink
+                            if (data.length == 2) ...[
+                              data[1].isLink
                                   ? CachedNetworkImage(
-                                      imageUrl: state.details[1],
+                                      imageUrl: data[1],
                                       width: 200.r,
                                       height: 200.r)
                                   : Image(
@@ -163,7 +172,7 @@ class CommunityQrDetailsWidget
                               ),
                             ],
                             TextApp(
-                              text: state.details[0],
+                              text: data[0],
                               color: AppColors.colorPrimary,
                             ),
                             SizedBox(

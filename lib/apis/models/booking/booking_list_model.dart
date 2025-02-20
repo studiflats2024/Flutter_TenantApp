@@ -43,7 +43,7 @@ class BookingListModel {
 
 class BookingModel {
   String bookingId;
-  String apartmentImage;
+  String? apartmentImage;
   String apartmentName;
   String apartmentLocation;
   String checkIn;

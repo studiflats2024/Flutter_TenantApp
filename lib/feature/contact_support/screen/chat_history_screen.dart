@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:vivas/_core/pagination_manager.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
@@ -12,8 +14,11 @@ import 'package:vivas/feature/contact_support/bloc/contact_support_bloc.dart';
 import 'package:vivas/feature/contact_support/bloc/contact_support_repository.dart';
 import 'package:vivas/feature/contact_support/screen/chat_screen.dart';
 import 'package:vivas/feature/contact_support/widgets/chat_history_widget_widget.dart';
+import 'package:vivas/feature/problem/screen/select_apartment_problem_screen.dart';
 import 'package:vivas/feature/widgets/pagination_widgets/paging_swipe_to_refresh_grid_list_widget.dart';
 import 'package:vivas/preferences/preferences_manager.dart';
+import 'package:vivas/res/app_asset_paths.dart';
+import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/utils/feedback/feedback_message.dart';
 import 'package:vivas/utils/loaders/loader_widget.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
@@ -28,13 +33,14 @@ class ChatHistoryScreen extends StatelessWidget {
   }
 
   final DioApiManager dioApiManager = GetIt.I<DioApiManager>();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ContactSupportBloc>(
       create: (context) => ContactSupportBloc(ContactSupportRepository(
         preferencesManager: GetIt.I<PreferencesManager>(),
-        chatApiManger: ChatApiManger(dioApiManager , context),
-        uploadFileApiManager: UploadFileApiManager(dioApiManager , context),
+        chatApiManger: ChatApiManger(dioApiManager, context),
+        uploadFileApiManager: UploadFileApiManager(dioApiManager, context),
       )),
       child: const ChatHistoryScreenWithBloc(),
     );
@@ -65,33 +71,48 @@ class _ChatHistoryScreenWithBloc
   @override
   Widget baseScreenBuild(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text(translate(LocalizationKeys.chatHistory)!),
-      ),
-      body: BlocListener<ContactSupportBloc, ContactSupportState>(
-        listener: (context, state) {
-          if (state is ContactSupportLoadingState) {
-            showLoading();
-          } else {
-            hideLoading();
-          }
+        appBar: AppBar(
+          centerTitle: false,
+          title: Text(translate(LocalizationKeys.chatHistory)!),
+        ),
+        body: BlocListener<ContactSupportBloc, ContactSupportState>(
+          listener: (context, state) {
+            if (state is ContactSupportLoadingState) {
+              showLoading();
+            } else {
+              hideLoading();
+            }
 
-          if (state is ContactSupportErrorState) {
-            showFeedbackMessage(state.isLocalizationKey
-                ? translate(state.errorMassage)!
-                : state.errorMassage);
-          } else if (state is ChatHistoryLoadedState) {
-            _pagingInfo = state.pagingInfo;
-            stopPaginationLoading();
-            alignPaginationWithApi(_hasPrevious, _hasNext, state.list);
-          } else if (state is ContactSupportLoadingAsPagingState) {
-            startPaginationLoading();
-          }
-        },
-        child: _wishlistWidget(),
-      ),
-    );
+            if (state is ContactSupportErrorState) {
+              showFeedbackMessage(state.isLocalizationKey
+                  ? translate(state.errorMassage)!
+                  : state.errorMassage);
+            } else if (state is ChatHistoryLoadedState) {
+              _pagingInfo = state.pagingInfo;
+              stopPaginationLoading();
+              alignPaginationWithApi(_hasPrevious, _hasNext, state.list);
+            } else if (state is ContactSupportLoadingAsPagingState) {
+              startPaginationLoading();
+            }
+          },
+          child: _wishlistWidget(),
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: AppColors.colorPrimary,
+          onPressed: () {
+            _createChatNow();
+          },
+          child: SvgPicture.asset(
+            AppAssetPaths.chatIcon,
+            width: 30.r,
+            height: 30.r,
+            color: AppColors.textWhite,
+          ),
+        ));
+  }
+
+  void _createChatNow() {
+    SelectApartmentProblemScreen.open(context, openChatScreen: true);
   }
 
   ///////////////////////////////////////////////////////////

@@ -45,33 +45,34 @@ import 'package:vivas/utils/theme/theme_cubit.dart';
 
 import 'firebase_options.dart';
 
-/*
- */
-
 void main() async {
   // Ensure that the Flutter binding is initialized.
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase with the default options for the current platform.
-  if(Platform.isIOS){
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  }else{
-    await Firebase.initializeApp();
+  try {
+    if (Platform.isIOS) {
+      await Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform);
+    } else {
+      await Firebase.initializeApp();
+    }
+
+    // Set up error handling for Flutter errors using Firebase Crashlytics.
+    if (isReleaseMode()) {
+      FlutterError.onError = (errorDetails) {
+        FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+      };
+
+      // Set up error handling for platform errors using Firebase Crashlytics.
+      PlatformDispatcher.instance.onError = (error, stack) {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        return true;
+      };
+    }
+  } catch (e) {
+    debugPrint("bug : $e");
   }
-
-  // Set up error handling for Flutter errors using Firebase Crashlytics.
-  if (isReleaseMode()) {
-    FlutterError.onError = (errorDetails) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
-    };
-
-    // Set up error handling for platform errors using Firebase Crashlytics.
-    PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-      return true;
-    };
-  }
-
   // Set the preferred device orientation to portrait up.
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
@@ -219,8 +220,7 @@ class _MyAppState extends State<MyApp> {
                         navigatorKey: AppRoute.mainNavigatorKey,
                         routes: AppRoute.routes,
                         home: BlocConsumer<AppVersionBloc, AppVersionState>(
-                          listener: (context, state){
-                          },
+                          listener: (context, state) {},
                           builder: (context, state) {
                             return state is AppVersionNeedToUpdate
                                 ? VersionScreen(
@@ -229,7 +229,9 @@ class _MyAppState extends State<MyApp> {
                                   )
                                 : state is AppVersionReadyForUse
                                     // ? WelcomeAuthScreen()
-                                    ? SplashScreen(appLinksDeepLink: appLinksDeepLink,)
+                                    ? SplashScreen(
+                                        appLinksDeepLink: appLinksDeepLink,
+                                      )
                                     : VersionChecking(
                                         version: widget.packageInfo!.version);
                           },

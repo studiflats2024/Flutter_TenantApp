@@ -15,7 +15,9 @@ import 'package:vivas/feature/Community/Data/Managers/subscription_enum.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/pay_subscription_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/my_plan_model.dart';
 import 'package:vivas/feature/Community/Data/Repository/MyPlan/my_plan_repository_implementation.dart';
+import 'package:vivas/feature/Community/presentations/Component/custom_app_bar.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/MyPlan/my_plan_bloc.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/AllPlans/all_plans.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/contdown_timer.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/pay_subscription.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_history.dart';
@@ -89,60 +91,55 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
 
   @override
   Widget baseScreenBuild(BuildContext context) {
-    return BlocConsumer<MyPlanBloc, MyPlanState>(
-      listener: (context, state) {
-        if (state is MyPlanLoadingState) {
-          showLoading();
-        } else {
-          hideLoading();
-        }
-
-        if (state is GetMyPlanState) {
-          planModel = state.model;
-        } else if (state is PaySubscribePlanSuccessState) {
-          if (state.response.isLink) {
-            PaySubscription.open(
-                context, planModel.paymentInvoiceId ?? "", state.response);
+    return Scaffold(
+      appBar: CustomAppBar(
+        centerTitle: true,
+        systemOverlayStyle: SystemUiOverlayStyle.dark
+            .copyWith(statusBarColor: AppColors.textWhite),
+        actions: [
+          InkWell(
+            onTap: () {
+              PlanHistory.open(context);
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp8),
+              child: SvgPicture.asset(AppAssetPaths.communityFilterIcon),
+            ),
+          )
+        ],
+        title: LocalizationKeys.myPlan,
+        withBackButton: true,
+        onBack: () {
+          Navigator.pop(context);
+        },
+      ),
+      body: BlocConsumer<MyPlanBloc, MyPlanState>(
+        listener: (context, state) {
+          if (state is MyPlanLoadingState) {
+            showLoading();
           } else {
-            showFeedbackMessage(state.response);
+            hideLoading();
           }
-        } else if (state is ErrorMyPlanState) {
-          showFeedbackMessage(state.isLocalizationKey
-              ? translate(state.errorMassage) ?? ""
-              : state.errorMassage);
-        }
-      },
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            systemOverlayStyle: SystemUiOverlayStyle.dark,
-            leading: TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: SvgPicture.asset(
-                AppAssetPaths.backIcon,
-              ),
-            ),
-            actions: [
-              InkWell(
-                onTap: () {
-                  PlanHistory.open(context);
-                },
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: SizeManager.sizeSp8),
-                  child: SvgPicture.asset(AppAssetPaths.communityFilterIcon),
-                ),
-              )
-            ],
-            title: TextApp(
-              text: LocalizationKeys.myPlan,
-              multiLang: true,
-            ),
-          ),
-          body: ListView(
+          if (state is GetMyPlanState) {
+            planModel = state.model;
+          } else if (state is PaySubscribePlanSuccessState) {
+            if (state.response.isLink) {
+              PaySubscription.open(
+                      context, planModel.paymentInvoiceId ?? "", state.response)
+                  .then((v) {
+                return currentBloc.add(GetMyPlanEvent());
+              });
+            } else {
+              showFeedbackMessage(state.response);
+            }
+          } else if (state is ErrorMyPlanState) {
+            showFeedbackMessage(state.isLocalizationKey
+                ? translate(state.errorMassage) ?? ""
+                : state.errorMassage);
+          }
+        },
+        builder: (context, state) {
+          return ListView(
             shrinkWrap: true,
             padding: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp16),
             children: [
@@ -295,59 +292,60 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                 )
               ],
             ],
-          ),
-          bottomNavigationBar: (planModel.subscriptionStatus ==
-                      SubscriptionStatus.active &&
-                  DateFormat("dd/MM/yyyy").parse(planModel.endDate ?? "").day !=
-                      DateTime.now().day)
-              ? null
-              : SizedBox(
-                  height: 110.r,
-                  child: SubmitButtonWidget(
-                      title: translate(planModel.subscriptionStatus ==
-                                  SubscriptionStatus.waitingPayment
-                              ? LocalizationKeys.payNow
-                              : LocalizationKeys.upgradeNow) ??
-                          "",
-                      onClicked: () {
-                        if (planModel.subscriptionStatus ==
-                            SubscriptionStatus.waitingPayment) {
-                          AppBottomSheet.openAppBottomSheet(
-                              context: context,
-                              child: Column(
-                                children: [
-                                  _methodWidget(
-                                      translate(
-                                          LocalizationKeys.onlinePayment)!,
-                                      AppAssetPaths.creditCardIcon, () {
-                                    currentBloc.add(
-                                      PaySubscriptionEvent(
-                                        PaySubscriptionSendModel(
-                                            planModel.paymentInvoiceId ?? "",
-                                            false),
-                                      ),
-                                    );
-                                    Navigator.pop(context);
-                                  }),
-                                  _methodWidget(
-                                      translate(LocalizationKeys.cash)!,
-                                      AppAssetPaths.walletIcon, () {
-                                    currentBloc.add(
-                                      PaySubscriptionEvent(
-                                        PaySubscriptionSendModel(
-                                            planModel.paymentInvoiceId ?? "",
-                                            true),
-                                      ),
-                                    );
-                                    Navigator.pop(context);
-                                  }),
-                                ],
-                              ),
-                              title: "Pay Methods");
-                        } else {}
-                      })),
-        );
-      },
+          );
+        },
+      ),
+      bottomNavigationBar: (planModel.subscriptionStatus ==
+                  SubscriptionStatus.active &&
+              DateFormat("dd/MM/yyyy").parse(planModel.endDate ?? "").day !=
+                  DateTime.now().day)
+          ? null
+          : SizedBox(
+              height: 110.r,
+              child: SubmitButtonWidget(
+                  title: translate(planModel.subscriptionStatus ==
+                              SubscriptionStatus.waitingPayment
+                          ? LocalizationKeys.payNow
+                          : LocalizationKeys.upgradeNow) ??
+                      "",
+                  onClicked: () {
+                    if (planModel.subscriptionStatus ==
+                        SubscriptionStatus.waitingPayment) {
+                      AppBottomSheet.openAppBottomSheet(
+                          context: context,
+                          child: Column(
+                            children: [
+                              _methodWidget(
+                                  translate(LocalizationKeys.onlinePayment)!,
+                                  AppAssetPaths.creditCardIcon, () {
+                                currentBloc.add(
+                                  PaySubscriptionEvent(
+                                    PaySubscriptionSendModel(
+                                        planModel.paymentInvoiceId ?? "",
+                                        false),
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              }),
+                              _methodWidget(translate(LocalizationKeys.cash)!,
+                                  AppAssetPaths.walletIcon, () {
+                                currentBloc.add(
+                                  PaySubscriptionEvent(
+                                    PaySubscriptionSendModel(
+                                        planModel.paymentInvoiceId ?? "", true),
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              }),
+                            ],
+                          ),
+                          title: "Pay Methods");
+                    } else {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return ViewPlans();
+                      }));
+                    }
+                  })),
     );
   }
 

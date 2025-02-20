@@ -18,11 +18,14 @@ import 'package:vivas/feature/Community/presentations/ViewModel/ActivityDetails/
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/Components/activity_deatils_header.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/Components/activity_details_sections.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/Components/activity_details_sub_header.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/Components/enroll_consultant_widget.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/AllPlans/all_plans.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/res/font_size.dart';
+import 'package:vivas/utils/feedback/feedback_message.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
 import 'package:vivas/utils/size_manager.dart';
 
@@ -33,15 +36,19 @@ class ActivityDetails extends BaseStatelessWidget {
   static const argumentActivityDetailsSendModel =
       '/activity-details_send_model';
 
+  static const argumentActivityDetailsFromMyActivity = 'is-from-my-activity';
+
   static Future<void> open(BuildContext context, bool replacement,
-      ActivityDetailsSendModel sendModel) async {
+      bool isFromMyActivity, ActivityDetailsSendModel sendModel) async {
     if (replacement) {
       await Navigator.of(context).pushReplacementNamed(routeName, arguments: {
         argumentActivityDetailsSendModel: sendModel,
+        argumentActivityDetailsFromMyActivity: isFromMyActivity
       });
     } else {
       await Navigator.of(context).pushNamed(routeName, arguments: {
         argumentActivityDetailsSendModel: sendModel,
+        argumentActivityDetailsFromMyActivity: isFromMyActivity
       });
     }
   }
@@ -55,20 +62,28 @@ class ActivityDetails extends BaseStatelessWidget {
               as Map)[ActivityDetails.argumentActivityDetailsSendModel]
           as ActivityDetailsSendModel;
 
+  bool fromMyActivity(BuildContext context) =>
+      (ModalRoute.of(context)!.settings.arguments
+              as Map)[ActivityDetails.argumentActivityDetailsFromMyActivity]
+          as bool;
+
   @override
   Widget baseBuild(BuildContext context) {
     return BlocProvider(
         create: (context) => ActivityDetailsBloc(
             ActivityDetailsRepositoryImplementation(
                 CommunityManager(dioApiManager))),
-        child: ActivityDetailsWithBloc(activityDetailsSendModel(context)));
+        child: ActivityDetailsWithBloc(
+            activityDetailsSendModel(context), fromMyActivity(context)));
   }
 }
 
 class ActivityDetailsWithBloc extends BaseStatefulScreenWidget {
   final ActivityDetailsSendModel sendModel;
+  final bool fromMyActivity;
 
-  const ActivityDetailsWithBloc(this.sendModel, {super.key});
+  const ActivityDetailsWithBloc(this.sendModel, this.fromMyActivity,
+      {super.key});
 
   @override
   BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() {
@@ -93,9 +108,11 @@ class _ActivityDetailsWithBloc
   Widget baseScreenBuild(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: ActivityDetailsHeader(onBack: () {
-        Navigator.of(context).pop();
-      }),
+      appBar: ActivityDetailsHeader(
+        onBack: () {
+          Navigator.of(context).pop();
+        },
+      ),
       body: BlocConsumer<ActivityDetailsBloc, ActivityDetailsState>(
         listener: (context, state) {
           if (state is ActivityDetailsLoadingState) {
@@ -110,11 +127,34 @@ class _ActivityDetailsWithBloc
             ArtSweetAlert.show(
               context: context,
               artDialogArgs: ArtDialogArgs(
-                type: ArtSweetAlertType.success,
-                title: "you are enroll successfully now",
-                text: "You can see the activity in your activity now",
+                customColumns: [
+                  SvgPicture.asset(AppAssetPaths.communityIconSuccess),
+                  SizedBox(
+                    height: SizeManager.sizeSp8,
+                  ),
+                  TextApp(
+                    text: LocalizationKeys.enrollSuccessMessage,
+                    multiLang: true,
+                    textAlign: TextAlign.center,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  SizedBox(
+                    height: SizeManager.sizeSp16,
+                  ),
+                ],
+                dialogDecoration: BoxDecoration(
+                    color: AppColors.textWhite,
+                    borderRadius:
+                        BorderRadius.all(SizeManager.circularRadius10)),
+                confirmButtonColor: AppColors.colorPrimary,
+                confirmButtonText:
+                    translate(LocalizationKeys.goToMyActivity) ?? "",
               ),
             );
+          } else if (state is ActivityDetailsErrorState) {
+            showFeedbackMessage(state.isLocalizationKey
+                ? translate(state.errorMassage) ?? ""
+                : state.errorMassage);
           }
         },
         builder: (context, state) {
@@ -136,7 +176,7 @@ class _ActivityDetailsWithBloc
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   width: double.infinity,
-                  height: 500.r,
+                  height: widget.fromMyActivity ? 580.r : 500.r,
                   decoration: BoxDecoration(
                     color: AppColors.textWhite,
                     borderRadius: BorderRadius.only(
@@ -149,6 +189,7 @@ class _ActivityDetailsWithBloc
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ActivityDetailsSubHeader(
+                          widget.fromMyActivity,
                           activityDetailsModel: activityDetailsModel,
                         ),
                         SizedBox(
@@ -176,7 +217,7 @@ class _ActivityDetailsWithBloc
                                       TextApp(
                                         multiLang: false,
                                         text:
-                                            "${activityDetailsModel.activitySeats} ${translate(LocalizationKeys.seats)}",
+                                            "${activityDetailsModel.availableSeats} ${translate(LocalizationKeys.seats)}",
                                         style: textTheme.bodyMedium?.copyWith(
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w400,
@@ -386,30 +427,103 @@ class _ActivityDetailsWithBloc
           );
         },
       ),
-      bottomNavigationBar: SizedBox(
-        height: 110.r,
-        child: SubmitButtonWidget(
-          title: translate(LocalizationKeys.enrollNow)!,
-          onClicked: () {
-            if (activityDetailsModel.activityType !=
-                ActivitiesType.consultant) {
-              currentBloc.add(
-                EnrollEvent(
-                  EnrollActivitySendModel(
-                    activityDetailsModel.activityId ?? '',
-                    activityDetailsModel.activityType!,
-                  ),
-                ),
-              );
-            }
-          },
-          withoutShape: true,
-          decoration: const BoxDecoration(
-              color: AppColors.textWhite,
-              border: Border(
-                  top: BorderSide(color: AppColors.cardBorderPrimary100))),
-        ),
-      ),
+      bottomNavigationBar: widget.fromMyActivity
+          ? null
+          : SizedBox(
+              height: 112.r,
+              child: SubmitButtonWidget(
+                title: (activityDetailsModel.hasEnrolled ?? false) &&
+                        (activityDetailsModel.hasPlan ?? false)
+                    ? ""
+                    : translate(LocalizationKeys.enrollNow)!,
+                onClicked: () {
+                  if (!(activityDetailsModel.hasPlan ?? false)) {
+                    ArtSweetAlert.show(
+                      context: context,
+                      artDialogArgs: ArtDialogArgs(
+                        confirmButtonText:
+                            translate(LocalizationKeys.viewPlans) ?? "",
+                        confirmButtonColor: AppColors.colorPrimary,
+                        onConfirm: () {
+                          Navigator.pop(context);
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) {
+                            return ViewPlans();
+                          }));
+                        },
+                        dialogDecoration: BoxDecoration(
+                            color: AppColors.textWhite,
+                            borderRadius:
+                                BorderRadius.all(SizeManager.circularRadius10)),
+                        customColumns: [
+                          SvgPicture.asset(
+                              AppAssetPaths.communityIconViewPlans),
+                          SizedBox(
+                            height: SizeManager.sizeSp8,
+                          ),
+                          TextApp(
+                            text: LocalizationKeys.unHaveSubscription,
+                            multiLang: true,
+                            textAlign: TextAlign.center,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          SizedBox(
+                            height: SizeManager.sizeSp16,
+                          ),
+                        ],
+                      ),
+                    );
+                  } else if (activityDetailsModel.hasEnrolled ?? false) {
+                  } else if (activityDetailsModel.activityType !=
+                      ActivitiesType.consultant) {
+                    currentBloc.add(
+                      EnrollEvent(
+                        EnrollActivitySendModel(
+                          activityDetailsModel.activityId ?? '',
+                          activityDetailsModel.activityType!,
+                        ),
+                      ),
+                    );
+                  } else {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+                      return EnrollConsultantWidget(
+                        activityDetailsModel,
+                        currentBloc,
+                      );
+                    }));
+                  }
+                },
+                withoutShape: true,
+                buttonColor: (activityDetailsModel.hasEnrolled ?? false) &&
+                        (activityDetailsModel.hasPlan ?? false)
+                    ? AppColors.buttonGrey
+                    : null,
+                decoration: const BoxDecoration(
+                    color: AppColors.textWhite,
+                    border: Border(
+                        top:
+                            BorderSide(color: AppColors.cardBorderPrimary100))),
+                child: (activityDetailsModel.hasEnrolled ?? false) &&
+                        (activityDetailsModel.hasPlan ?? false)
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.check,
+                            color: AppColors.textNatural700,
+                          ),
+                          SizedBox(
+                            width: SizeManager.sizeSp8,
+                          ),
+                          TextApp(
+                            text: translate(LocalizationKeys.alreadyEnrolled)!,
+                            color: AppColors.textNatural700,
+                          ),
+                        ],
+                      )
+                    : null,
+              ),
+            ),
     );
   }
 }

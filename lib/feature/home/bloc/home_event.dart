@@ -15,7 +15,8 @@ class GetSliderInfoApiEvent extends HomeEvent {
 }
 
 class GetNotificationCountApiEvent extends HomeEvent {
-  const GetNotificationCountApiEvent();
+  final bool isFirst ;
+  const GetNotificationCountApiEvent({required this.isFirst});
 
   @override
   List<Object> get props => [identityHashCode(this)];

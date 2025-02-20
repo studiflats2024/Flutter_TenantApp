@@ -51,6 +51,11 @@ class AppColors {
   static const _fiordApprox = Color(0xFF475467);
   static const _linkWaterApprox = Color(0xFFCFDCF0);
   static const _regentStBlue = Color(0xFFA0B9E1);
+  static const _natural100 = Color(0xFFEBEBEB);
+  static const _natural400 = Color(0xFFafafaf);
+  static const _natural500 = Color(0xFF9B9B9B);
+  static const _natural700 = Color(0xFF475467);
+  static const _shade7 = Color(0xFF475467);
 
   /// app main theme ...
   static const colorSchemeSeed = _cloudBurst;
@@ -98,6 +103,7 @@ class AppColors {
   /// app form field
   static const appFormFieldTitle = _oxfordBlue;
   static const appFormFieldFill = _white;
+  static const appFormFieldFill2 = Color(0xFFFAFAFA);
   static const enabledAppFormFieldBorder = _mischka;
   static const appFormFieldErrorIBorder = Colors.red;
   static const suffixIcon = _gray;
@@ -183,7 +189,9 @@ class AppColors {
   static const cardBackgroundConsultant = Color(0xFFFEF1F5);
   static const cardBackgroundActivityCancelled = Color(0xFFFEF1F5);
   static const cardTextNatural700 = Color(0xFF727272);
+  static const cardNatural100 = _natural100;
   static const  cardCountdown =  Color(0xffFDF9ED);
+  static const  buttonGrey =  Color(0xffC0C0C0);
   static const  sessionCircleColor =  colorPrimaryLight;
 
   static const textCourse = Color(0xFF1151B4);
@@ -191,10 +199,12 @@ class AppColors {
   static const textEvent = Color(0xFF16814A);
   static const textActivityCancelled = Color(0xFFD02831);
   static const textConsultant = Color(0xFFB4114A);
-  static const textNatural400 = Color(0xFFafafaf);
-  static const textNatural700 = Color(0xFF475467);
+  static const textNatural400 = _natural400;
+  static const textNatural500 = _natural500;
+  static const textNatural700 = _natural700;
   static const textRed = Color(0xFFC1111A);
   static const textShade3 = Color(0xFF9CA8BA);
+  static const textShade7 = Color(0xFF475467);
   static const textMainColor = Color(0xFF0a0c0f);
   static const dotsNotActive = _linkWaterApprox;
 }

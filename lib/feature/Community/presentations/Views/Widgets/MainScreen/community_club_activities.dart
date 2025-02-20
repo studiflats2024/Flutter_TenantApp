@@ -85,6 +85,7 @@ class CommunityClubActivities extends BaseStatelessWidget {
         ActivityDetails.open(
             AppRoute.mainNavigatorKey.currentContext!,
             false,
+            false,
             ActivityDetailsSendModel(activityItem.activityId ?? "",
                 activityItem.activityType ?? ActivitiesType.course));
       },

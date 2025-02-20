@@ -158,7 +158,7 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
             }
           } else if (state is ErrorPlanDetails) {
             showFeedbackMessage(state.errorMassage);
-          }else if (state is PayErrorPlanDetails) {
+          } else if (state is PayErrorPlanDetails) {
             showFeedbackMessage(state.errorMassage);
           }
         },
@@ -319,10 +319,15 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
         height: 115.r,
         child: SubmitButtonWidget(
             title: translate(LocalizationKeys.subscription) ?? "",
+            buttonColor: (planDetailsModel?.hasPlan ?? true)
+                ? AppColors.buttonGrey
+                : null,
             onClicked: () {
-              currentBloc.add(
-                SubscribeEvent(widget.planID),
-              );
+              if (!(planDetailsModel?.hasPlan ?? true)) {
+                currentBloc.add(
+                  SubscribeEvent(widget.planID),
+                );
+              }
             }),
       ),
     );

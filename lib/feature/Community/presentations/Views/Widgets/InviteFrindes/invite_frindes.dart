@@ -153,7 +153,9 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                 margin: EdgeInsets.symmetric(vertical: SizeManager.sizeSp8),
                 child: TextButton(
                   onPressed: () {
-                    HistoryInviteFriends.open(context, false);
+                    HistoryInviteFriends.open(context, false).then((v) {
+                      currentBloc.add(GetMyPlanEvent());
+                    });
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

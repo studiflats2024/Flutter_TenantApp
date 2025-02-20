@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
+import 'package:vivas/_core/pagination_manager.dart';
+import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
+import 'package:vivas/apis/_base/dio_api_manager.dart';
+import 'package:vivas/apis/models/meta/paging_send_model.dart';
+import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
+import 'package:vivas/feature/Community/Data/Models/invitations_history_model.dart';
+import 'package:vivas/feature/Community/Data/Repository/InviteFriend/invite_friend_repository_implementation.dart';
+import 'package:vivas/feature/Community/presentations/ViewModel/InviteFrindes/invite_frindes_bloc.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/invite_again.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
+import 'package:vivas/feature/widgets/pagination_widgets/paging_swipe_to_refresh_list_widget.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/feature/widgets/text_field/app_text_form_filed_widget.dart';
 import 'package:vivas/feature/widgets/text_field/date_time_form_field_widget.dart';
@@ -34,13 +47,61 @@ class HistoryInviteFriends extends BaseStatelessWidget {
     }
   }
 
+  final DioApiManager dioApiManager = GetIt.I<DioApiManager>();
+
   @override
   Widget baseBuild(BuildContext context) {
+    return BlocProvider(
+        create: (ctx) => InviteFrindesBloc(
+              InviteFriendRepositoryImplementation(
+                CommunityManager(
+                  dioApiManager,
+                ),
+              ),
+            ),
+        child: const HistoryInviteFriendsWithBloc());
+  }
+}
+
+class HistoryInviteFriendsWithBloc extends BaseStatefulScreenWidget {
+  const HistoryInviteFriendsWithBloc({super.key});
+
+  @override
+  BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() {
+    return _HistoryInviteFriendsWithBloc();
+  }
+}
+
+class _HistoryInviteFriendsWithBloc
+    extends BaseScreenState<HistoryInviteFriendsWithBloc>
+    with PaginationManager<InviteModel> {
+  InvitationsHistoryModel model = InvitationsHistoryModel();
+
+  InviteFrindesBloc get currentBloc => context.read<InviteFrindesBloc>();
+
+  @override
+  void initState() {
+    getInvitationHistory(1);
+    super.initState();
+  }
+
+  getInvitationHistory(pageNumber) {
+    currentBloc.add(GetInvitationsHistoryEvent(
+        PagingListSendModel(pageNumber: pageNumber)));
+  }
+
+  paginatedInvitationHistory() {
+    currentBloc.add(GetInvitationsHistoryEvent(
+        PagingListSendModel(pageNumber: (model.currentPage ?? 0) + 1)));
+  }
+
+  @override
+  Widget baseScreenBuild(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        systemOverlayStyle:
-            const SystemUiOverlayStyle(statusBarColor: AppColors.textWhite),
+        systemOverlayStyle: SystemUiOverlayStyle.dark
+            .copyWith(statusBarColor: AppColors.textWhite),
         leading: TextButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -53,27 +114,64 @@ class HistoryInviteFriends extends BaseStatelessWidget {
           text: LocalizationKeys.historyInvitation,
           multiLang: true,
           fontWeight: FontWeight.w500,
-          fontSize:   SizeManager.sizeSp16,
+          fontSize: SizeManager.sizeSp16,
         ),
       ),
-      body: Container(
-        margin: EdgeInsets.symmetric(vertical: SizeManager.sizeSp16),
-        child: ListView.separated(
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            return itemHistory(context);
-          },
-          separatorBuilder: (context, index) {
-            return SizedBox(
-              height: SizeManager.sizeSp16,
-            );
-          },
-        ),
+      body: BlocConsumer<InviteFrindesBloc, InviteFrindesState>(
+        listener: (context, state) {
+          if (state is InviteFriendsLoading) {
+            showLoading();
+          } else {
+            hideLoading();
+          }
+          if (state is InviteHistoryFriendState) {
+            model = state.model;
+            alignPaginationWithApi(state.model.hasPreviousPage ?? false,
+                state.model.hasNextPage ?? false, state.model.data ?? []);
+            stopPaginationLoading();
+          }
+
+        },
+        builder: (context, state) {
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: SizeManager.sizeSp16),
+            child: PagingSwipeToRefreshListWidget(
+              reachedEndOfScroll: () {
+                if (shouldLoadMore) {
+                  if (model.hasNextPage ?? false) {
+                    startPaginationLoading();
+                    paginatedInvitationHistory();
+                  }
+                }
+              },
+              itemWidget: (index) {
+                return itemHistory(context, getUpdatedData[index]);
+              },
+              swipedToRefresh: () {
+                getInvitationHistory(1);
+              },
+              listLength: getUpdatedData.length,
+              showPagingLoader: currentLoadingState,
+              itemClickable: false,
+            ),
+            // ListView.separated(
+            //   itemCount: 5,
+            //   itemBuilder: (context, index) {
+            //     return itemHistory(context);
+            //   },
+            //   separatorBuilder: (context, index) {
+            //     return SizedBox(
+            //       height: SizeManager.sizeSp16,
+            //     );
+            //   },
+            // ),
+          );
+        },
       ),
     );
   }
 
-  Widget itemHistory(BuildContext context) {
+  Widget itemHistory(BuildContext context, InviteModel model) {
     return Card(
       shape: RoundedRectangleBorder(
           side: const BorderSide(color: AppColors.cardBorderPrimary100),
@@ -86,27 +184,27 @@ class HistoryInviteFriends extends BaseStatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: SizeManager.sizeSp25,
-                  backgroundColor: Colors.transparent,
-                  backgroundImage:
-                      const AssetImage(AppAssetPaths.profileDefaultAvatar),
-                ),
-                SizedBox(
-                  width: SizeManager.sizeSp15,
-                ),
+                // CircleAvatar(
+                //   radius: SizeManager.sizeSp25,
+                //   backgroundColor: Colors.transparent,
+                //   backgroundImage:
+                //       const AssetImage(AppAssetPaths.profileDefaultAvatar),
+                // ),
+                // SizedBox(
+                //   width: SizeManager.sizeSp15,
+                // ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextApp(
-                      text: "Sara Mohamed",
+                      text: model.name ?? "",
                       fontSize: 12.sp,
                     ),
                     SizedBox(
                       height: SizeManager.sizeSp4,
                     ),
                     TextApp(
-                      text: "Sara.Mhmd@gmail.com",
+                      text: model.email ?? "",
                       fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
                       color: AppColors.textNatural700,
@@ -126,7 +224,6 @@ class HistoryInviteFriends extends BaseStatelessWidget {
                     PopupMenuItem(
                       height: SizeManager.sizeSp32,
                       value: "invite_again",
-
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -140,7 +237,6 @@ class HistoryInviteFriends extends BaseStatelessWidget {
                             AppAssetPaths.messageIcon,
                             color: AppColors.colorPrimary,
                             fit: BoxFit.none,
-
                           )
                         ],
                       ),
@@ -171,76 +267,9 @@ class HistoryInviteFriends extends BaseStatelessWidget {
                     if (value == "invite_again") {
                       AppBottomSheet.openBaseBottomSheet(
                         context: context,
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: SizeManager.sizeSp16),
-                          height: 200.h,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              DateTimeFormFieldWidget(
-                                title: translate(
-                                        LocalizationKeys.invitationDate) ??
-                                    "",
-                                hintText: translate(
-                                        LocalizationKeys.invitationDateHint) ??
-                                    "",
-                                hintStyle: textTheme.bodyMedium?.copyWith(
-                                    fontSize: 12.sp,
-                                    color: AppColors.textNatural700,
-                                    fontWeight: FontWeight.w400),
-                                iconStart: true,
-                                onSaved: (v) {},
-                              ),
-                              SizedBox(height: SizeManager.sizeSp16,),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    width: 160.r,
-                                    child: SubmitButtonWidget(
-                                        withoutShape: true,
-                                        withoutCustomShape: true,
-                                        padding: EdgeInsets.zero,
-                                        sizeTop: 0,
-                                        sizeBottom: 0,
-                                        title: translate(
-                                                LocalizationKeys.cancel) ??
-                                            "",
-                                        buttonColor: AppColors.textWhite,
-                                        titleStyle: textTheme.bodyMedium
-                                            ?.copyWith(
-                                                fontWeight: FontWeight.w600,
-                                                color: AppColors.colorPrimary),
-                                        outlinedBorder: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              SizeManager.circularRadius10),
-                                          side: const BorderSide(color: AppColors.colorPrimary,)
-                                        ),
-                                        onClicked: () {
-                                          Navigator.pop(context);
-                                        }),
-                                  ),
-                                  SizedBox(
-                                    width: 160.r,
-                                    child: SubmitButtonWidget(
-                                        title:
-                                            translate(LocalizationKeys.send) ??
-                                                "",
-                                        withoutShape: true,
-                                        padding: EdgeInsets.zero,
-                                        sizeTop: 0,
-                                        sizeBottom: 0,
-                                        onClicked: () {
-                                          Navigator.pop(context);
-                                        }),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
+                        child: SizedBox(
+                            height: 200.r,
+                            child: InviteAgain(currentBloc, model)),
                       );
                     }
                   },
@@ -249,7 +278,8 @@ class HistoryInviteFriends extends BaseStatelessWidget {
                           BorderRadius.all(SizeManager.circularRadius10)),
                 ),
                 TextApp(
-                  text: "14 Feb 2024",
+                  text: DateFormat("dd/MM/yyyy")
+                      .format(model.date ?? DateTime.now()),
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w400,
                   color: AppColors.textNatural700,

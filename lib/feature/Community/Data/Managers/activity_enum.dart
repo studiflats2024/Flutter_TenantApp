@@ -23,4 +23,10 @@ enum ActivitiesType {
       orElse: () => ActivitiesType.all,
     );
   }
+  static ActivitiesType? fromType(String value) {
+    return ActivitiesType.values.firstWhere(
+          (s) => s.filter == value,
+      orElse: () => ActivitiesType.all,
+    );
+  }
 }

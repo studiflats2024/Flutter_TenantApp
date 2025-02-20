@@ -186,7 +186,7 @@ class _UintWidgetState extends BaseState<UintWidget> {
             children: [
               TextSpan(
                 text:
-                '€ ${widget.apartmentItemApiModel.aptPrice.toStringAsFixed(2)}',
+                    '€ ${widget.apartmentItemApiModel.aptPrice.toStringAsFixed(2)}',
                 style: TextStyle(
                   color: const Color(0xFF1151B4),
                   fontSize: 20.sp,
@@ -205,11 +205,10 @@ class _UintWidgetState extends BaseState<UintWidget> {
           ),
         ),
         Visibility(
-          visible:
-          widget.apartmentItemApiModel.availableBeds != widget.apartmentItemApiModel.aptMaxGuest,
+          visible: widget.apartmentItemApiModel.availableBeds !=
+              widget.apartmentItemApiModel.aptMaxGuest,
           child: Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: 8.0.w, vertical: 5.h),
+            padding: EdgeInsets.symmetric(horizontal: 8.0.w, vertical: 5.h),
             margin: EdgeInsets.symmetric(horizontal: 5.w),
             decoration: BoxDecoration(
               color: AppColors.colorPrimary.withOpacity(.2),
@@ -217,7 +216,7 @@ class _UintWidgetState extends BaseState<UintWidget> {
             ),
             child: Center(
               child: Text(
-                "Beds left: ${widget.apartmentItemApiModel.availableBeds}",
+                "${translate(LocalizationKeys.bedsLeft)} : ${widget.apartmentItemApiModel.availableBeds}",
                 style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -276,53 +275,57 @@ class _UintWidgetStateV2 extends BaseState<UintWidgetV2> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                      Visibility(
-                        visible: widget
-                            .apartmentItemApiV2Model.apartmentSharedType !=
-                            null &&
-                            widget.apartmentItemApiV2Model.apartmentSharedType
-                        == 'Shared Apartment',
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0.w , vertical: 5.h),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFC5C2),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Text(
-                              widget.apartmentItemApiV2Model.apartmentSharedType ??
-                                  '',
-                              style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xffB3261E)),
+                        Visibility(
+                          visible: widget.apartmentItemApiV2Model
+                                      .apartmentSharedType !=
+                                  null &&
+                              widget.apartmentItemApiV2Model
+                                      .apartmentSharedType ==
+                                  'Shared Apartment',
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.0.w, vertical: 5.h),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFC5C2),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: Text(
+                                widget.apartmentItemApiV2Model
+                                        .apartmentSharedType ??
+                                    '',
+                                style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xffB3261E)),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      // Visibility(
-                      //   visible:
-                      //   widget.apartmentItemApiV2Model.apartmentAvailableBeds != widget.apartmentItemApiV2Model.apartmentPersonsNo,
-                      //   child: Container(
-                      //     padding: EdgeInsets.symmetric(
-                      //         horizontal: 8.0.w, vertical: 5.h),
-                      //     margin: EdgeInsets.symmetric(horizontal: 5.w),
-                      //     decoration: BoxDecoration(
-                      //       color: AppColors.colorPrimary.withOpacity(.2),
-                      //       borderRadius: BorderRadius.circular(10),
-                      //     ),
-                      //     child: Center(
-                      //       child: Text(
-                      //         " Beds left: ${widget.apartmentItemApiV2Model.apartmentAvailableBeds}",
-                      //         style: const TextStyle(
-                      //             fontSize: 12,
-                      //             fontWeight: FontWeight.w500,
-                      //             color: AppColors.colorPrimary),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                    ],),
+                        // Visibility(
+                        //   visible:
+                        //   widget.apartmentItemApiV2Model.apartmentAvailableBeds != widget.apartmentItemApiV2Model.apartmentPersonsNo,
+                        //   child: Container(
+                        //     padding: EdgeInsets.symmetric(
+                        //         horizontal: 8.0.w, vertical: 5.h),
+                        //     margin: EdgeInsets.symmetric(horizontal: 5.w),
+                        //     decoration: BoxDecoration(
+                        //       color: AppColors.colorPrimary.withOpacity(.2),
+                        //       borderRadius: BorderRadius.circular(10),
+                        //     ),
+                        //     child: Center(
+                        //       child: Text(
+                        //         " Beds left: ${widget.apartmentItemApiV2Model.apartmentAvailableBeds}",
+                        //         style: const TextStyle(
+                        //             fontSize: 12,
+                        //             fontWeight: FontWeight.w500,
+                        //             color: AppColors.colorPrimary),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
                     SizedBox(height: 20.h),
                     _priceWidget(),
                   ],
@@ -439,12 +442,16 @@ class _UintWidgetStateV2 extends BaseState<UintWidgetV2> {
 
   Widget _specificationItemWidget(String title, String imagePath) {
     return Row(
-
       children: [
-        Stack(children: [
-          SvgPicture.asset(imagePath , height: 20.h, width: 20.w,),
-        ],),
-
+        Stack(
+          children: [
+            SvgPicture.asset(
+              imagePath,
+              height: 20.h,
+              width: 20.w,
+            ),
+          ],
+        ),
         SizedBox(width: 8.w),
         Text(
           title,

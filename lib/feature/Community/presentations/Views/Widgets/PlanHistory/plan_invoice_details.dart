@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
+import 'package:vivas/apis/errors/error_api_helper.dart';
 import 'package:vivas/apis/models/apartment_requests/request_invoice/invoice_api_model.dart';
+import 'package:vivas/feature/Community/Data/Models/invoice_club_details_model.dart';
 import 'package:vivas/feature/Community/presentations/Component/custom_app_bar.dart';
+import 'package:vivas/feature/Community/presentations/ViewModel/PlanHistory/plan_history_bloc.dart';
 import 'package:vivas/feature/invoices/widgets/invoice_state_widget.dart';
 import 'package:vivas/feature/widgets/dash_divider/dash_divider_widget.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/res/font_size.dart';
+import 'package:vivas/utils/extensions/extension_string.dart';
+import 'package:vivas/utils/feedback/feedback_message.dart';
 
 import 'package:vivas/utils/format/app_date_format.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
@@ -17,250 +25,80 @@ import 'package:vivas/utils/size_manager.dart';
 
 // ignore: must_be_immutable
 class CommunityInvoiceDetails extends BaseStatelessWidget {
-  // final InvoiceApiModel invoiceApiModel;
-  // final bool isMonthlyInvoice;
-  //
-  // final VoidCallback downloadClickedCallBack;
-  // final VoidCallback payNowClickedCallBack;
-  CommunityInvoiceDetails({
+  PlanHistoryBloc currentBloc;
+  String id;
+
+  CommunityInvoiceDetails(
+    this.currentBloc,
+    this.id, {
     super.key,
-    // required this.invoiceApiModel,
-    // required this.isMonthlyInvoice,
-    // required this.downloadClickedCallBack,
-    // required this.payNowClickedCallBack,
   });
 
   @override
   Widget baseBuild(BuildContext context) {
-    return InvoiceCardWithNotches();
-    /*  Scaffold(
-      backgroundColor: AppColors.scaffoldBackground2,
-      appBar: CustomAppBar(
-        title: LocalizationKeys.invoiceDetails,
-        withBackButton: true,
-        onBack: (){
-          Navigator.pop(context);
-        },
-      ),
-      body: Container(
-        margin: EdgeInsets.all(SizeManager.sizeSp16),
-        child: CustomPaint(
-          size: Size(double.infinity, 500.r),
-          painter: InvoicePainter(),
-          child: Container(),
-        ),
-      ),
-    );*/
+    return BlocProvider.value(
+      value: currentBloc,
+      child: CommunityInvoiceDetailsWithBloc(currentBloc, id),
+    );
   }
-
-// Widget _titleWidget() {
-//   return Row(
-//     children: [
-//       Expanded(
-//         child: Column(
-//           children: [
-//             Text(
-//               invoiceApiModel.aptName,
-//               textAlign: TextAlign.center,
-//               style: const TextStyle(
-//                 color: Color(0xFF1B1B2F),
-//                 fontSize: 16,
-//                 fontWeight: FontWeight.w500,
-//               ),
-//             ),
-//             Text(
-//               invoiceApiModel.aptAddress,
-//               textAlign: TextAlign.center,
-//               style: const TextStyle(
-//                 color: Color(0xFF475466),
-//                 fontSize: 12,
-//                 fontWeight: FontWeight.w400,
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//       const SizedBox(width: 5),
-//       InvoiceStateWidget(invoiceApiModel.invPaid),
-//     ],
-//   );
-// }
-//
-// Widget _invoiceInfoItem(String title, String value) {
-//   return Column(
-//     crossAxisAlignment: CrossAxisAlignment.start,
-//     children: [
-//       Text(
-//         title,
-//         style: const TextStyle(
-//           color: Color(0xFF475466),
-//           fontSize: 12,
-//           fontWeight: FontWeight.w400,
-//         ),
-//       ),
-//       SizedBox(height: 4.h),
-//       Text(
-//         value,
-//         style: const TextStyle(
-//           color: Color(0xFF1B1B2F),
-//           fontSize: 14,
-//           fontWeight: FontWeight.w500,
-//         ),
-//       ),
-//     ],
-//   );
-// }
-//
-// Widget _invoicePaymentItem(String title, String value, {String? subTitle}) {
-//   return Column(
-//     crossAxisAlignment: CrossAxisAlignment.start,
-//     children: [
-//       Row(
-//         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//         children: [
-//           Text(
-//             title,
-//             style: const TextStyle(
-//               color: Color(0xFF344053),
-//               fontSize: 14,
-//               fontWeight: FontWeight.w400,
-//             ),
-//           ),
-//           SizedBox(height: 4.h),
-//           Text(
-//             value,
-//             style: const TextStyle(
-//               color: Color(0xFF0F1728),
-//               fontSize: 14,
-//               fontWeight: FontWeight.w600,
-//             ),
-//           ),
-//         ],
-//       ),
-//       if (subTitle != null)
-//         Text(
-//           subTitle,
-//           style: const TextStyle(
-//             color: Color(0xFF667084),
-//             fontSize: 10,
-//             fontWeight: FontWeight.w400,
-//           ),
-//         ),
-//     ],
-//   );
-// }
-//
-// Widget _invoiceTotal(num total) {
-//   return Row(
-//     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//     children: [
-//       Text(
-//         translate(LocalizationKeys.total)!,
-//         style: const TextStyle(
-//           color: Color(0xFF344053),
-//           fontSize: 14,
-//           fontWeight: FontWeight.w600,
-//         ),
-//       ),
-//       SizedBox(height: 4.h),
-//       Text(
-//         "€${total.toStringAsFixed(2)}",
-//         style: const TextStyle(
-//           color: Color(0xFF0F1728),
-//           fontSize: 14,
-//           fontWeight: FontWeight.w600,
-//         ),
-//       ),
-//     ],
-//   );
-// }
-//
-// Widget _noteWidget() {
-//   return Column(
-//     crossAxisAlignment: CrossAxisAlignment.start,
-//     children: [
-//       Text(
-//         translate(LocalizationKeys.note)!,
-//         style: const TextStyle(
-//           color: Color(0xFF667084),
-//           fontSize: 14,
-//           fontWeight: FontWeight.w600,
-//         ),
-//       ),
-//       SizedBox(height: 4.h),
-//       Text(
-//         translate(LocalizationKeys
-//             .afterTheLeasePeriodEndsYouCanRefundYourSecurityDeposit)!,
-//         style: const TextStyle(
-//           color: Color(0xFF667084),
-//           fontSize: 13,
-//           fontWeight: FontWeight.w400,
-//         ),
-//       ),
-//     ],
-//   );
-// }
-//
-// Widget _downloadButton() {
-//   return InkWell(
-//     borderRadius: BorderRadius.circular(25),
-//     onTap: downloadClickedCallBack,
-//     child: Card(
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(25),
-//       ),
-//       color: const Color(0xFFEAEEF3),
-//       child: Padding(
-//         padding: EdgeInsets.symmetric(vertical: 10.h),
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           children: [
-//             SvgPicture.asset(AppAssetPaths.downloadIcon),
-//             SizedBox(width: 10.w),
-//             Text(
-//               translate(LocalizationKeys.downloadInvoice)!,
-//               textAlign: TextAlign.center,
-//               style: const TextStyle(
-//                 color: Color(0xFF2D4568),
-//                 fontSize: 16,
-//                 fontWeight: FontWeight.w400,
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     ),
-//   );
-// }
-//
-// Widget _payNowButton() {
-//   return InkWell(
-//     borderRadius: BorderRadius.circular(25),
-//     onTap: payNowClickedCallBack,
-//     child: Card(
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(25),
-//       ),
-//       color: const Color(0xFF1151B4),
-//       child: Padding(
-//         padding: EdgeInsets.symmetric(vertical: 10.h),
-//         child: Text(
-//           translate(LocalizationKeys.payNow)!,
-//           textAlign: TextAlign.center,
-//           style: const TextStyle(
-//             color: Colors.white,
-//             fontSize: 16,
-//             fontWeight: FontWeight.w400,
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-// }
 }
 
-class InvoiceCardWithNotches extends StatelessWidget {
+class CommunityInvoiceDetailsWithBloc extends BaseStatefulScreenWidget {
+  final PlanHistoryBloc currentBloc;
+  final String id;
+
+  const CommunityInvoiceDetailsWithBloc(this.currentBloc, this.id, {super.key});
+
+  @override
+  BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() {
+    return _CommunityInvoiceDetailsWithBloc();
+  }
+}
+
+class _CommunityInvoiceDetailsWithBloc
+    extends BaseScreenState<CommunityInvoiceDetailsWithBloc> {
+  InvoiceClubDetailsModel? invoiceClubDetailsModel;
+
+  @override
+  void initState() {
+    widget.currentBloc.add(GetPlanTransactionDetails(widget.id));
+    super.initState();
+  }
+
+  @override
+  Widget baseScreenBuild(BuildContext context) {
+    return BlocConsumer<PlanHistoryBloc, PlanHistoryState>(
+      listener: (context, state) {
+        if (state is PlanHistoryLoading) {
+          showLoading();
+        } else {
+          hideLoading();
+        }
+        if (state is GetInvoiceDetails) {
+          invoiceClubDetailsModel = state.model;
+        } else if (state is ErrorPlanHistoryState) {
+          showFeedbackMessage(state.isLocalizationKey
+              ? translate(state.errorMassage) ?? ""
+              : state.errorMassage);
+        }
+      },
+      builder: (context, state) {
+        return invoiceClubDetailsModel != null
+            ? InvoiceCardWithNotches(invoiceClubDetailsModel!)
+            : Scaffold(
+                appBar: AppBar(
+                    title: Text(translate(LocalizationKeys.invoice) ?? " ")),
+                body: Container());
+      },
+    );
+  }
+}
+
+class InvoiceCardWithNotches extends BaseStatelessWidget {
+  final InvoiceClubDetailsModel invoiceClubDetailsModel;
+
+  InvoiceCardWithNotches(this.invoiceClubDetailsModel, {super.key});
+
   final double height = 480.r;
 
   // Cutout positions
@@ -269,10 +107,10 @@ class InvoiceCardWithNotches extends StatelessWidget {
   double thirdCutoutY = 480.r * 0.75;
 
   @override
-  Widget build(BuildContext context) {
+  Widget baseBuild(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackground2,
-      appBar: AppBar(title: Text("Invoice")),
+      appBar: AppBar(title: Text(translate(LocalizationKeys.invoice) ?? " ")),
       body: Container(
         margin: EdgeInsets.all(SizeManager.sizeSp16),
         child: CustomCard(
@@ -296,23 +134,24 @@ class InvoiceCardWithNotches extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          width: 35.r,
-                          height: 35.r,
+                          width: 30.r,
+                          height: 30.r,
                           padding: EdgeInsets.symmetric(
                               horizontal: SizeManager.sizeSp4,
-                              vertical: SizeManager.sizeSp8),
+                              vertical: SizeManager.sizeSp6),
                           decoration: BoxDecoration(
                             borderRadius:
-                                BorderRadius.all(SizeManager.circularRadius10),
-                            color: AppColors.cardBorderGold.withOpacity(0.1),
+                                BorderRadius.all(SizeManager.circularRadius8),
+                            color: getColor(invoiceClubDetailsModel)
+                                .withOpacity(0.1),
                           ),
                           child: SvgPicture.asset(
-                            AppAssetPaths.rateIcon,
+                            getAsset(invoiceClubDetailsModel),
                           ),
                         ),
                         const SizedBox(width: 8),
                         TextApp(
-                          text: "Annual Plan",
+                          text: invoiceClubDetailsModel.planName ?? "",
                         ),
                       ],
                     ),
@@ -326,7 +165,7 @@ class InvoiceCardWithNotches extends StatelessWidget {
                         horizontal: 8,
                       ),
                       child: TextApp(
-                        text: "Paid",
+                        text: "${invoiceClubDetailsModel.paymentStatus}",
                         color: AppColors.cardBorderGreen,
                         fontWeight: FontWeight.w400,
                       ),
@@ -345,21 +184,25 @@ class InvoiceCardWithNotches extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildColumn("Payment Date", "Feb 25, 2025"),
+                        _buildColumn("Payment Date",
+                            invoiceClubDetailsModel.paymentDate ?? ""),
                         SizedBox(
                           height: SizeManager.sizeSp8,
                         ),
-                        _buildColumn("Start Date", "Feb 25, 2025"),
+                        _buildColumn("Start Date",
+                            invoiceClubDetailsModel.paymentDate ?? ""),
                       ],
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildColumn("Invoice No.", "00125985"),
+                        _buildColumn("Invoice No.",
+                            invoiceClubDetailsModel.invoiceNo ?? ""),
                         SizedBox(
                           height: SizeManager.sizeSp8,
                         ),
-                        _buildColumn("Renewal Date", "Feb 25, 2026"),
+                        _buildColumn("Renewal Date",
+                            invoiceClubDetailsModel.renewelDate ?? ""),
                       ],
                     ),
                   ],
@@ -381,13 +224,16 @@ class InvoiceCardWithNotches extends StatelessWidget {
                       color: AppColors.textMainColor,
                     ),
                     SizedBox(height: SizeManager.sizeSp8),
-                    _buildPaymentRow(LocalizationKeys.planPrice, "€ 380",
+                    _buildPaymentRow(LocalizationKeys.planPrice,
+                        "€ ${invoiceClubDetailsModel.subTotal ?? ""}",
                         withPadding: true),
                     SizedBox(height: SizeManager.sizeSp8),
-                    _buildPaymentRow(LocalizationKeys.vat, "€ 100",
+                    _buildPaymentRow(LocalizationKeys.vat,
+                        "€ ${invoiceClubDetailsModel.vat ?? ""}",
                         withPadding: true),
                     SizedBox(height: SizeManager.sizeSp8),
-                    _buildPaymentTotalRow(LocalizationKeys.total, "€ 480"),
+                    _buildPaymentTotalRow(LocalizationKeys.total,
+                        "€ ${invoiceClubDetailsModel.total ?? ""}"),
                   ],
                 ),
               ),
@@ -410,7 +256,7 @@ class InvoiceCardWithNotches extends StatelessWidget {
                             fontSize: FontSize.fontSize14,
                           ),
                           TextApp(
-                            text: "Cash",
+                            text: invoiceClubDetailsModel.paymentMethod ?? "",
                             fontSize: FontSize.fontSize14,
                           ),
                         ],
@@ -426,8 +272,17 @@ class InvoiceCardWithNotches extends StatelessWidget {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             // Add your download invoice logic here
+                            if ((invoiceClubDetailsModel.url?.isLink ??
+                                    false) &&
+                                await canLaunchUrl(Uri.parse(
+                                    invoiceClubDetailsModel.url ?? ""))) {
+                              await launchUrl(
+                                  Uri.parse(invoiceClubDetailsModel.url ?? ""));
+                            } else {
+                              showFeedbackMessage("Download Failed");
+                            }
                           },
                           icon: SvgPicture.asset(
                               AppAssetPaths.communityDownloadIcon),
@@ -446,6 +301,28 @@ class InvoiceCardWithNotches extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String getAsset(InvoiceClubDetailsModel? item) {
+    switch (item?.planDurationInMonth) {
+      case 12:
+        return AppAssetPaths.rateIcon;
+      case 1:
+        return AppAssetPaths.personIcon;
+      default:
+        return AppAssetPaths.calenderIcon2;
+    }
+  }
+
+  Color getColor(InvoiceClubDetailsModel? item) {
+    switch (item?.planDurationInMonth) {
+      case 12:
+        return AppColors.cardBorderGold;
+      case 1:
+        return AppColors.cardBorderGreen;
+      default:
+        return AppColors.colorPrimary;
+    }
   }
 
   Widget _buildColumn(String title, String value) {

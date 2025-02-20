@@ -182,7 +182,7 @@ class AppRoute {
     MyPlan.routeName: (ctx) => MyPlan(),
     HistoryInviteFriends.routeName: (ctx) => HistoryInviteFriends(),
     ClubActivity.routeName: (ctx) => ClubActivity(),
-    MyActivities.routeName: (ctx) => const MyActivities(),
+    MyActivities.routeName: (ctx) =>  MyActivities(),
     ActivityDetails.routeName: (ctx) => ActivityDetails(),
     CommunityQrDetails.routeName: (ctx) => CommunityQrDetails(),
     WishlistScreen.routeName: (ctx) => WishlistScreen(),

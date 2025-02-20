@@ -89,12 +89,13 @@ class _UintWidgetState extends BaseState<BookingUintWidgetV2> {
               topStart: Radius.circular(10.r),
               bottomStart: Radius.circular(10.r),
             ),
-            child: AppCachedNetworkImage(
-              imageUrl: widget.apartmentBookingModel.apartmentImage,
+            child:widget.apartmentBookingModel.apartmentImage != null? AppCachedNetworkImage(
+              imageUrl: widget.apartmentBookingModel.apartmentImage??"",
               boxFit: BoxFit.fill,
               height: double.infinity,
               width: double.infinity,
-            ),
+            ):
+            Container(),
           ),
           PositionedDirectional(
               top: 10.h,

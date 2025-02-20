@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -97,11 +98,12 @@ class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc>
         }
 
         if (state is GetClubActivityState) {
-          if (activities.data == null) {
-            activities = state.activitiesModel;
-          } else {
-            activities.data!.addAll(state.activitiesModel.data!);
-          }
+          activities = state.activitiesModel;
+          alignPaginationWithApi(
+              state.activitiesModel.hasPreviousPage ?? false,
+              state.activitiesModel.hasNextPage ?? false,
+              state.activitiesModel.data ?? []);
+          stopPaginationLoading();
         } else if (state is ChangeActivityTypeState) {
           if (state.type != currentType) {
             currentType = state.type;
@@ -117,6 +119,9 @@ class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc>
         return Scaffold(
           appBar: CustomAppBar(
             title: LocalizationKeys.clubActivity,
+            systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
+              systemNavigationBarColor: AppColors.textWhite,
+            ),
             withBackButton: true,
             centerTitle: true,
             onBack: () {
@@ -146,27 +151,30 @@ class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc>
                   },
                 ),
               ),
-              SizedBox(
-                height: 680.r,
-                child: PagingSwipeToRefreshGridListWidget(
-                  reachedEndOfScroll: () {
-                    if (shouldLoadMore) {
-                      startPaginationLoading();
-                      paginatedActivities();
-                    }
-                  },
-                  // itemClickable: false,
-                  listPadding: EdgeInsets.symmetric(horizontal: 8.w),
-                  itemWidget: (int index) {
-                    return itemActivity(activities.data![index]);
-                  },
-                  swipedToRefresh: () {
-                    firstLoad();
-                  },
-                  listLength: (activities.data?.length ?? 0),
-                  showPagingLoader: currentLoadingState,
+              if (getUpdatedData.isNotEmpty) ...[
+                SizedBox(
+                  height: 680.r,
+                  child: PagingSwipeToRefreshGridListWidget(
+                    reachedEndOfScroll: () {
+                      if (shouldLoadMore) {
+                        startPaginationLoading();
+                        paginatedActivities();
+                      }
+                    },
+                    // itemClickable: false,
+                    listPadding: EdgeInsets.symmetric(horizontal: 8.w),
+                    itemWidget: (int index) {
+                      return itemActivity(getUpdatedData[index]);
+                    },
+                    swipedToRefresh: () {
+                      resetPagination();
+                      firstLoad();
+                    },
+                    listLength: getUpdatedData.length,
+                    showPagingLoader: currentLoadingState,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         );
@@ -175,9 +183,6 @@ class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc>
   }
 
   firstLoad() {
-    if(activities.data!= null&& activities.data!.isNotEmpty) {
-      activities.data!.clear();
-    }
     currentBloc.add(GetClubActivityEvent(
         PagingCommunityActivitiesListSendModel(activitiesType: currentType)));
   }
@@ -189,9 +194,10 @@ class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc>
 
   Widget itemActivity(ActivitiesModel model) {
     return InkWell(
-      onTap: (){
+      onTap: () {
         ActivityDetails.open(
             AppRoute.mainNavigatorKey.currentContext!,
+            false,
             false,
             ActivityDetailsSendModel(model.activityId ?? "",
                 model.activityType ?? ActivitiesType.course));
@@ -222,7 +228,8 @@ class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc>
                               BorderRadius.all(SizeManager.circularRadius10),
                         ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.all(SizeManager.circularRadius10),
+                    borderRadius:
+                        BorderRadius.all(SizeManager.circularRadius10),
                     child: (model.activityMedia?.isLink ?? false)
                         ? CachedNetworkImage(
                             fit: BoxFit.cover,

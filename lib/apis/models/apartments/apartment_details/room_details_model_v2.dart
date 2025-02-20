@@ -108,10 +108,12 @@ class ApartmentRoom {
     return haveUnAvailableBed;
   }
 
-  bool haveUnAvailableBedsByRangeDate(DateTimeRange range , DateTimeRange contractRange) {
+  bool haveUnAvailableBedsByRangeDate(
+      DateTimeRange range, DateTimeRange contractRange) {
     bool haveUnAvailableBed = false;
     for (int x = 0; x < roomBeds!.length; x++) {
-      if (!(roomBeds![x].bedAvailableByDateRange(range, contractRange) ?? false)) {
+      if (!(roomBeds![x].bedAvailableByDateRange(range, contractRange) ??
+          false)) {
         haveUnAvailableBed = true;
         break;
       }
@@ -176,10 +178,10 @@ class ApartmentRoom {
       DateTimeRange range, DateTimeRange contractRange) {
     int count = 0;
     for (int x = 0; x < roomBeds!.length; x++) {
-      if(roomBeds![x].bedAvailableByDateRange(range, contractRange)){
-        count+=1;
+      if (roomBeds![x].bedAvailableByDateRange(range, contractRange)) {
+        count += 1;
       }
-   /*   if (roomBeds![x].bedsBookedDates!.isEmpty) {
+      /*   if (roomBeds![x].bedsBookedDates!.isEmpty) {
         count += 1;
       } else {
         for (int z = 0; z < roomBeds![x].bedsBookedDates!.length; z++) {
@@ -262,28 +264,33 @@ class RoomBed {
             : List<dynamic>.from(bedsBookedDates!.map((x) => x.toJson())),
       };
 
-  bool bedAvailableByDateRange(DateTimeRange range, DateTimeRange contractRange){
+  bool bedAvailableByDateRange(
+      DateTimeRange range, DateTimeRange contractRange) {
     bool _bedAv = false;
     if (bedsBookedDates!.isEmpty) {
       _bedAv = true;
     } else {
       for (int z = 0; z < bedsBookedDates!.length; z++) {
         var dates = bedsBookedDates!;
-        if (z == (dates.length - 1)) {
-          if (range.start.isAfter(dates[z].to!) &&
-              range.end.isAfter(dates[z].to!)) {
-            _bedAv = true;
-          } else if (range.start.isAfter(contractRange.start) &&
-              range.end.isBefore(dates[z].from!)) {
-           _bedAv = true;
+        if (dates[z].from!.month >= range.start.month) {
+          if (z == (dates.length - 1)) {
+            if (range.start.isAfter(dates[z].to!) &&
+                range.end.isAfter(dates[z].to!)) {
+              _bedAv = true;
+            } else if (range.start.isAfter(contractRange.start) &&
+                range.end.isBefore(dates[z].from!)) {
+              _bedAv = true;
+            }
+          } else {
+            if (range.start.isAfter(dates[z].to!) &&
+                range.end.isAfter(dates[z].to!) &&
+                range.start.isBefore(dates[z + 1].from!) &&
+                range.end.isBefore(dates[z + 1].from!)) {
+              _bedAv = true;
+            }
           }
         } else {
-          if (range.start.isAfter(dates[z].to!) &&
-              range.end.isAfter(dates[z].to!) &&
-              range.start.isBefore(dates[z + 1].from!) &&
-              range.end.isBefore(dates[z + 1].from!)) {
-           _bedAv = true;
-          }
+          _bedAv = true;
         }
       }
     }

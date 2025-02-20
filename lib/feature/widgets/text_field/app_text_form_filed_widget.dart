@@ -29,6 +29,7 @@ class AppTextFormField extends StatefulWidget {
   final int? maxLength;
   final String? customCounterText;
   final Color? enableBorderColor;
+  final Color background;
   final Color? focusColor;
   final FocusNode? focusNode;
   final IconData? suffixIcon;
@@ -74,6 +75,7 @@ class AppTextFormField extends StatefulWidget {
     this.hintStyle,
     this.radius = 10,
     this.label,
+    this.background = AppColors.appFormFieldFill
   })  : assert(initialValue == null || controller == null),
         super(key: key);
 
@@ -133,7 +135,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> with Themer {
             helperText: widget.helperText,
             counterText: widget.customCounterText,
             hintText: widget.hintText,
-            fillColor: AppColors.appFormFieldFill,
+            fillColor: widget.background,
             filled: true,
             contentPadding:
                 EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),

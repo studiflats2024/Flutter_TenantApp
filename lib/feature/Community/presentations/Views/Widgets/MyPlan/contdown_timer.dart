@@ -31,7 +31,8 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
   @override
   void initState() {
     super.initState();
-    endTime = DateFormat("dd/MM/yyy").parse(widget.endDate);
+    endTime = DateFormat("MM/dd/yyyy").parse(widget.endDate);
+    endTime = endTime.add(const Duration(days: 1));
     dateTimeRange = DateTimeRange(start: DateTime.now(), end: endTime);
     totalDuration = dateTimeRange.duration;
     _updateRemainingTime(); // Initialize remaining time
@@ -154,7 +155,6 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
                       )
                     ],
                   ),
-                  if (days == 0) ...[
                     SizedBox(
                       width: SizeManager.sizeSp8,
                     ),
@@ -172,9 +172,7 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
                     SizedBox(
                       width: SizeManager.sizeSp8,
                     ),
-                  ]
                 ],
-                if (days == 0) ...[
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -207,7 +205,7 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
                       width: SizeManager.sizeSp8,
                     ),
                   ]
-                ],
+                ,
                 if (hours == 0) ...[
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

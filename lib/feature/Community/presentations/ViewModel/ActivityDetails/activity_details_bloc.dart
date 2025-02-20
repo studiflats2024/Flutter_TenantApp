@@ -20,6 +20,8 @@ class ActivityDetailsBloc
       : super(ActivityDetailsInitial()) {
     on<GetActivityDetailsEvent>(_getActivityDetails);
     on<EnrollEvent>(_enroll);
+    on<ChooseDayTimeEvent>(_chooseDay);
+    on<ChooseTimeEvent>(_chooseTime);
   }
 
   FutureOr<void> _getActivityDetails(
@@ -33,5 +35,17 @@ class ActivityDetailsBloc
       EnrollEvent event, Emitter<ActivityDetailsState> emit) async {
     emit(ActivityDetailsLoadingState());
     emit(await activityDetailsRepository.enroll(event.model));
+  }
+
+  void _chooseDay(
+      ChooseDayTimeEvent event, Emitter<ActivityDetailsState> emit) {
+
+    emit(ChooseDayTimeState(event.day));
+  }
+
+  void _chooseTime(
+      ChooseTimeEvent event, Emitter<ActivityDetailsState> emit) {
+
+    emit(ChooseTimeState(event.time));
   }
 }

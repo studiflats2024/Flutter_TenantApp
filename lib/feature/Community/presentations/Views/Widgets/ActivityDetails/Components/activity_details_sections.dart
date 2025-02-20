@@ -95,7 +95,7 @@ class ActivityDetailsSections extends BaseStatelessWidget {
               ),
               TextApp(
                 text:
-                    "${activityDetailsModel.activitySeats ?? 0.0} ${translate(LocalizationKeys.seats)}",
+                    "${activityDetailsModel.availableSeats ?? 0} ${translate(LocalizationKeys.seats)}",
                 multiLang: false,
                 fontWeight: FontWeight.w400,
                 fontSize: FontSize.fontSize12,

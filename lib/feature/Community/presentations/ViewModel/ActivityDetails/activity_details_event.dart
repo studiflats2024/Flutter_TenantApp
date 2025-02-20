@@ -14,3 +14,16 @@ class EnrollEvent extends ActivityDetailsEvent {
 
   EnrollEvent(this.model);
 }
+
+
+class ChooseDayTimeEvent extends ActivityDetailsEvent {
+  final ConsultDay day;
+
+  ChooseDayTimeEvent(this.day);
+}
+
+class ChooseTimeEvent extends ActivityDetailsEvent {
+  final String time;
+
+  ChooseTimeEvent(this.time);
+}
