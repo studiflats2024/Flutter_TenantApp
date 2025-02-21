@@ -39,9 +39,9 @@ class CommunityManager {
     )
         .then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       ClubActivityModel wrapper =
-          clubActivityModelFromJson(json.encode(extractedData));
+      clubActivityModelFromJson(json.encode(extractedData));
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -56,13 +56,13 @@ class CommunityManager {
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dioUnauthorized
         .post(ApiKeys.getCommunityPaginatedActivities,
-            data: pagingListSendModel.toJson(),
-            queryParameters: pagingListSendModel.toParameters())
+        data: pagingListSendModel.toJson(),
+        queryParameters: pagingListSendModel.toParameters())
         .then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       ClubActivityModel wrapper =
-          clubActivityModelFromJson(json.encode(extractedData));
+      clubActivityModelFromJson(json.encode(extractedData));
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -71,18 +71,17 @@ class CommunityManager {
     });
   }
 
-  Future<void> getActivityDetails(
-      ActivityDetailsSendModel sendModel,
+  Future<void> getActivityDetails(ActivityDetailsSendModel sendModel,
       void Function(ActivityDetailsModel) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
         .get(ApiKeys.getCommunityActivityDetails,
-            queryParameters: sendModel.toMap())
+        queryParameters: sendModel.toMap())
         .then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       ActivityDetailsModel wrapper =
-          activityDetailsModelFromJson(json.encode(extractedData));
+      activityDetailsModelFromJson(json.encode(extractedData));
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -91,17 +90,16 @@ class CommunityManager {
     });
   }
 
-  Future<void> getSubscriptionsPlan(
-      PagingListSendModel pagingListSendModel,
+  Future<void> getSubscriptionsPlan(PagingListSendModel pagingListSendModel,
       void Function(List<SubscriptionPlansModel>) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dioUnauthorized
         .get(ApiKeys.getCommunitySubscriptionsPlan,
-            queryParameters: pagingListSendModel.toJson())
+        queryParameters: pagingListSendModel.toJson())
         .then((response) async {
       List extractedData = response.data as List;
       List<SubscriptionPlansModel> wrapper =
-          subscriptionPlansModelFromJson(json.encode(extractedData));
+      subscriptionPlansModelFromJson(json.encode(extractedData));
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -110,17 +108,15 @@ class CommunityManager {
     });
   }
 
-  Future<void> getSubscriptionPlanDetails(
-    planId,
-    void Function(PlanDetailsModel) success,
-    void Function(ErrorApiModel) fail,
-  ) async {
+  Future<void> getSubscriptionPlanDetails(planId,
+      void Function(PlanDetailsModel) success,
+      void Function(ErrorApiModel) fail,) async {
     await dioApiManager.dio.get(ApiKeys.getCommunityPlanDetails,
         queryParameters: {"Plan_ID": planId}).then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       PlanDetailsModel wrapper =
-          planDetailsModelFromJson(json.encode(extractedData));
+      planDetailsModelFromJson(json.encode(extractedData));
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -146,8 +142,8 @@ class CommunityManager {
     });
   }
 
-  Future<void> getDoorLock(
-      void Function(String) success, void Function(ErrorApiModel) fail) async {
+  Future<void> getDoorLock(void Function(String) success,
+      void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
         .get(
       ApiKeys.openDoorLock,
@@ -167,9 +163,9 @@ class CommunityManager {
     await dioApiManager.dio.post(ApiKeys.subscribePlan,
         queryParameters: {"Plan_ID": id}).then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       SubscribePlanModel wrapper =
-          subscribePlanModelFromJson(json.encode(extractedData));
+      subscribePlanModelFromJson(json.encode(extractedData));
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -195,17 +191,16 @@ class CommunityManager {
     });
   }
 
-  Future<void> inviteFriend(
-      InviteFriendSendModel model,
+  Future<void> inviteFriend(InviteFriendSendModel model,
       void Function(BaseMessageModel) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
         .post(ApiKeys.inviteFriend, data: model.toMap())
         .then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       BaseMessageModel baseModel =
-          baseMessageModelFromJson(json.encode(extractedData));
+      baseMessageModelFromJson(json.encode(extractedData));
       success(baseModel);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -214,13 +209,18 @@ class CommunityManager {
     });
   }
 
-  Future<void> getMyPlan(void Function(MyPlanModel) success,
+  Future<void> getMyPlan(void Function(MyPlanModel?) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio.get(ApiKeys.getMyPlan).then((response) async {
-      Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
-      MyPlanModel plan = myPlanModelFromJson(json.encode(extractedData));
-      success(plan);
+      if (response.data is Map && response.data.isNotEmpty) {
+        Map<String, dynamic> extractedData = response.data as Map<
+            String,
+            dynamic>;
+        MyPlanModel plan = myPlanModelFromJson(json.encode(extractedData));
+        success(plan);
+      } else {
+        success(null);
+      }
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
         error: error,
@@ -228,8 +228,7 @@ class CommunityManager {
     });
   }
 
-  Future<void> enrollActivity(
-      EnrollActivitySendModel model,
+  Future<void> enrollActivity(EnrollActivitySendModel model,
       void Function(BaseMessageModel) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
@@ -239,9 +238,9 @@ class CommunityManager {
     )
         .then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       BaseMessageModel data =
-          baseMessageModelFromJson(json.encode(extractedData));
+      baseMessageModelFromJson(json.encode(extractedData));
       success(data);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -250,8 +249,7 @@ class CommunityManager {
     });
   }
 
-  Future<void> myActivity(
-      MyActivitySendModel model,
+  Future<void> myActivity(MyActivitySendModel model,
       void Function(MyActivityResponse) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
@@ -261,9 +259,9 @@ class CommunityManager {
     )
         .then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       MyActivityResponse data =
-          myActivityResponseFromJson(json.encode(extractedData));
+      myActivityResponseFromJson(json.encode(extractedData));
       success(data);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -272,8 +270,7 @@ class CommunityManager {
     });
   }
 
-  Future<void> unEnrollActivity(
-      String id,
+  Future<void> unEnrollActivity(String id,
       void Function(BaseMessageModel) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio.get(
@@ -281,9 +278,9 @@ class CommunityManager {
       queryParameters: {"ID": id},
     ).then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       BaseMessageModel data =
-          baseMessageModelFromJson(json.encode(extractedData));
+      baseMessageModelFromJson(json.encode(extractedData));
       success(data);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -292,8 +289,7 @@ class CommunityManager {
     });
   }
 
-  Future<void> reviewActivity(
-      MyActivityRatingSendModel model,
+  Future<void> reviewActivity(MyActivityRatingSendModel model,
       void Function(BaseMessageModel) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
@@ -303,9 +299,9 @@ class CommunityManager {
     )
         .then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       BaseMessageModel data =
-          baseMessageModelFromJson(json.encode(extractedData));
+      baseMessageModelFromJson(json.encode(extractedData));
       success(data);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -314,8 +310,7 @@ class CommunityManager {
     });
   }
 
-  Future<void> planHistoryTransaction(
-      PagingListSendModel model,
+  Future<void> planHistoryTransaction(PagingListSendModel model,
       void Function(PlanHistoryModel) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio.get(
@@ -326,9 +321,9 @@ class CommunityManager {
       },
     ).then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       PlanHistoryModel data =
-          planHistoryModelFromJson(json.encode(extractedData));
+      planHistoryModelFromJson(json.encode(extractedData));
       success(data);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -336,8 +331,8 @@ class CommunityManager {
       ));
     });
   }
-  Future<void> planTransactionDetails(
-      String id,
+
+  Future<void> planTransactionDetails(String id,
       void Function(InvoiceClubDetailsModel) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio.get(
@@ -347,9 +342,9 @@ class CommunityManager {
       },
     ).then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       InvoiceClubDetailsModel data =
-          invoiceClubDetailsModelFromJson(json.encode(extractedData));
+      invoiceClubDetailsModelFromJson(json.encode(extractedData));
       success(data);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(
@@ -358,8 +353,7 @@ class CommunityManager {
     });
   }
 
-  Future<void> invitationsHistory(
-      PagingListSendModel model,
+  Future<void> invitationsHistory(PagingListSendModel model,
       void Function(InvitationsHistoryModel) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio.get(
@@ -370,9 +364,9 @@ class CommunityManager {
       },
     ).then((response) async {
       Map<String, dynamic> extractedData =
-          response.data as Map<String, dynamic>;
+      response.data as Map<String, dynamic>;
       InvitationsHistoryModel data =
-          invitationsHistoryModelFromJson(json.encode(extractedData));
+      invitationsHistoryModelFromJson(json.encode(extractedData));
       success(data);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(

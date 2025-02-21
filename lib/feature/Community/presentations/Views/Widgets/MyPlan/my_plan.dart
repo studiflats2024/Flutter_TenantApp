@@ -121,7 +121,13 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
             hideLoading();
           }
           if (state is GetMyPlanState) {
-            planModel = state.model;
+            if(state.model != null) {
+              planModel = state.model!;
+            }else{
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+                return ViewPlans();
+              }));
+            }
           } else if (state is PaySubscribePlanSuccessState) {
             if (state.response.isLink) {
               PaySubscription.open(

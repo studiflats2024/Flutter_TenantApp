@@ -1,4 +1,5 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +26,7 @@ import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/res/font_size.dart';
+import 'package:vivas/utils/extensions/extension_string.dart';
 import 'package:vivas/utils/feedback/feedback_message.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
 import 'package:vivas/utils/size_manager.dart';
@@ -94,7 +96,10 @@ class ActivityDetailsWithBloc extends BaseStatefulScreenWidget {
 class _ActivityDetailsWithBloc
     extends BaseScreenState<ActivityDetailsWithBloc> {
   ActivityDetailsModel activityDetailsModel = ActivityDetailsModel();
+
+  String filter = "All";
   List<String> ratings = ["All", "5", "4", "3", "2", "1"];
+  List<Rating> ratingFilter = [];
 
   @override
   void initState() {
@@ -120,9 +125,12 @@ class _ActivityDetailsWithBloc
           } else {
             hideLoading();
           }
-
           if (state is GetActivityDetailsState) {
             activityDetailsModel = state.activityDetailsModel;
+            ratingFilter = activityDetailsModel.ratings ?? [];
+          } else if (state is FilterRatingState) {
+            filter = state.filter;
+            ratingFilter = filterRating(activityDetailsModel, state.filter);
           } else if (state is SuccessEnrollState) {
             ArtSweetAlert.show(
               context: context,
@@ -190,6 +198,7 @@ class _ActivityDetailsWithBloc
                       children: [
                         ActivityDetailsSubHeader(
                           widget.fromMyActivity,
+                          status: widget.sendModel.status,
                           activityDetailsModel: activityDetailsModel,
                         ),
                         SizedBox(
@@ -283,7 +292,9 @@ class _ActivityDetailsWithBloc
                             height: SizeManager.sizeSp12,
                           ),
                         ],
-                        ActivityDetailsSections(activityDetailsModel),
+                        ActivityDetailsSections(
+                            activityDetailsModel, widget.fromMyActivity,
+                            status: widget.sendModel.status),
                         TextApp(
                           text: LocalizationKeys.description,
                           fontWeight: FontWeight.w500,
@@ -320,8 +331,8 @@ class _ActivityDetailsWithBloc
                                 multiLang: true,
                                 fontSize: FontSize.fontSize16,
                               ),
-                              SvgPicture.asset(
-                                  AppAssetPaths.communityEditPinIcon)
+                              // SvgPicture.asset(
+                              //     AppAssetPaths.communityEditPinIcon)
                             ],
                           ),
                           SizedBox(
@@ -339,47 +350,170 @@ class _ActivityDetailsWithBloc
                                 );
                               },
                               itemBuilder: (context, index) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color:
-                                              AppColors.cardBorderPrimary100),
-                                      borderRadius: BorderRadius.all(
-                                          SizeManager.circularRadius8)),
-                                  padding: EdgeInsets.all(SizeManager.sizeSp8),
-                                  child: Row(
-                                    children: [
-                                      SvgPicture.asset(
-                                        AppAssetPaths.rateIcon,
-                                        color: AppColors.textShade3,
-                                        width: SizeManager.sizeSp14,
-                                        height: SizeManager.sizeSp14,
-                                      ),
-                                      SizedBox(
-                                        width: SizeManager.sizeSp8,
-                                      ),
-                                      TextApp(
-                                        text: ratings[index],
-                                        color: AppColors.textShade3,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: FontSize.fontSize14,
-                                      )
-                                    ],
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (ratings[index] != filter) {
+                                      currentBloc.add(
+                                          FilterRatingEvent(ratings[index]));
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: ratings[index] == filter
+                                            ? AppColors.colorPrimary
+                                            : AppColors.textWhite,
+                                        border: Border.all(
+                                            color:
+                                                AppColors.cardBorderPrimary100),
+                                        borderRadius: BorderRadius.all(
+                                            SizeManager.circularRadius8)),
+                                    padding:
+                                        EdgeInsets.all(SizeManager.sizeSp8),
+                                    child: Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          AppAssetPaths.rateIcon,
+                                          color: ratings[index] == filter
+                                              ? AppColors.textWhite
+                                              : AppColors.textShade3,
+                                          width: SizeManager.sizeSp14,
+                                          height: SizeManager.sizeSp14,
+                                        ),
+                                        SizedBox(
+                                          width: SizeManager.sizeSp8,
+                                        ),
+                                        TextApp(
+                                          text: ratings[index],
+                                          color: ratings[index] == filter
+                                              ? AppColors.textWhite
+                                              : AppColors.textShade3,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: FontSize.fontSize14,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 );
                               },
                             ),
                           ),
-                          ListView.separated(
-                              itemBuilder: (context, index) {
-                                return Container();
-                              },
-                              separatorBuilder: (context, index) {
-                                return SizedBox(
-                                  height: SizeManager.sizeSp16,
-                                );
-                              },
-                              itemCount: activityDetailsModel.ratings!.length),
+                          SizedBox(
+                            height: SizeManager.sizeSp16,
+                          ),
+                          Column(
+                            children:
+                                List.generate(ratingFilter.length, (index) {
+                              var item = ratingFilter[index];
+                              return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                      SizeManager.circularRadius10),
+                                  border: Border.all(
+                                    color: AppColors.cardBorderPrimary100,
+                                  ),
+                                ),
+                                padding: EdgeInsets.all(
+                                  SizeManager.sizeSp16,
+                                ),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: SizeManager.sizeSp8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundColor:
+                                                  AppColors.textWhite,
+                                              radius: SizeManager.sizeSp24,
+                                              child: item.userPhoto != null &&
+                                                      item.userPhoto!.isLink
+                                                  ? Container(
+                                                      width:
+                                                          SizeManager.sizeSp24,
+                                                      height:
+                                                          SizeManager.sizeSp24,
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              item.userPhoto!),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  : Image.asset(
+                                                      AppAssetPaths
+                                                          .profileDefaultAvatar,
+                                                    ),
+                                            ),
+                                            SizedBox(
+                                              width: SizeManager.sizeSp8,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                TextApp(
+                                                  text: item.userName ?? '',
+                                                  fontSize: FontSize.fontSize14,
+                                                ),
+                                                SizedBox(
+                                                  height: SizeManager.sizeSp4,
+                                                ),
+                                                TextApp(
+                                                  text: item.ratingDate ?? '',
+                                                  fontSize: FontSize.fontSize12,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: AppColors.textShade3,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            SvgPicture.asset(
+                                              AppAssetPaths.rateIcon,
+                                              width: SizeManager.sizeSp14,
+                                              height: SizeManager.sizeSp14,
+                                            ),
+                                            SizedBox(
+                                              width: SizeManager.sizeSp8,
+                                            ),
+                                            TextApp(
+                                              text: item.ratingValue.toString(),
+                                              color: AppColors.colorPrimary,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: FontSize.fontSize14,
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: SizeManager.sizeSp24,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: SizeManager.sizeSp8),
+                                      child: TextApp(
+                                        text: item.comment ?? '',
+                                        fontSize: FontSize.fontSize14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }),
+                          ),
+                          SizedBox(
+                            height: SizeManager.sizeSp8,
+                          ),
                           SubmitButtonWidget(
                             title: translate(LocalizationKeys.viewAll)!,
                             titleStyle: const TextStyle(
@@ -525,5 +659,19 @@ class _ActivityDetailsWithBloc
               ),
             ),
     );
+  }
+
+  List<Rating> filterRating(ActivityDetailsModel details, String filter) {
+    List<Rating> ratingList = [];
+    if (filter == "All") {
+      return details.ratings ?? [];
+    } else {
+      for (int i = 0; i < details.ratings!.length; i++) {
+        if (details.ratings![i].ratingValue == int.parse(filter)) {
+          ratingList.add(details.ratings![i]);
+        }
+      }
+      return ratingList;
+    }
   }
 }

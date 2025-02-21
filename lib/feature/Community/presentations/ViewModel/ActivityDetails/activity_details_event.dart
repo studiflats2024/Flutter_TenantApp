@@ -22,6 +22,12 @@ class ChooseDayTimeEvent extends ActivityDetailsEvent {
   ChooseDayTimeEvent(this.day);
 }
 
+class FilterRatingEvent extends ActivityDetailsEvent {
+  final String filter;
+
+  FilterRatingEvent(this.filter);
+}
+
 class ChooseTimeEvent extends ActivityDetailsEvent {
   final String time;
 

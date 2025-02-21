@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/enroll_activity_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/activity_details_model.dart';
@@ -85,12 +86,26 @@ class _EnrollConsultantWidget extends BaseScreenState<EnrollConsultantWidget> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              TextApp(
-                                text: item.consultDay ?? "",
-                                fontSize: FontSize.fontSize14,
-                                color: consultDay == item
-                                    ? AppColors.textWhite
-                                    : AppColors.textShade7,
+                              Column(
+                                children: [
+                                  // TextApp(
+                                  //   text: item.consultDay ?? "",
+                                  //   fontSize: FontSize.fontSize14,
+                                  //   color: consultDay == item
+                                  //       ? AppColors.textWhite
+                                  //       : AppColors.textShade7,
+                                  // ),
+                                  TextApp(
+                                    text: DateFormat.yMEd().format(
+                                            item.consultDate ??
+                                                DateTime.now()) ??
+                                        "",
+                                    fontSize: FontSize.fontSize14,
+                                    color: consultDay == item
+                                        ? AppColors.textWhite
+                                        : AppColors.textShade7,
+                                  ),
+                                ],
                               ),
                               GestureDetector(
                                 onTap: () {

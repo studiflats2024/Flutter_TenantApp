@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
+import 'package:vivas/feature/Community/Data/Models/consult_subscription.dart';
 
 MyActivityResponse myActivityResponseFromJson(String str) =>
     MyActivityResponse.fromJson(json.decode(str));
@@ -83,17 +84,20 @@ class MyActivitiesModel {
   String? activityDate;
   int? reviews;
   String? activityStatus;
+  bool? hasRated;
+  List<ConsultSubscription>? consultSubscriptions;
 
-  MyActivitiesModel({
-    this.id,
-    this.activityId,
-    this.activityPhoto,
-    this.activityType,
-    this.activityName,
-    this.activityDate,
-    this.reviews,
-    this.activityStatus,
-  });
+  MyActivitiesModel(
+      {this.id,
+      this.activityId,
+      this.activityPhoto,
+      this.activityType,
+      this.activityName,
+      this.activityDate,
+      this.reviews,
+      this.activityStatus,
+      this.hasRated,
+      this.consultSubscriptions});
 
   factory MyActivitiesModel.fromJson(Map<String, dynamic> json) =>
       MyActivitiesModel(
@@ -107,6 +111,11 @@ class MyActivitiesModel {
         activityDate: json["activity_Date"],
         reviews: json["reviews"],
         activityStatus: json["activity_Status"],
+        hasRated: json["has_Rated"],
+        consultSubscriptions: json["consult_subscription"] == null
+            ? []
+            : List<ConsultSubscription>.from(json["consult_subscription"]!
+                .map((x) => ConsultSubscription.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -118,5 +127,9 @@ class MyActivitiesModel {
         "activity_Date": activityDate,
         "reviews": reviews,
         "activity_Status": activityStatus,
+        "has_Rated": hasRated,
+        "consult_subscription": consultSubscriptions == null
+            ? []
+            : List<dynamic>.from(consultSubscriptions!.map((x) => x.toJson())),
       };
 }

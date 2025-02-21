@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
+import 'package:vivas/feature/Community/Data/Managers/my_activity_enum.dart';
 import 'package:vivas/feature/Community/Data/Models/activity_details_model.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
@@ -14,7 +15,7 @@ import 'package:vivas/utils/size_manager.dart';
 // ignore: must_be_immutable
 class ActivityDetailsSubHeader extends BaseStatelessWidget {
   bool fromMyActivity;
-
+  MyActivityStatus? status;
   ActivityDetailsModel activityDetailsModel;
   List<String> images = [
     AppAssetPaths.profileDefaultAvatar,
@@ -27,6 +28,7 @@ class ActivityDetailsSubHeader extends BaseStatelessWidget {
   ActivityDetailsSubHeader(
     this.fromMyActivity, {
     required this.activityDetailsModel,
+    this.status,
     super.key,
   });
 
@@ -74,7 +76,7 @@ class ActivityDetailsSubHeader extends BaseStatelessWidget {
             ),
           ],
         ),
-        if (fromMyActivity) ...[
+        if (fromMyActivity && status == MyActivityStatus.completed) ...[
           Column(
             children: [
               SizedBox(
@@ -97,7 +99,11 @@ class ActivityDetailsSubHeader extends BaseStatelessWidget {
                   children: [
                     Row(
                       children: [
-                        SvgPicture.asset(AppAssetPaths.rateIcon, width: 20.r,height: 20.r,),
+                        SvgPicture.asset(
+                          AppAssetPaths.rateIcon,
+                          width: 20.r,
+                          height: 20.r,
+                        ),
                         SizedBox(
                           width: SizeManager.sizeSp8,
                         ),

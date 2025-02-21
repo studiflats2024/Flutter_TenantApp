@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
+import 'package:vivas/feature/Community/Data/Managers/my_activity_enum.dart';
 import 'package:vivas/feature/Community/Data/Models/activity_details_model.dart';
+import 'package:vivas/feature/Community/Data/Models/consult_subscription.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
@@ -17,8 +19,10 @@ import 'package:vivas/utils/size_manager.dart';
 //ignore: must_be_immutable
 class ActivityDetailsSections extends BaseStatelessWidget {
   ActivityDetailsModel activityDetailsModel;
+  MyActivityStatus? status;
+  bool fromMyActivity;
 
-  ActivityDetailsSections(this.activityDetailsModel, {super.key});
+  ActivityDetailsSections(this.activityDetailsModel, this.fromMyActivity, {super.key, this.status});
 
   @override
   Widget baseBuild(BuildContext context) {
@@ -104,7 +108,160 @@ class ActivityDetailsSections extends BaseStatelessWidget {
           ),
         ]);
       case ActivitiesType.consultant:
-        return Column(
+        return
+        fromMyActivity?
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextApp(
+                multiLang: true,
+                fontWeight: FontWeight.w500,
+                text: LocalizationKeys.days,
+                fontSize: FontSize.fontSize16,
+              ),
+              SizedBox(
+                height: SizeManager.sizeSp8,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColors.cardBorderPrimary100,
+                    ),
+                    borderRadius: BorderRadius.all(SizeManager.circularRadius10)),
+                margin: EdgeInsets.only(bottom: SizeManager.sizeSp16),
+                padding: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp8),
+                child: Column(
+                  children: List.generate(
+                    status == MyActivityStatus.ongoing
+                        ? 1
+                        : activityDetailsModel.consultSubscriptions?.length ?? 0,
+                        (index) {
+                      ConsultSubscription? session =
+                      activityDetailsModel.consultSubscriptions?[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: SizeManager.sizeSp16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextApp(
+                                  text: session?.day ?? "",
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: FontSize.fontSize14,
+                                  color: AppColors.textMainColor,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: SizeManager.sizeSp16,
+                                  ),
+                                  child: Container(
+                                    padding: EdgeInsets.all(SizeManager.sizeSp4),
+                                    decoration: BoxDecoration(
+                                        color: (status ??
+                                            MyActivityStatus.fromValue(
+                                                session?.satus ?? "")) ==
+                                            MyActivityStatus.ongoing
+                                            ? AppColors.cardBorderGold
+                                            : (status ??
+                                            MyActivityStatus
+                                                .fromValue(
+                                                session?.satus ??
+                                                    "")) ==
+                                            MyActivityStatus.completed
+                                            ? AppColors.cardBorderGreen
+                                            : AppColors.textActivityCancelled,
+                                        borderRadius: BorderRadius.all(
+                                          SizeManager.circularRadius4,
+                                        )),
+                                    child: TextApp(
+                                      text: session?.satus ?? "",
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: FontSize.fontSize12,
+                                      color: AppColors.textWhite,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      border: Border(
+                                          right: BorderSide(
+                                              color: AppColors
+                                                  .cardBorderPrimary100))),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        AppAssetPaths.calenderIconOutline,
+                                        color: AppColors.colorPrimary,
+                                        width: SizeManager.sizeSp20,
+                                        height: SizeManager.sizeSp20,
+                                      ),
+                                      SizedBox(
+                                        width: SizeManager.sizeSp8,
+                                      ),
+                                      TextApp(
+                                        text: "${session?.date ?? 0}",
+                                        multiLang: false,
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: FontSize.fontSize12,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppAssetPaths.timerIcon,
+                                      color: AppColors.colorPrimary,
+                                      width: SizeManager.sizeSp20,
+                                      height: SizeManager.sizeSp20,
+                                    ),
+                                    SizedBox(
+                                      width: SizeManager.sizeSp8,
+                                    ),
+                                    TextApp(
+                                      text: session?.time ?? "",
+                                      multiLang: false,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: FontSize.fontSize12,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: SizeManager.sizeSp8,
+                          ),
+                          if (index ==
+                              (activityDetailsModel.sessionsConsults?.length ??
+                                  0) -
+                                  1) ...[
+                            SizedBox(
+                              height: SizeManager.sizeSp8,
+                            ),
+                          ]
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ):
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextApp(
@@ -126,9 +283,9 @@ class ActivityDetailsSections extends BaseStatelessWidget {
               child: Column(
                 children: List.generate(
                   activityDetailsModel.sessionsConsults?.length ?? 0,
-                  (index) {
+                      (index) {
                     SessionsConsult? session =
-                        activityDetailsModel.sessionsConsults?[index];
+                    activityDetailsModel.sessionsConsults?[index];
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -164,7 +321,7 @@ class ActivityDetailsSections extends BaseStatelessWidget {
                                     ),
                                     TextApp(
                                       text:
-                                          "${session?.sessionStartTime ?? ""} - ${session?.sessionEndTime ?? ""}",
+                                      "${session?.sessionStartTime ?? ""} - ${session?.sessionEndTime ?? ""}",
                                       multiLang: false,
                                       fontWeight: FontWeight.w400,
                                       fontSize: FontSize.fontSize12,
@@ -188,7 +345,7 @@ class ActivityDetailsSections extends BaseStatelessWidget {
                                   ),
                                   TextApp(
                                     text:
-                                        "${session?.seessionAvailableSeats ?? 0} ${translate(LocalizationKeys.seats)} ",
+                                    "${session?.seessionAvailableSeats ?? 0} ${translate(LocalizationKeys.seats)} ",
                                     multiLang: false,
                                     fontWeight: FontWeight.w400,
                                     fontSize: FontSize.fontSize12,
@@ -203,7 +360,7 @@ class ActivityDetailsSections extends BaseStatelessWidget {
                         ),
                         if (index ==
                             (activityDetailsModel.sessionsConsults?.length ??
-                                    0) -
+                                0) -
                                 1) ...[
                           SizedBox(
                             height: SizeManager.sizeSp8,
@@ -239,11 +396,13 @@ class ActivityDetailsSections extends BaseStatelessWidget {
                   num sessionNum = (index + 1);
                   return Container(
                     decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.cardBorderPrimary100,
-                        ),
-                        borderRadius:
-                            BorderRadius.all(SizeManager.circularRadius10,),),
+                      border: Border.all(
+                        color: AppColors.cardBorderPrimary100,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        SizeManager.circularRadius10,
+                      ),
+                    ),
                     margin: EdgeInsets.only(bottom: SizeManager.sizeSp16),
                     padding: EdgeInsets.symmetric(
                         horizontal: SizeManager.sizeSp16,
@@ -390,7 +549,7 @@ class ActivityDetailsSections extends BaseStatelessWidget {
                                     width: SizeManager.sizeSp8,
                                   ),
                                   TextApp(
-                                    text: session.sessionLink ?? "" ,
+                                    text: session.sessionLink ?? "",
                                     multiLang: false,
                                     fontWeight: FontWeight.w400,
                                     fontSize: FontSize.fontSize12,

@@ -10,7 +10,7 @@ enum MyActivityStatus {
 
   static MyActivityStatus? fromValue(String value) {
     return MyActivityStatus.values.firstWhere(
-      (s) => s.name == value,
+      (s) => s.name == value || s.filter == value,
       orElse: () => MyActivityStatus.ongoing,
     );
   }

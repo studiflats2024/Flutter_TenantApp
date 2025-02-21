@@ -76,26 +76,23 @@ class _CommunitySubscription extends BaseScreenState<CommunitySubscription> {
           Padding(
             padding: EdgeInsets.all(SizeManager.sizeSp8),
             child: Center(
-              child: Expanded(
-                child: AnimatedSmoothIndicator(
-                  activeIndex: currentIndex,
-                  count: widget.subscriptions.length,
-                  // count: 3,
-                  effect: CustomizableEffect(
-                    dotDecoration: DotDecoration(
-                      width: SizeManager.sizeSp22,
-                      height: SizeManager.sizeSp2,
-                      color: AppColors.dotsNotActive,
-                      borderRadius:
-                          BorderRadius.all(SizeManager.circularRadius4),
-                    ),
-                    activeDotDecoration: DotDecoration(
-                      width: SizeManager.sizeSp22,
-                      height: SizeManager.sizeSp2,
-                      color: AppColors.colorPrimary,
-                      borderRadius:
-                          BorderRadius.all(SizeManager.circularRadius4),
-                    ),
+              child: AnimatedSmoothIndicator(
+                activeIndex: currentIndex,
+                count: widget.subscriptions.length,
+                effect: CustomizableEffect(
+                  dotDecoration: DotDecoration(
+                    width: SizeManager.sizeSp22,
+                    height: SizeManager.sizeSp2,
+                    color: AppColors.dotsNotActive,
+                    borderRadius:
+                        BorderRadius.all(SizeManager.circularRadius4),
+                  ),
+                  activeDotDecoration: DotDecoration(
+                    width: SizeManager.sizeSp22,
+                    height: SizeManager.sizeSp2,
+                    color: AppColors.colorPrimary,
+                    borderRadius:
+                        BorderRadius.all(SizeManager.circularRadius4),
                   ),
                 ),
               ),
@@ -226,7 +223,8 @@ class _CommunitySubscription extends BaseScreenState<CommunitySubscription> {
                 ),
                 Column(
                   children: List.generate(
-                    features.length,
+
+                    features.length > 3 ? 3 : features.length,
                     (index) {
                       return Padding(
                         padding: EdgeInsets.all(SizeManager.sizeSp4),
@@ -238,11 +236,15 @@ class _CommunitySubscription extends BaseScreenState<CommunitySubscription> {
                             SizedBox(
                               width: SizeManager.sizeSp4,
                             ),
-                            TextApp(
-                              multiLang: false,
-                              text: features[index],
-                              style: textTheme.bodyMedium
-                                  ?.copyWith(fontSize: 12.sp),
+                            SizedBox(
+                              width: 150.r,
+                              child: TextApp(
+                                multiLang: false,
+                                text: features[index],
+                                overflow: TextOverflow.ellipsis,
+                                style: textTheme.bodyMedium
+                                    ?.copyWith(fontSize: 12.sp),
+                              ),
                             )
                           ],
                         ),

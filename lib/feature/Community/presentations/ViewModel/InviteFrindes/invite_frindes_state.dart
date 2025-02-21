@@ -21,7 +21,7 @@ class ChooseDateState extends InviteFrindesState{
 }
 
 class GetMyPlanState extends InviteFrindesState {
-  final MyPlanModel model;
+  final MyPlanModel? model;
 
   GetMyPlanState(this.model);
 }

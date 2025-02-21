@@ -50,140 +50,199 @@ class _MyActivityRating extends BaseScreenState<MyActivityRating> {
           },
           multiLan: true,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp16),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: SizeManager.sizeSp16,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: 90.r,
-                      height: 90.r,
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.all(SizeManager.circularRadius10),
-                        image: widget.model.image.isLink
-                            ? DecorationImage(
-                                image: NetworkImage(
-                                  widget.model.image,
-                                ),
-                                fit: BoxFit.cover)
-                            : const DecorationImage(
-                                image: AssetImage(
-                                    AppAssetPaths.imageMonthlyActivities),
-                                fit: BoxFit.cover),
+        body: BlocConsumer<MyActivityBloc, MyActivityState>(
+          listener: (context, state) async{
+            if (state is MyActivityLoading) {
+              showLoading();
+            } else {
+              hideLoading();
+            }
+
+            if (state is SuccessfullyReviewState) {
+              await ArtSweetAlert.show(
+                  context: context,
+                  barrierDismissible: false,
+                  artDialogArgs: ArtDialogArgs(
+                    customColumns: [
+                      SvgPicture.asset(AppAssetPaths.communityIconSuccess),
+                      SizedBox(
+                        height: SizeManager.sizeSp8,
                       ),
+                      TextApp(
+                        multiLang: true,
+                        text: LocalizationKeys.reviewSubmittedSuccessfully,
+                        color: AppColors.textMainColor,
+                      ),
+                    ],
+                    confirmButtonText: LocalizationKeys.ok,
+                    confirmButtonColor: AppColors.colorPrimary,
+                    onConfirm: () {
+                      Navigator.pop(context);
+                    },
+                  ));
+              Navigator.pop(context);
+            }else if (state is MyActivityErrorState) {
+              ArtSweetAlert.show(
+                  context: context,
+                  barrierDismissible: false,
+                  artDialogArgs: ArtDialogArgs(
+                    type: ArtSweetAlertType.danger,
+                    customColumns: [
+                      SizedBox(
+                        height: SizeManager.sizeSp8,
+                      ),
+                      TextApp(
+                        multiLang: state.isLocalizationKey,
+                        text: state.errorMassage,
+                        color: AppColors.textMainColor,
+                      ),
+                    ],
+                    confirmButtonText: LocalizationKeys.ok,
+                    confirmButtonColor: AppColors.colorPrimary,
+                    onConfirm: () {
+                      Navigator.pop(context);
+                    },
+                  ));
+            }
+          },
+          builder: (context, state) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp16),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: SizeManager.sizeSp16,
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(SizeManager.sizeSp8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: SizeManager.sizeSp8,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Row(
+                      children: [
+                        Container(
+                          width: 90.r,
+                          height: 90.r,
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(SizeManager.circularRadius10),
+                            image: widget.model.image.isLink
+                                ? DecorationImage(
+                                    image: NetworkImage(
+                                      widget.model.image,
+                                    ),
+                                    fit: BoxFit.cover)
+                                : const DecorationImage(
+                                    image: AssetImage(
+                                        AppAssetPaths.imageMonthlyActivities),
+                                    fit: BoxFit.cover),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.all(SizeManager.sizeSp8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
-                                  width: 140.r,
-                                  child: TextApp(
-                                    text: widget.model.name,
-                                    fontSize: FontSize.fontSize14,
-                                    overflow: TextOverflow.ellipsis,
-                                    color: AppColors.textMainColor,
-                                  ),
+                                  height: SizeManager.sizeSp8,
                                 ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: 140.r,
+                                      child: TextApp(
+                                        text: widget.model.name,
+                                        fontSize: FontSize.fontSize14,
+                                        overflow: TextOverflow.ellipsis,
+                                        color: AppColors.textMainColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: SizeManager.sizeSp8,
+                                ),
+                                footer(widget.model)
                               ],
                             ),
-                            SizedBox(
-                              height: SizeManager.sizeSp8,
-                            ),
-                            footer(widget.model)
-                          ],
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: SizeManager.sizeSp24,
+                    ),
+                    TextApp(
+                      text: LocalizationKeys.howIsYourExperience,
+                      multiLang: true,
+                      fontSize: FontSize.fontSize20,
+                    ),
+                    SizedBox(
+                      height: SizeManager.sizeSp24,
+                    ),
+                    Container(
+                      height: 1.r,
+                      color: AppColors.cardBorderPrimary100,
+                    ),
+                    SizedBox(
+                      height: SizeManager.sizeSp16,
+                    ),
+                    TextApp(
+                      text: LocalizationKeys.yourOverallRating,
+                      multiLang: true,
+                      fontSize: FontSize.fontSize12,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textNatural700,
+                    ),
+                    SizedBox(
+                      height: SizeManager.sizeSp8,
+                    ),
+                    RatingBar(
+                      onRatingUpdate: (value) {
+                        setState(() {
+                          rate = value;
+                        });
+                      },
+                      itemSize: SizeManager.sizeSp32,
+                      itemPadding: EdgeInsets.symmetric(
+                          horizontal: SizeManager.sizeSp10),
+                      ratingWidget: RatingWidget(
+                        full: SvgPicture.asset(
+                          AppAssetPaths.rateIcon,
+                          color: AppColors.colorPrimary,
+                        ),
+                        half: SvgPicture.asset(
+                          AppAssetPaths.rateIcon,
+                          color: AppColors.colorPrimary.withOpacity(0.5),
+                        ),
+                        empty: SvgPicture.asset(
+                          AppAssetPaths.communityRateOutline,
                         ),
                       ),
+                    ),
+                    SizedBox(
+                      height: SizeManager.sizeSp16,
+                    ),
+                    Container(
+                      height: 1.r,
+                      color: AppColors.cardBorderPrimary100,
+                    ),
+                    SizedBox(
+                      height: SizeManager.sizeSp16,
+                    ),
+                    AppTextFormField(
+                      maxLines: 8,
+                      hintText: "",
+                      onSaved: (e) {},
+                      controller: comment,
+                      requiredTitle: false,
+                      background: AppColors.appFormFieldFill2,
+                      title: translate(LocalizationKeys.addDetailedReview),
                     )
                   ],
                 ),
-                SizedBox(
-                  height: SizeManager.sizeSp24,
-                ),
-                TextApp(
-                  text: LocalizationKeys.howIsYourExperience,
-                  multiLang: true,
-                  fontSize: FontSize.fontSize20,
-                ),
-                SizedBox(
-                  height: SizeManager.sizeSp24,
-                ),
-                Container(
-                  height: 1.r,
-                  color: AppColors.cardBorderPrimary100,
-                ),
-                SizedBox(
-                  height: SizeManager.sizeSp16,
-                ),
-                TextApp(
-                  text: LocalizationKeys.yourOverallRating,
-                  multiLang: true,
-                  fontSize: FontSize.fontSize12,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textNatural700,
-                ),
-                SizedBox(
-                  height: SizeManager.sizeSp8,
-                ),
-                RatingBar(
-                  onRatingUpdate: (value) {
-                    setState(() {
-                      rate = value;
-                    });
-                  },
-                  itemSize: SizeManager.sizeSp32,
-                  itemPadding:
-                      EdgeInsets.symmetric(horizontal: SizeManager.sizeSp10),
-                  ratingWidget: RatingWidget(
-                    full: SvgPicture.asset(
-                      AppAssetPaths.rateIcon,
-                      color: AppColors.colorPrimary,
-                    ),
-                    half: SvgPicture.asset(
-                      AppAssetPaths.rateIcon,
-                      color: AppColors.colorPrimary.withOpacity(0.5),
-                    ),
-                    empty: SvgPicture.asset(
-                      AppAssetPaths.communityRateOutline,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: SizeManager.sizeSp16,
-                ),
-                Container(
-                  height: 1.r,
-                  color: AppColors.cardBorderPrimary100,
-                ),
-                SizedBox(
-                  height: SizeManager.sizeSp16,
-                ),
-                AppTextFormField(
-                  maxLines: 8,
-                  hintText: "",
-                  onSaved: (e) {},
-                  controller: comment,
-                  requiredTitle: false,
-                  background: AppColors.appFormFieldFill2,
-                  title: translate(LocalizationKeys.addDetailedReview),
-                )
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
         bottomNavigationBar: SizedBox(
           height: 110.r,

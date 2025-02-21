@@ -136,6 +136,7 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
                               state.model.invoiceId ?? "", false),
                         ),
                       );
+                      Navigator.pop(context);
                     }),
                     _methodWidget(translate(LocalizationKeys.cash)!,
                         AppAssetPaths.walletIcon, () {
@@ -145,14 +146,18 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
                               state.model.invoiceId ?? "", true),
                         ),
                       );
+                      Navigator.pop(context);
                     }),
                   ],
                 ),
                 title: "Pay Methods");
           } else if (state is PaySubscribePlanSuccessState) {
             if (state.response.isLink) {
-              PaySubscription.open(
-                  context, subscribePlanModel?.invoiceId ?? "", state.response);
+              PaySubscription.open(context, subscribePlanModel?.invoiceId ?? "",
+                      state.response)
+                  .then((v) {
+                currentBloc.add(GetPlanDetailsEvent(widget.planID));
+              });
             } else {
               showFeedbackMessage(state.response);
             }
@@ -317,18 +322,22 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
       ),
       bottomNavigationBar: BottomAppBar(
         height: 115.r,
-        child: SubmitButtonWidget(
-            title: translate(LocalizationKeys.subscription) ?? "",
-            buttonColor: (planDetailsModel?.hasPlan ?? true)
-                ? AppColors.buttonGrey
-                : null,
-            onClicked: () {
-              if (!(planDetailsModel?.hasPlan ?? true)) {
-                currentBloc.add(
-                  SubscribeEvent(widget.planID),
-                );
-              }
-            }),
+        child: BlocBuilder<PlanDetailsBloc, PlanDetailsState>(
+          builder: (context, state) {
+            return SubmitButtonWidget(
+                title: translate(LocalizationKeys.subscription) ?? "",
+                buttonColor: (planDetailsModel?.hasPlan ?? true)
+                    ? AppColors.buttonGrey
+                    : null,
+                onClicked: () {
+                  if (!(planDetailsModel?.hasPlan ?? true)) {
+                    currentBloc.add(
+                      SubscribeEvent(widget.planID),
+                    );
+                  }
+                });
+          },
+        ),
       ),
     );
   }

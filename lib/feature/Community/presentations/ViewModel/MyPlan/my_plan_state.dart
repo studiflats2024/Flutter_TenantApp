@@ -8,7 +8,7 @@ class MyPlanInitial extends MyPlanState {}
 class MyPlanLoadingState extends MyPlanState {}
 
 class GetMyPlanState extends MyPlanState {
-  final MyPlanModel model;
+  final MyPlanModel? model;
 
   GetMyPlanState(this.model);
 }

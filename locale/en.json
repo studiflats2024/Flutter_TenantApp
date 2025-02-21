@@ -672,5 +672,6 @@
   "already_enrolled" : "Already Enrolled",
   "rate_this" : "Rate this",
   "plans" : "Plans",
-  "get_started" : "Get Started"
+  "get_started" : "Get Started",
+  "review_submitted_successfully" : "Review submitted successfully"
 }

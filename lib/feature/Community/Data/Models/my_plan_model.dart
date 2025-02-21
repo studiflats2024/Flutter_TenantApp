@@ -22,9 +22,9 @@ class MyPlanModel {
   num? planDiscount;
   num? planFianlPrice;
   num? planDurationInMonths;
-  List<String>? planFeatures;
+  List<String?>? planFeatures;
   bool? isTrial;
-  dynamic planSlug;
+  String? planSlug;
   String? startDate;
   String? endDate;
   SubscriptionStatus? subscriptionStatus;

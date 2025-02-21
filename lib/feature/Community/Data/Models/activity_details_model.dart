@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
+import 'package:vivas/feature/Community/Data/Models/consult_subscription.dart';
 
 ActivityDetailsModel activityDetailsModelFromJson(String str) =>
     ActivityDetailsModel.fromJson(json.decode(str));
@@ -26,6 +27,7 @@ class ActivityDetailsModel {
   List<Rating>? ratings;
   List<SessionsConsult>? sessionsConsults;
   List<ConsultDay>? consultDays;
+  List<ConsultSubscription>? consultSubscriptions;
   bool? hasEnrolled;
   bool? hasPlan;
 
@@ -50,6 +52,7 @@ class ActivityDetailsModel {
     this.consultDays,
     this.hasEnrolled,
     this.hasPlan,
+    this.consultSubscriptions
   });
 
   factory ActivityDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -91,6 +94,10 @@ class ActivityDetailsModel {
                 json["consult_Days"]!.map((x) => ConsultDay.fromJson(x))),
         hasEnrolled: json["has_Enrolled"] ?? false,
         hasPlan: json["has_Plan"] ?? false,
+        consultSubscriptions: json["consult_subscription"] == null
+            ? []
+            : List<ConsultSubscription>.from(json["consult_subscription"]!
+            .map((x) => ConsultSubscription.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -122,6 +129,9 @@ class ActivityDetailsModel {
             : List<dynamic>.from(sessionsConsults!.map((x) => x.toJson())),
         "has_Enrolled": hasEnrolled,
         "has_Plan": hasPlan,
+    "consult_subscription": consultSubscriptions == null
+        ? []
+        : List<dynamic>.from(consultSubscriptions!.map((x) => x.toJson())),
       };
 }
 
@@ -129,7 +139,7 @@ class Rating {
   String? userName;
   String? userPhoto;
   String? ratingDate;
-  int? ratingValue;
+  num? ratingValue;
   String? comment;
 
   Rating({
@@ -141,10 +151,10 @@ class Rating {
   });
 
   factory Rating.fromJson(Map<String, dynamic> json) => Rating(
-        userName: json["userName"],
-        userPhoto: json["user_Photo"],
-        ratingDate: json["rating_Date"],
-        ratingValue: json["rating_Value"],
+        userName: json["name"],
+        userPhoto: json["photo"],
+        ratingDate: json["date"],
+        ratingValue: json["rating"],
         comment: json["comment"],
       );
 

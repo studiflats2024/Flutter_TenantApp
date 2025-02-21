@@ -12,6 +12,7 @@ import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/invite_frind_send_model.dart';
 import 'package:vivas/feature/Community/Data/Repository/InviteFriend/invite_friend_repository_implementation.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/InviteFrindes/invite_frindes_bloc.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/AllPlans/all_plans.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/history_invitation.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
@@ -108,7 +109,13 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
         }
 
         if (state is GetMyPlanState) {
-          invitesNumber = state.model.invitationNOs ?? 0;
+          if (state.model != null) {
+            invitesNumber = state.model?.invitationNOs ?? 0;
+          } else {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+              return ViewPlans();
+            }));
+          }
         }
         if (state is InviteFriendState) {
           invitesNumber = invitesNumber - 1;
@@ -320,14 +327,19 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
           bottomNavigationBar: Container(
             height: 120.r,
             color: AppColors.textWhite,
-            child: Column(
-              children: [
-                SubmitButtonWidget(
+            child: BlocBuilder<InviteFrindesBloc, InviteFrindesState>(
+              builder: (context, state) {
+                return SubmitButtonWidget(
                   title: translate(LocalizationKeys.sendInvitations) ?? "",
                   titleStyle: textTheme.bodyMedium?.copyWith(
                       fontSize: FontSize.fontSize16,
                       fontWeight: FontWeight.w500,
-                      color: AppColors.textWhite),
+                      color: invitesNumber == 0
+                          ? AppColors.textNatural700
+                          : AppColors.textWhite),
+                  buttonColor:   invitesNumber == 0
+                      ? AppColors.buttonGrey
+                      :null,
                   shadows: const [
                     BoxShadow(
                       color: Color(0x3FA1A1A1),
@@ -338,7 +350,7 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                   ],
                   hint: translate(LocalizationKeys.sendInvitationsHint) ?? "",
                   onClicked: () {
-                    if (inviteForm.currentState?.validate() ?? false) {
+                    if ((inviteForm.currentState?.validate() ?? false) && invitesNumber != 0) {
                       currentBloc.add(
                         InviteFriendEvent(
                           InviteFriendSendModel(
@@ -351,8 +363,8 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                       );
                     }
                   },
-                ),
-              ],
+                );
+              },
             ),
           ),
         );

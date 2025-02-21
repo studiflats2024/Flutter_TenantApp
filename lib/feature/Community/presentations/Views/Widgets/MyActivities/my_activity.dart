@@ -260,6 +260,8 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
                         activitiesType:
                             data.activityType ?? ActivitiesType.course,
                         date: data.activityDate ?? '',
+                        consultSubscription: data.consultSubscriptions ?? [],
+                        hasRated: data.hasRated ?? false,
                         rate: data.reviews ?? 0),
                     index);
               },
@@ -450,22 +452,30 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
                                   ),
                                 )
                               : widget.status == MyActivityStatus.completed
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (_) {
-                                              return MyActivityRating(
-                                                model,
-                                                widget.myActivityBloc,
-                                                index,
-                                              );
-                                            },
-                                          ),
-                                        );
-                                      },
-                                      child: SvgPicture.asset(
-                                        AppAssetPaths.editRateIcon,
+                                  ? Visibility(
+                                      visible: !(model.hasRated ?? false),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (_) {
+                                                return MyActivityRating(
+                                                  model,
+                                                  widget.myActivityBloc,
+                                                  index,
+                                                );
+                                              },
+                                            ),
+                                          ).then((v){
+                                            resetPagination();
+                                            getMyActivity(
+                                                isFirst: true,
+                                                pageNum: 1);
+                                          });
+                                        },
+                                        child: SvgPicture.asset(
+                                          AppAssetPaths.editRateIcon,
+                                        ),
                                       ),
                                     )
                                   : Container(),
@@ -519,8 +529,8 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
         AppRoute.mainNavigatorKey.currentContext!,
         false,
         true,
-        ActivityDetailsSendModel(
-            model.id, model.activitiesType ?? ActivitiesType.course));
+        ActivityDetailsSendModel(model.id, model.activitiesType,
+            status: widget.status));
   }
 
   Color cardTypeColor(
@@ -594,7 +604,8 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
             width: SizeManager.sizeSp8,
           ),
           TextApp(
-            text: "${model.day}",
+            text:
+                "${model.consultSubscription?[0].day}, ${model.consultSubscription?[0].date}, ${model.consultSubscription?[0].time}",
             fontWeight: FontWeight.w400,
             fontSize: 12.sp,
             color: AppColors.textNatural700,

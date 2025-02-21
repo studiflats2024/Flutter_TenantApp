@@ -37,3 +37,9 @@ class ActivityDetailsErrorState extends ActivityDetailsState {
 
   ActivityDetailsErrorState(this.errorMassage, this.isLocalizationKey);
 }
+
+class FilterRatingState extends ActivityDetailsState {
+  final String filter;
+
+  FilterRatingState(this.filter);
+}

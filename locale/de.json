@@ -664,5 +664,14 @@
   "confirm_request": "Anfrage bestätigen",
   "empty_activity_title": "Ihre Aktivitätsliste ist leer",
   "empty_activity_desc": "Beginnen Sie jetzt mit der Erkundung und buchen Sie Ihre nächste Aktivität jetzt",
-  "beds_left": "Betten übrig"
+  "beds_left": "Betten übrig",
+  "go_to_my_activity": "Zu meiner Aktivität gehen",
+  "view_plans": "Pläne anzeigen",
+  "un_have_subscription": "Um sich für diesen Kurs anzumelden, müssen Sie einen unserer Pläne abonnieren",
+  "enroll_success_title": "Sie haben sich erfolgreich in diesen Kurs eingeschrieben!",
+  "already_enrolled": "Bereits eingeschrieben",
+  "rate_this": "Bewerten Sie dies",
+  "plans": "Pläne",
+  "get_started": "Fangen an",
+  "review_submitted_successfully": "Überprüfung erfolgreich eingereicht"
 }

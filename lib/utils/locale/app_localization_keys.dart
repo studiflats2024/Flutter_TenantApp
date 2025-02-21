@@ -748,5 +748,7 @@ class LocalizationKeys {
   static const rateThis = "rate_this";
   static const plans = "plans";
   static const getStarted = "get_started";
+
+  static var reviewSubmittedSuccessfully = "review_submitted_successfully";
 }
 

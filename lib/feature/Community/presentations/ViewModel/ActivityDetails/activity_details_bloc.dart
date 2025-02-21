@@ -22,6 +22,7 @@ class ActivityDetailsBloc
     on<EnrollEvent>(_enroll);
     on<ChooseDayTimeEvent>(_chooseDay);
     on<ChooseTimeEvent>(_chooseTime);
+    on<FilterRatingEvent>(_filterRating);
   }
 
   FutureOr<void> _getActivityDetails(
@@ -47,5 +48,10 @@ class ActivityDetailsBloc
       ChooseTimeEvent event, Emitter<ActivityDetailsState> emit) {
 
     emit(ChooseTimeState(event.time));
+  }
+  void _filterRating(
+      FilterRatingEvent event, Emitter<ActivityDetailsState> emit) {
+
+    emit(FilterRatingState(event.filter));
   }
 }
