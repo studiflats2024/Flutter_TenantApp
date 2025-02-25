@@ -1,17 +1,22 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
+import 'package:vivas/app_route.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/enroll_activity_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/activity_details_model.dart';
 import 'package:vivas/feature/Community/presentations/Component/custom_app_bar.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/ActivityDetails/activity_details_bloc.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
+import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/res/font_size.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
@@ -49,18 +54,18 @@ class _EnrollConsultantWidget extends BaseScreenState<EnrollConsultantWidget> {
           },
         ),
         body: BlocConsumer<ActivityDetailsBloc, ActivityDetailsState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state is ActivityDetailsLoadingState) {
               showLoading();
             } else {
               hideLoading();
             }
-            if (state is ChooseDayTimeState) {
+            if (state is SuccessEnrollState) {
+              Navigator.of(context).pop(true);
+            } else if (state is ChooseDayTimeState) {
               consultDay = state.day;
             } else if (state is ChooseTimeState) {
               time = state.time;
-            } else if (state is SuccessEnrollState) {
-              Navigator.pop(context);
             }
           },
           builder: (context, state) {

@@ -80,12 +80,14 @@ class ActivitiesModel {
   ActivitiesType? activityType;
   String? activityName;
   num? activitySeats;
+  num? availableSeats;
   String? activityLocation;
   String? activityDate;
   num? activityRating;
   num? ratingCount;
   bool? activityIsWish;
   String? activityTime;
+  String? postponedTo;
 
   ActivitiesModel({
     this.activityId,
@@ -93,12 +95,14 @@ class ActivitiesModel {
     this.activityType,
     this.activityName,
     this.activitySeats,
+    this.availableSeats,
     this.activityLocation,
     this.activityDate,
     this.activityRating,
     this.ratingCount,
     this.activityIsWish,
     this.activityTime,
+    this.postponedTo,
   });
 
   factory ActivitiesModel.fromJson(Map<String, dynamic> json) =>
@@ -110,12 +114,16 @@ class ActivitiesModel {
             : null,
         activityName: json["activity_Name"],
         activitySeats: json["activity_Seats"],
+        availableSeats: json["available_Seats"] is String
+            ? num.tryParse(json["available_Seats"])
+            : json["available_Seats"],
         activityLocation: json["activity_Location"],
         activityDate: json["activity_Date"],
         activityRating: json["activity_Rating"],
         ratingCount: json["rating_Count"],
         activityIsWish: json["activity_Is_Wish"],
         activityTime: json["activity_Time"],
+        postponedTo: json["postponed_To"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -124,11 +132,13 @@ class ActivitiesModel {
         "activity_Type": activityType?.code,
         "activity_Name": activityName,
         "activity_Seats": activitySeats,
+        "available_Seats": availableSeats,
         "activity_Location": activityLocation,
         "activity_Date": activityDate,
         "activity_Rating": activityRating,
         "rating_Count": ratingCount,
         "activity_Is_Wish": activityIsWish,
         "activity_Time": activityTime,
+        "postponed_To": postponedTo,
       };
 }

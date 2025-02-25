@@ -7,6 +7,7 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrinde
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/my_plan.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/QrDetails/qr_details.dart';
+import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
@@ -15,7 +16,8 @@ import 'package:vivas/utils/size_manager.dart';
 
 // ignore: must_be_immutable
 class CommunityHeader extends BaseStatelessWidget {
-  CommunityHeader({super.key});
+  bool isGuest;
+  CommunityHeader(this.isGuest, {super.key,});
 
   @override
   Widget baseBuild(BuildContext context) {
@@ -97,7 +99,9 @@ class CommunityHeader extends BaseStatelessWidget {
                       context,
                       false,
                     );
-                  }),
+                  },
+                context: context,
+              ),
               SizedBox(
                 width: SizeManager.sizeSp16,
               ),
@@ -108,7 +112,9 @@ class CommunityHeader extends BaseStatelessWidget {
                   multiLang: true,
                   action: () {
                     MyActivities.open(context, false);
-                  }),
+                  },
+                context: context,
+              ),
               SizedBox(
                 width: SizeManager.sizeSp16,
               ),
@@ -120,6 +126,7 @@ class CommunityHeader extends BaseStatelessWidget {
                 action: () {
                   MyPlan.open(context, false);
                 },
+                context: context,
               ),
               SizedBox(
                 width: SizeManager.sizeSp16,
@@ -131,7 +138,7 @@ class CommunityHeader extends BaseStatelessWidget {
                 multiLang: true,
                 action: () {
                   InviteFriends.open(context, false);
-                },
+                }, context: context,
               ),
             ],
           ),
@@ -145,9 +152,16 @@ class CommunityHeader extends BaseStatelessWidget {
       required String asset,
       required String title,
       required bool multiLang,
+      required BuildContext context,
       required Function() action}) {
     return InkWell(
-      onTap: action,
+      onTap: (){
+        if(isGuest){
+          AppBottomSheet.showLoginOrRegisterDialog(context);
+        }else{
+          action();
+        }
+      },
       child: Container(
         width: 104.r,
         decoration: BoxDecoration(

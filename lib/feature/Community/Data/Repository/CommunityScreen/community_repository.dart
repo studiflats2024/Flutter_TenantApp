@@ -8,4 +8,7 @@ abstract class CommunityRepository {
       {ActivitiesType? activitiesType});
 
   Future<CommunityState> getSubscriptionPlans(int pageNumber);
+
+  Future<CommunityState> checkLoggedIn();
+
 }

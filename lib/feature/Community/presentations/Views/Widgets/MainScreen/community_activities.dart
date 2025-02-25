@@ -61,11 +61,12 @@ class CommunityActivities extends BaseStatelessWidget {
     return GestureDetector(
       onTap: () {
         ActivityDetails.open(
-            AppRoute.mainNavigatorKey.currentContext!,
-            false,
-            false,
-            ActivityDetailsSendModel(activityItem.activityId ?? "",
-                activityItem.activityType ?? ActivitiesType.course),);
+          AppRoute.mainNavigatorKey.currentContext!,
+          false,
+          false,
+          ActivityDetailsSendModel(activityItem.activityId ?? "",
+              activityItem.activityType ?? ActivitiesType.course),
+        );
       },
       child: Container(
         width: width,
@@ -266,7 +267,9 @@ class CommunityActivities extends BaseStatelessWidget {
                       ),
                       TextApp(
                         multiLang: false,
-                        text: activityItem.activityDate ?? "",
+                        text: activityItem.postponedTo ??
+                            activityItem.activityDate ??
+                            "",
                         style: textTheme.bodyMedium?.copyWith(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,

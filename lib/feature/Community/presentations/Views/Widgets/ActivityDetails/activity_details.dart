@@ -1,5 +1,4 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +10,7 @@ import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/apis/_base/dio_api_manager.dart';
 import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
 import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
+import 'package:vivas/feature/Community/Data/Managers/subscription_enum.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/activity_details_send.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/enroll_activity_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/activity_details_model.dart';
@@ -21,7 +21,10 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDeta
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/Components/activity_details_sub_header.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/Components/enroll_consultant_widget.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/AllPlans/all_plans.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
+import 'package:vivas/feature/unit_details/widget/static_map_widget.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
+import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
@@ -104,10 +107,13 @@ class _ActivityDetailsWithBloc
   @override
   void initState() {
     super.initState();
+    currentBloc.add(CheckLoggedInEvent());
     currentBloc.add(GetActivityDetailsEvent(widget.sendModel));
   }
 
   ActivityDetailsBloc get currentBloc => context.read<ActivityDetailsBloc>();
+
+  bool isGuest = true;
 
   @override
   Widget baseScreenBuild(BuildContext context) {
@@ -128,37 +134,53 @@ class _ActivityDetailsWithBloc
           if (state is GetActivityDetailsState) {
             activityDetailsModel = state.activityDetailsModel;
             ratingFilter = activityDetailsModel.ratings ?? [];
+          } else if (state is IsLoggedInState) {
+            isGuest = false;
+          } else if (state is IsGuestModeState) {
+            AppBottomSheet.showLoginOrRegisterDialog(context);
+            isGuest = true;
           } else if (state is FilterRatingState) {
             filter = state.filter;
             ratingFilter = filterRating(activityDetailsModel, state.filter);
           } else if (state is SuccessEnrollState) {
-            ArtSweetAlert.show(
-              context: context,
-              artDialogArgs: ArtDialogArgs(
-                customColumns: [
-                  SvgPicture.asset(AppAssetPaths.communityIconSuccess),
-                  SizedBox(
-                    height: SizeManager.sizeSp8,
-                  ),
-                  TextApp(
-                    text: LocalizationKeys.enrollSuccessMessage,
-                    multiLang: true,
-                    textAlign: TextAlign.center,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  SizedBox(
-                    height: SizeManager.sizeSp16,
-                  ),
-                ],
-                dialogDecoration: BoxDecoration(
-                    color: AppColors.textWhite,
-                    borderRadius:
-                        BorderRadius.all(SizeManager.circularRadius10)),
-                confirmButtonColor: AppColors.colorPrimary,
-                confirmButtonText:
-                    translate(LocalizationKeys.goToMyActivity) ?? "",
-              ),
-            );
+            if (activityDetailsModel.activityType !=
+                ActivitiesType.consultant) {
+              ArtSweetAlert.show(
+                context: context,
+                artDialogArgs: ArtDialogArgs(
+                  customColumns: [
+                    SvgPicture.asset(AppAssetPaths.communityIconSuccess),
+                    SizedBox(
+                      height: SizeManager.sizeSp8,
+                    ),
+                    TextApp(
+                      text: LocalizationKeys.enrollSuccessMessage,
+                      multiLang: true,
+                      textAlign: TextAlign.center,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    SizedBox(
+                      height: SizeManager.sizeSp16,
+                    ),
+                  ],
+                  dialogDecoration: BoxDecoration(
+                      color: AppColors.textWhite,
+                      borderRadius:
+                          BorderRadius.all(SizeManager.circularRadius10)),
+                  confirmButtonColor: AppColors.colorPrimary,
+                  confirmButtonText:
+                      translate(LocalizationKeys.goToMyActivity) ?? "",
+                  onConfirm: () {
+                    Navigator.pop(context);
+                    currentBloc.add(GetActivityDetailsEvent(widget.sendModel));
+                    MyActivities.open(
+                      context,
+                      false,
+                    );
+                  },
+                ),
+              );
+            }
           } else if (state is ActivityDetailsErrorState) {
             showFeedbackMessage(state.isLocalizationKey
                 ? translate(state.errorMassage) ?? ""
@@ -254,7 +276,9 @@ class _ActivityDetailsWithBloc
                                       ),
                                       TextApp(
                                         multiLang: false,
-                                        text: "Feb 15 , 2025",
+                                        text: activityDetailsModel
+                                                .activityStartDate ??
+                                            "",
                                         style: textTheme.bodyMedium?.copyWith(
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w400,
@@ -276,7 +300,9 @@ class _ActivityDetailsWithBloc
                                     ),
                                     TextApp(
                                       multiLang: false,
-                                      text: "Feb 25 , 2025",
+                                      text: activityDetailsModel
+                                              .activityEndDate ??
+                                          "",
                                       style: textTheme.bodyMedium?.copyWith(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w400,
@@ -317,6 +343,15 @@ class _ActivityDetailsWithBloc
                               color: AppColors.colorPrimary,
                               fontWeight: FontWeight.w500),
                         ),
+                        if (activityDetailsModel.longitude != null &&
+                            activityDetailsModel.latitude != null &&
+                            activityDetailsModel.latitude != 0 &&
+                            activityDetailsModel.longitude != 0) ...[
+                          SizedBox(
+                            height: SizeManager.sizeSp16,
+                          ),
+                          _locationWidget(),
+                        ],
                         SizedBox(
                           height: SizeManager.sizeSp16,
                         ),
@@ -335,6 +370,7 @@ class _ActivityDetailsWithBloc
                               //     AppAssetPaths.communityEditPinIcon)
                             ],
                           ),
+
                           SizedBox(
                             height: SizeManager.sizeSp16,
                           ),
@@ -397,6 +433,7 @@ class _ActivityDetailsWithBloc
                               },
                             ),
                           ),
+
                           SizedBox(
                             height: SizeManager.sizeSp16,
                           ),
@@ -514,43 +551,43 @@ class _ActivityDetailsWithBloc
                           SizedBox(
                             height: SizeManager.sizeSp8,
                           ),
-                          SubmitButtonWidget(
-                            title: translate(LocalizationKeys.viewAll)!,
-                            titleStyle: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.colorPrimary),
-                            withoutShape: true,
-                            buttonColor: AppColors.textWhite,
-                            outlinedBorder: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                  SizeManager.circularRadius10),
-                              side: const BorderSide(
-                                color: AppColors.colorPrimary,
-                              ),
-                            ),
-                            padding: EdgeInsets.zero,
-                            onClicked: () {},
-                            child: SizedBox(
-                              height: SizeManager.sizeSp15,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  TextApp(
-                                    text: LocalizationKeys.viewAll,
-                                    multiLang: true,
-                                  ),
-                                  SizedBox(
-                                    width: SizeManager.sizeSp8,
-                                  ),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: AppColors.colorPrimary,
-                                    size: SizeManager.sizeSp20,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
+                          // SubmitButtonWidget(
+                          //   title: translate(LocalizationKeys.viewAll)!,
+                          //   titleStyle: const TextStyle(
+                          //       fontWeight: FontWeight.w500,
+                          //       color: AppColors.colorPrimary),
+                          //   withoutShape: true,
+                          //   buttonColor: AppColors.textWhite,
+                          //   outlinedBorder: RoundedRectangleBorder(
+                          //     borderRadius: BorderRadius.all(
+                          //         SizeManager.circularRadius10),
+                          //     side: const BorderSide(
+                          //       color: AppColors.colorPrimary,
+                          //     ),
+                          //   ),
+                          //   padding: EdgeInsets.zero,
+                          //   onClicked: () {},
+                          //   child: SizedBox(
+                          //     height: SizeManager.sizeSp15,
+                          //     child: Row(
+                          //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       children: [
+                          //         TextApp(
+                          //           text: LocalizationKeys.viewAll,
+                          //           multiLang: true,
+                          //         ),
+                          //         SizedBox(
+                          //           width: SizeManager.sizeSp8,
+                          //         ),
+                          //         Icon(
+                          //           Icons.arrow_forward_ios,
+                          //           color: AppColors.colorPrimary,
+                          //           size: SizeManager.sizeSp20,
+                          //         )
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
                         ]
                       ],
                     ),
@@ -563,100 +600,169 @@ class _ActivityDetailsWithBloc
       ),
       bottomNavigationBar: widget.fromMyActivity
           ? null
-          : SizedBox(
-              height: 112.r,
-              child: SubmitButtonWidget(
-                title: (activityDetailsModel.hasEnrolled ?? false) &&
-                        (activityDetailsModel.hasPlan ?? false)
-                    ? ""
-                    : translate(LocalizationKeys.enrollNow)!,
-                onClicked: () {
-                  if (!(activityDetailsModel.hasPlan ?? false)) {
-                    ArtSweetAlert.show(
-                      context: context,
-                      artDialogArgs: ArtDialogArgs(
-                        confirmButtonText:
-                            translate(LocalizationKeys.viewPlans) ?? "",
-                        confirmButtonColor: AppColors.colorPrimary,
-                        onConfirm: () {
-                          Navigator.pop(context);
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) {
-                            return ViewPlans();
-                          }));
-                        },
-                        dialogDecoration: BoxDecoration(
-                            color: AppColors.textWhite,
-                            borderRadius:
-                                BorderRadius.all(SizeManager.circularRadius10)),
-                        customColumns: [
-                          SvgPicture.asset(
-                              AppAssetPaths.communityIconViewPlans),
-                          SizedBox(
-                            height: SizeManager.sizeSp8,
-                          ),
-                          TextApp(
-                            text: LocalizationKeys.unHaveSubscription,
-                            multiLang: true,
-                            textAlign: TextAlign.center,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          SizedBox(
-                            height: SizeManager.sizeSp16,
-                          ),
-                        ],
-                      ),
-                    );
-                  } else if (activityDetailsModel.hasEnrolled ?? false) {
-                  } else if (activityDetailsModel.activityType !=
-                      ActivitiesType.consultant) {
-                    currentBloc.add(
-                      EnrollEvent(
-                        EnrollActivitySendModel(
-                          activityDetailsModel.activityId ?? '',
-                          activityDetailsModel.activityType!,
-                        ),
-                      ),
-                    );
-                  } else {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-                      return EnrollConsultantWidget(
-                        activityDetailsModel,
-                        currentBloc,
-                      );
-                    }));
-                  }
-                },
-                withoutShape: true,
-                buttonColor: (activityDetailsModel.hasEnrolled ?? false) &&
-                        (activityDetailsModel.hasPlan ?? false)
-                    ? AppColors.buttonGrey
-                    : null,
-                decoration: const BoxDecoration(
-                    color: AppColors.textWhite,
-                    border: Border(
-                        top:
-                            BorderSide(color: AppColors.cardBorderPrimary100))),
-                child: (activityDetailsModel.hasEnrolled ?? false) &&
-                        (activityDetailsModel.hasPlan ?? false)
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.check,
-                            color: AppColors.textNatural700,
-                          ),
-                          SizedBox(
-                            width: SizeManager.sizeSp8,
-                          ),
-                          TextApp(
-                            text: translate(LocalizationKeys.alreadyEnrolled)!,
-                            color: AppColors.textNatural700,
-                          ),
-                        ],
-                      )
-                    : null,
-              ),
+          : BlocBuilder<ActivityDetailsBloc, ActivityDetailsState>(
+              builder: (context, state) {
+                return SizedBox(
+                  height: 112.r,
+                  child: SubmitButtonWidget(
+                    title: (activityDetailsModel.hasEnrolled ?? false) &&
+                            (activityDetailsModel.hasPlan ?? false)
+                        ? ""
+                        : activityDetailsModel.activityType ==
+                                ActivitiesType.consultant
+                            ? translate(LocalizationKeys.bookConsultation)!
+                            : translate(LocalizationKeys.enrollNow)!,
+                    onClicked: () {
+                      if (isGuest) {
+                        AppBottomSheet.showLoginOrRegisterDialog(context);
+                      } else {
+                        if (activityDetailsModel.subscriptionStatus ==
+                            SubscriptionStatus.waitingPayment) {
+                          ArtSweetAlert.show(
+                            context: context,
+                            artDialogArgs: ArtDialogArgs(
+                              type: ArtSweetAlertType.warning,
+                              text: translate(
+                                      LocalizationKeys.subscriptionWarning) ??
+                                  '',
+                              confirmButtonColor: AppColors.colorPrimary,
+                            ),
+                          );
+                        } else if (!(activityDetailsModel.hasPlan ?? false)) {
+                          ArtSweetAlert.show(
+                            context: context,
+                            artDialogArgs: ArtDialogArgs(
+                              confirmButtonText:
+                                  translate(LocalizationKeys.viewPlans) ?? "",
+                              confirmButtonColor: AppColors.colorPrimary,
+                              onConfirm: () {
+                                Navigator.pop(context);
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) {
+                                  return ViewPlans();
+                                }));
+                              },
+                              dialogDecoration: BoxDecoration(
+                                  color: AppColors.textWhite,
+                                  borderRadius: BorderRadius.all(
+                                      SizeManager.circularRadius10)),
+                              customColumns: [
+                                SvgPicture.asset(
+                                    AppAssetPaths.communityIconViewPlans),
+                                SizedBox(
+                                  height: SizeManager.sizeSp8,
+                                ),
+                                TextApp(
+                                  text: LocalizationKeys.unHaveSubscription,
+                                  multiLang: true,
+                                  textAlign: TextAlign.center,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                SizedBox(
+                                  height: SizeManager.sizeSp16,
+                                ),
+                              ],
+                            ),
+                          );
+                        } else if (activityDetailsModel.hasEnrolled ?? false) {
+                        } else if (activityDetailsModel.activityType !=
+                            ActivitiesType.consultant) {
+                          currentBloc.add(
+                            EnrollEvent(
+                              EnrollActivitySendModel(
+                                activityDetailsModel.activityId ?? '',
+                                activityDetailsModel.activityType!,
+                              ),
+                            ),
+                          );
+                        } else {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (_) {
+                            return EnrollConsultantWidget(
+                              activityDetailsModel,
+                              currentBloc,
+                            );
+                          })).then((v) {
+                            if (v == true) {
+                              ArtSweetAlert.show(
+                                context: context,
+                                artDialogArgs: ArtDialogArgs(
+                                  customColumns: [
+                                    SvgPicture.asset(
+                                        AppAssetPaths.communityIconSuccess),
+                                    SizedBox(
+                                      height: SizeManager.sizeSp8,
+                                    ),
+                                    TextApp(
+                                      text:
+                                          LocalizationKeys.enrollSuccessMessage,
+                                      multiLang: true,
+                                      textAlign: TextAlign.center,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                    SizedBox(
+                                      height: SizeManager.sizeSp16,
+                                    ),
+                                  ],
+                                  dialogDecoration: BoxDecoration(
+                                      color: AppColors.textWhite,
+                                      borderRadius: BorderRadius.all(
+                                          SizeManager.circularRadius10)),
+                                  confirmButtonColor: AppColors.colorPrimary,
+                                  confirmButtonText: translate(
+                                          LocalizationKeys.goToMyActivity) ??
+                                      "",
+                                  onConfirm: () {
+                                    Navigator.pop(context);
+                                    currentBloc.add(GetActivityDetailsEvent(
+                                        widget.sendModel));
+                                    MyActivities.open(
+                                      context,
+                                      false,
+                                    );
+                                  },
+                                ),
+                              );
+                              currentBloc.add(
+                                  GetActivityDetailsEvent(widget.sendModel));
+                            }
+                          });
+                        }
+                      }
+                    },
+                    withoutShape: true,
+                    buttonColor: (activityDetailsModel.hasEnrolled ?? false) &&
+                            (activityDetailsModel.hasPlan ?? false)
+                        ? AppColors.buttonGrey
+                        : null,
+                    decoration: const BoxDecoration(
+                        color: AppColors.textWhite,
+                        border: Border(
+                            top: BorderSide(
+                                color: AppColors.cardBorderPrimary100))),
+                    child: (activityDetailsModel.hasEnrolled ?? false) &&
+                            (activityDetailsModel.hasPlan ?? false)
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.check,
+                                color: AppColors.textNatural700,
+                              ),
+                              SizedBox(
+                                width: SizeManager.sizeSp8,
+                              ),
+                              TextApp(
+                                text: translate(
+                                    LocalizationKeys.alreadyEnrolled)!,
+                                color: AppColors.textNatural700,
+                              ),
+                            ],
+                          )
+                        : null,
+                  ),
+                );
+              },
             ),
     );
   }
@@ -673,5 +779,27 @@ class _ActivityDetailsWithBloc
       }
       return ratingList;
     }
+  }
+
+  Widget _locationWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          translate(LocalizationKeys.location)!,
+          style: const TextStyle(
+            color: Color(0xFF1D2838),
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: 12.h),
+        StaticMapWidget(
+          locationLink: activityDetailsModel.activityLocation ?? "",
+          latitude: (activityDetailsModel.latitude?.toDouble()) ?? 0,
+          longitude: (activityDetailsModel.longitude?.toDouble()) ?? 0,
+        )
+      ],
+    );
   }
 }

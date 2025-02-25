@@ -16,5 +16,6 @@ enum PreferencesKeys {
   profileVerified,
   nickName,
   areaList,
-  maintenance
+  maintenance,
+  communityFirstTime
 }

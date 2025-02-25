@@ -20,3 +20,8 @@ class PaySubscriptionEvent extends PlanDetailsEvent {
 
   PaySubscriptionEvent(this.model);
 }
+
+class CheckLoggedInEvent extends PlanDetailsEvent {
+
+  CheckLoggedInEvent();
+}

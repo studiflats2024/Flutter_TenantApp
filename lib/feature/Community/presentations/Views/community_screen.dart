@@ -17,6 +17,8 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/MainScreen/c
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MainScreen/community_header.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MainScreen/community_subscription.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/OnBoarding/community_on_boarding.dart';
+import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
+import 'package:vivas/preferences/preferences_manager.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/utils/feedback/feedback_message.dart';
@@ -50,20 +52,28 @@ class CommunityScreenWithBloc extends BaseStatefulScreenWidget {
 }
 
 class _CommunityScreen extends BaseScreenState<CommunityScreenWithBloc> {
+  PreferencesManager preferencesManager = GetIt.I<PreferencesManager>();
+
   @override
   void initState() {
     super.initState();
+    currentBloc.add(CheckLoggedInEvent());
     currentBloc.add(GetCommunityMonthlyActivities(1));
     currentBloc.add(GetCommunityClubActivities(1));
     currentBloc.add(GetCommunitySubscriptionPlans(1));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      AboutCommunity.showOnBoarding(context, false);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!(await preferencesManager.getCommunityFirstTime() ?? false)) {
+        preferencesManager.setCommunityFirstTime();
+        AboutCommunity.showOnBoarding(context, false);
+      }
     });
   }
 
   ClubActivityModel? clubActivityModel;
   ClubActivityModel? monthlyActivities;
   List<SubscriptionPlansModel>? subscriptions;
+
+  bool isGuest = true;
 
   CommunityBloc get currentBloc => context.read<CommunityBloc>();
 
@@ -85,6 +95,11 @@ class _CommunityScreen extends BaseScreenState<CommunityScreenWithBloc> {
           }
           if (state is CommunityLoadedMonthlyActivityState) {
             monthlyActivities = state.clubActivityModel;
+          } else if (state is IsLoggedInState) {
+            isGuest = false;
+          } else if (state is IsGuestModeState) {
+            AppBottomSheet.showLoginOrRegisterDialog(context);
+            isGuest = true;
           } else if (state is CommunityLoadedClubActivityState) {
             clubActivityModel = state.clubActivityModel;
           } else if (state is CommunityLoadedSubscriptionPlansState) {
@@ -103,7 +118,7 @@ class _CommunityScreen extends BaseScreenState<CommunityScreenWithBloc> {
                 shrinkWrap: true,
                 clipBehavior: Clip.none,
                 children: [
-                  CommunityHeader(),
+                  CommunityHeader(isGuest),
                   if (monthlyActivities != null &&
                       (monthlyActivities?.data?.isNotEmpty ?? false)) ...[
                     CommunityActivities(monthlyActivities!)

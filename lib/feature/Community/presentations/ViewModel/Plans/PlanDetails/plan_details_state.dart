@@ -7,6 +7,10 @@ final class PlanDetailsInitial extends PlanDetailsState {}
 
 final class PlanDetailsLoadingState extends PlanDetailsState {}
 
+class IsLoggedInState extends PlanDetailsState {}
+
+class IsGuestModeState extends PlanDetailsState {}
+
 final class GetPlanDetailsState extends PlanDetailsState {
   final PlanDetailsModel planDetailsModel;
 

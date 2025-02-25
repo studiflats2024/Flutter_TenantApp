@@ -1,3 +1,4 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +24,7 @@ import 'package:vivas/feature/widgets/text_field/app_text_form_filed_widget.dart
 import 'package:vivas/feature/widgets/text_field/date_time_form_field_widget.dart';
 import 'package:vivas/res/app_asset_paths.dart';
 import 'package:vivas/res/app_colors.dart';
+import 'package:vivas/utils/feedback/feedback_message.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
 import 'package:vivas/utils/size_manager.dart';
 
@@ -129,8 +131,36 @@ class _HistoryInviteFriendsWithBloc
             alignPaginationWithApi(state.model.hasPreviousPage ?? false,
                 state.model.hasNextPage ?? false, state.model.data ?? []);
             stopPaginationLoading();
+          } else if (state is InviteFriendState) {
+            ArtSweetAlert.show(
+              context: context,
+              artDialogArgs: ArtDialogArgs(
+                customColumns: [
+                  SvgPicture.asset(AppAssetPaths.communityIconSuccess),
+                  SizedBox(
+                    height: SizeManager.sizeSp8,
+                  ),
+                  TextApp(
+                    text: LocalizationKeys.invitationSent,
+                    multiLang: true,
+                    textAlign: TextAlign.center,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  SizedBox(
+                    height: SizeManager.sizeSp16,
+                  ),
+                ],
+                dialogDecoration: BoxDecoration(
+                    color: AppColors.textWhite,
+                    borderRadius:
+                        BorderRadius.all(SizeManager.circularRadius10)),
+              ),
+            );
+          } else if (state is ErrorInviteFriendState) {
+            showFeedbackMessage(state.isLocalizationKey
+                ? translate(state.errorMassage) ?? ""
+                : state.errorMassage);
           }
-
         },
         builder: (context, state) {
           return Container(
@@ -145,7 +175,7 @@ class _HistoryInviteFriendsWithBloc
                 }
               },
               itemWidget: (index) {
-                return itemHistory(context, getUpdatedData[index]);
+                return itemHistory(context, getUpdatedData[index], index);
               },
               swipedToRefresh: () {
                 getInvitationHistory(1);
@@ -171,124 +201,134 @@ class _HistoryInviteFriendsWithBloc
     );
   }
 
-  Widget itemHistory(BuildContext context, InviteModel model) {
-    return Card(
-      shape: RoundedRectangleBorder(
-          side: const BorderSide(color: AppColors.cardBorderPrimary100),
-          borderRadius: BorderRadius.all(SizeManager.circularRadius10)),
-      margin: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp16),
-      child: Padding(
-        padding: EdgeInsets.all(SizeManager.sizeSp16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+  Widget itemHistory(BuildContext context, InviteModel model, int index) {
+    return Column(
+      children: [
+        Card(
+          shape: RoundedRectangleBorder(
+              side: const BorderSide(color: AppColors.cardBorderPrimary100),
+              borderRadius: BorderRadius.all(SizeManager.circularRadius10)),
+          margin: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp16),
+          child: Padding(
+            padding: EdgeInsets.all(SizeManager.sizeSp16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // CircleAvatar(
-                //   radius: SizeManager.sizeSp25,
-                //   backgroundColor: Colors.transparent,
-                //   backgroundImage:
-                //       const AssetImage(AppAssetPaths.profileDefaultAvatar),
-                // ),
-                // SizedBox(
-                //   width: SizeManager.sizeSp15,
-                // ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    TextApp(
-                      text: model.name ?? "",
-                      fontSize: 12.sp,
+                    // CircleAvatar(
+                    //   radius: SizeManager.sizeSp25,
+                    //   backgroundColor: Colors.transparent,
+                    //   backgroundImage:
+                    //       const AssetImage(AppAssetPaths.profileDefaultAvatar),
+                    // ),
+                    // SizedBox(
+                    //   width: SizeManager.sizeSp15,
+                    // ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextApp(
+                          text: model.name ?? "",
+                          fontSize: 12.sp,
+                        ),
+                        SizedBox(
+                          height: SizeManager.sizeSp4,
+                        ),
+                        TextApp(
+                          text: model.email ?? "",
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.textNatural700,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    PopupMenuButton(
+                      constraints: BoxConstraints(minWidth: 275.r),
+                      icon: SvgPicture.asset(AppAssetPaths.menuIcon),
+                      position: PopupMenuPosition.under,
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          height: SizeManager.sizeSp32,
+                          value: "invite_again",
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextApp(
+                                multiLang: true,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                text: LocalizationKeys.inviteAgain,
+                              ),
+                              SvgPicture.asset(
+                                AppAssetPaths.messageIcon,
+                                color: AppColors.colorPrimary,
+                                fit: BoxFit.none,
+                              )
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                            height: SizeManager.sizeSp4,
+                            child: const Divider()),
+                        PopupMenuItem(
+                          value: "reminder",
+                          height: SizeManager.sizeSp32,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextApp(
+                                multiLang: true,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                text: LocalizationKeys.reminder,
+                              ),
+                              SvgPicture.asset(
+                                AppAssetPaths.reminderIcon,
+                                color: AppColors.colorPrimary,
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                      onSelected: (value) {
+                        if (value == "invite_again") {
+                          AppBottomSheet.openBaseBottomSheet(
+                            context: context,
+                            child: SizedBox(
+                                height: 200.r,
+                                child: InviteAgain(currentBloc, model)),
+                          );
+                        }
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(SizeManager.circularRadius10)),
                     ),
-                    SizedBox(
-                      height: SizeManager.sizeSp4,
-                    ),
                     TextApp(
-                      text: model.email ?? "",
-                      fontSize: 12.sp,
+                      text: DateFormat("dd/MM/yyyy")
+                          .format(model.date ?? DateTime.now()),
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w400,
                       color: AppColors.textNatural700,
-                    ),
+                    )
                   ],
                 )
               ],
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                PopupMenuButton(
-                  constraints: BoxConstraints(minWidth: 275.r),
-                  icon: SvgPicture.asset(AppAssetPaths.menuIcon),
-                  position: PopupMenuPosition.under,
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      height: SizeManager.sizeSp32,
-                      value: "invite_again",
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextApp(
-                            multiLang: true,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            text: LocalizationKeys.inviteAgain,
-                          ),
-                          SvgPicture.asset(
-                            AppAssetPaths.messageIcon,
-                            color: AppColors.colorPrimary,
-                            fit: BoxFit.none,
-                          )
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                        height: SizeManager.sizeSp4, child: const Divider()),
-                    PopupMenuItem(
-                      value: "reminder",
-                      height: SizeManager.sizeSp32,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextApp(
-                            multiLang: true,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            text: LocalizationKeys.reminder,
-                          ),
-                          SvgPicture.asset(
-                            AppAssetPaths.reminderIcon,
-                            color: AppColors.colorPrimary,
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                  onSelected: (value) {
-                    if (value == "invite_again") {
-                      AppBottomSheet.openBaseBottomSheet(
-                        context: context,
-                        child: SizedBox(
-                            height: 200.r,
-                            child: InviteAgain(currentBloc, model)),
-                      );
-                    }
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.all(SizeManager.circularRadius10)),
-                ),
-                TextApp(
-                  text: DateFormat("dd/MM/yyyy")
-                      .format(model.date ?? DateTime.now()),
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.textNatural700,
-                )
-              ],
-            )
-          ],
+          ),
         ),
-      ),
+        if (index != getUpdatedData.length - 1) ...[
+          SizedBox(
+            height: SizeManager.sizeSp16,
+          )
+        ]
+      ],
     );
   }
 }

@@ -28,6 +28,11 @@ class FilterRatingEvent extends ActivityDetailsEvent {
   FilterRatingEvent(this.filter);
 }
 
+class CheckLoggedInEvent extends ActivityDetailsEvent {
+
+  CheckLoggedInEvent();
+}
+
 class ChooseTimeEvent extends ActivityDetailsEvent {
   final String time;
 

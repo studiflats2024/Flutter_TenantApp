@@ -299,7 +299,7 @@ class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc>
                         )
                       ],
                     ),
-                    if (model.activitySeats != 0) ...[
+                    if (model.availableSeats != model.activitySeats) ...[
                       SizedBox(
                         height: SizeManager.sizeSp4,
                       ),
@@ -322,7 +322,7 @@ class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc>
                           ),
                         ),
                         child: TextApp(
-                          text: "${model.activitySeats} Seat Leave",
+                          text: "${model.availableSeats} Seat Leave",
                           fontSize: FontSize.fontSize10,
                           color: AppColors.textRed,
                           lineHeight: 1.3.r,
@@ -412,7 +412,7 @@ class _ClubActivityWithBloc extends BaseScreenState<ClubActivityWithBloc>
                     width: SizeManager.sizeSp8,
                   ),
                   TextApp(
-                    text: "${model.activityDate} ",
+                    text: "${model.postponedTo ?? model.activityDate} ",
                     fontWeight: FontWeight.w400,
                     fontSize: 12.sp,
                     color: AppColors.textNatural700,

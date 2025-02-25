@@ -1,3 +1,4 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,11 +10,15 @@ import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/apis/_base/dio_api_manager.dart';
 import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
+import 'package:vivas/feature/Community/Data/Managers/subscription_enum.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/invite_frind_send_model.dart';
+import 'package:vivas/feature/Community/Data/Models/my_plan_model.dart';
 import 'package:vivas/feature/Community/Data/Repository/InviteFriend/invite_friend_repository_implementation.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/InviteFrindes/invite_frindes_bloc.dart';
+import 'package:vivas/feature/Community/presentations/ViewModel/Plans/PlanDetails/plan_details_bloc.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/AllPlans/all_plans.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/history_invitation.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_invoice_details.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/feature/widgets/text_field/app_text_form_filed_widget.dart';
@@ -90,6 +95,7 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
 
   num invitesNumber = 0;
 
+  MyPlanModel planModel = MyPlanModel();
   InviteFriendSendModel model = InviteFriendSendModel.create();
 
   @override
@@ -110,6 +116,7 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
 
         if (state is GetMyPlanState) {
           if (state.model != null) {
+            planModel = state.model!;
             invitesNumber = state.model?.invitationNOs ?? 0;
           } else {
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
@@ -119,6 +126,7 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
         }
         if (state is InviteFriendState) {
           invitesNumber = invitesNumber - 1;
+          resetForm();
           showFeedbackMessage(
             translate(LocalizationKeys.invitationSent) ?? "",
           );
@@ -337,9 +345,7 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                       color: invitesNumber == 0
                           ? AppColors.textNatural700
                           : AppColors.textWhite),
-                  buttonColor:   invitesNumber == 0
-                      ? AppColors.buttonGrey
-                      :null,
+                  buttonColor: invitesNumber == 0 ? AppColors.buttonGrey : null,
                   shadows: const [
                     BoxShadow(
                       color: Color(0x3FA1A1A1),
@@ -350,17 +356,40 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                   ],
                   hint: translate(LocalizationKeys.sendInvitationsHint) ?? "",
                   onClicked: () {
-                    if ((inviteForm.currentState?.validate() ?? false) && invitesNumber != 0) {
-                      currentBloc.add(
-                        InviteFriendEvent(
-                          InviteFriendSendModel(
-                              name: nameController.text,
-                              email: emailController.text,
-                              phone: phoneController.value.international
-                                  .substring(1),
-                              invitationDate: dateTime),
+                    if (planModel.subscriptionStatus ==
+                        SubscriptionStatus.waitingPayment) {
+                      ArtSweetAlert.show(
+                        context: context,
+                        artDialogArgs: ArtDialogArgs(
+                          type: ArtSweetAlertType.warning,
+                          text:
+                              translate(LocalizationKeys.subscriptionWarning) ??
+                                  '',
+                          // confirmButtonText:
+                          //     translate(LocalizationKeys.payNow) ?? "",
+                          // showCancelBtn: true,
+                          confirmButtonColor: AppColors.colorPrimary,
+                          // confirmButtonColor: AppColors.colorPrimary,
+                          // onConfirm: () =>
+                              // Navigator.push(context, MaterialPageRoute(builder: (_){
+                              //   return  CommunityInvoiceDetails(, id);
+                              // })),
                         ),
                       );
+                    } else {
+                      if ((inviteForm.currentState?.validate() ?? false) &&
+                          invitesNumber != 0) {
+                        currentBloc.add(
+                          InviteFriendEvent(
+                            InviteFriendSendModel(
+                                name: nameController.text,
+                                email: emailController.text,
+                                phone: phoneController.value.international
+                                    .substring(1),
+                                invitationDate: dateTime),
+                          ),
+                        );
+                      }
                     }
                   },
                 );
@@ -373,6 +402,16 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
   }
 
   InviteFrindesBloc get currentBloc => context.read<InviteFrindesBloc>();
+
+  resetForm() {
+    nameController.clear();
+    emailController.clear();
+    phoneController.value = const PhoneNumber(isoCode: IsoCode.DE, nsn: '');
+    setState(() {
+      dateTime = null;
+    });
+    inviteForm.currentState?.reset();
+  }
 
   String? emailValidator(String? value) {
     ValidationState validationState = Validator.validateEmail(value);

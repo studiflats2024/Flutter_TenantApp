@@ -22,6 +22,14 @@ class PreferencesManager {
     return await PreferencesUtils.getString(PreferencesKeys.lang.name);
   }
 
+  Future<bool> setCommunityFirstTime() async {
+    return await PreferencesUtils.setBool(PreferencesKeys.communityFirstTime.name, true);
+  }
+
+  Future<bool?> getCommunityFirstTime() async {
+    return await PreferencesUtils.getBool(PreferencesKeys.communityFirstTime.name);
+  }
+
   Future<void> setLoggedIn() async {
     await PreferencesUtils.setBool(PreferencesKeys.isLoggedIn.name, true);
   }

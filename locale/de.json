@@ -589,7 +589,7 @@
   "num_guests_message": "Um fortzufahren, wählen Sie die Anzahl der Gäste oder stornieren Sie  ",
   "no_available_beds_for_those_guests": "Dieses Apartment verfügt nicht über Betten für diese Anzahl an Gästen. Bitte reduzieren Sie diese Anzahl oder verwenden Sie die Suche, um optimale Ergebnisse zu erzielen",
   "no_available_beds_on_this_apartment_for_dates": "Für dieses ausgewählte Start- und Enddatum sind keine Betten verfügbar. Bitte wählen Sie ein anderes Datum aus oder verwenden Sie die Suche, um die besten Ergebnisse zu erzielen ",
-  "minimum_stay":  "Der Mindestaufenthalt für dieses Apartment beträgt ",
+  "minimum_stay": "Der Mindestaufenthalt für dieses Apartment beträgt ",
   "message_success_sign_up": "Ihr Konto ist einsatzbereit. ",
   "congratulations": "Glückwunsch!",
   "exit_app": "Beenden Sie die APP",
@@ -673,5 +673,7 @@
   "rate_this": "Bewerten Sie dies",
   "plans": "Pläne",
   "get_started": "Fangen an",
-  "review_submitted_successfully": "Überprüfung erfolgreich eingereicht"
+  "review_submitted_successfully": "Überprüfung erfolgreich eingereicht",
+  "reschedule_message": "Diese Veranstaltung wurde verschoben ",
+  "subscription_warning": "Um Ihre Einladung abzuschließen, müssen Sie Ihr Abonnement bezahlen"
 }

@@ -92,10 +92,12 @@ class PlanDetailsWithBloc extends BaseStatefulScreenWidget {
 class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
   PlanDetailsModel? planDetailsModel;
   SubscribePlanModel? subscribePlanModel;
+  bool isGuest = true;
 
   @override
   void initState() {
     super.initState();
+    currentBloc.add(CheckLoggedInEvent());
     currentBloc.add(GetPlanDetailsEvent(widget.planID));
   }
 
@@ -122,6 +124,11 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
           }
           if (state is GetPlanDetailsState) {
             planDetailsModel = state.planDetailsModel;
+          } else if (state is IsLoggedInState) {
+            isGuest = false;
+          } else if (state is IsGuestModeState) {
+            AppBottomSheet.showLoginOrRegisterDialog(context);
+            isGuest = true;
           } else if (state is SubscribePlanSuccessState) {
             subscribePlanModel = state.model;
             AppBottomSheet.openAppBottomSheet(
@@ -293,15 +300,20 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
                                       SizedBox(
                                         width: SizeManager.sizeSp4,
                                       ),
-                                      TextApp(
-                                        multiLang: false,
-                                        text: planDetailsModel
-                                                ?.planFeatures?[index] ??
-                                            "",
-                                        style: textTheme.bodyMedium?.copyWith(
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w400,
-                                          color: AppColors.textNatural700,
+                                      SizedBox(
+                                        width: 280.r,
+                                        child: TextApp(
+                                          multiLang: false,
+                                          text: planDetailsModel
+                                                  ?.planFeatures?[index] ??
+                                              "",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: textTheme.bodyMedium?.copyWith(
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: AppColors.textNatural700,
+                                          ),
                                         ),
                                       )
                                     ],
@@ -326,14 +338,18 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
           builder: (context, state) {
             return SubmitButtonWidget(
                 title: translate(LocalizationKeys.subscription) ?? "",
-                buttonColor: (planDetailsModel?.hasPlan ?? true)
+                buttonColor: isGuest ? null:(planDetailsModel?.hasPlan ?? true)
                     ? AppColors.buttonGrey
                     : null,
                 onClicked: () {
-                  if (!(planDetailsModel?.hasPlan ?? true)) {
-                    currentBloc.add(
-                      SubscribeEvent(widget.planID),
-                    );
+                  if (isGuest) {
+                    AppBottomSheet.showLoginOrRegisterDialog(context);
+                  } else {
+                    if (!(planDetailsModel?.hasPlan ?? true)) {
+                      currentBloc.add(
+                        SubscribeEvent(widget.planID),
+                      );
+                    }
                   }
                 });
           },

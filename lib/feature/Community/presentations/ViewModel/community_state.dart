@@ -7,6 +7,10 @@ final class CommunityInitial extends CommunityState {}
 
 class CommunityLoadingState extends CommunityState {}
 
+class IsLoggedInState extends CommunityState {}
+
+class IsGuestModeState extends CommunityState {}
+
 class CommunityLoadedMonthlyActivityState extends CommunityState {
   final ClubActivityModel clubActivityModel;
 

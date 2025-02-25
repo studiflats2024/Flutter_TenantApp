@@ -2,6 +2,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
 import 'package:vivas/feature/Community/Data/Managers/my_activity_enum.dart';
@@ -22,7 +23,8 @@ class ActivityDetailsSections extends BaseStatelessWidget {
   MyActivityStatus? status;
   bool fromMyActivity;
 
-  ActivityDetailsSections(this.activityDetailsModel, this.fromMyActivity, {super.key, this.status});
+  ActivityDetailsSections(this.activityDetailsModel, this.fromMyActivity,
+      {super.key, this.status});
 
   @override
   Widget baseBuild(BuildContext context) {
@@ -48,7 +50,9 @@ class ActivityDetailsSections extends BaseStatelessWidget {
                 width: SizeManager.sizeSp8,
               ),
               TextApp(
-                text: activityDetailsModel.activityDate ?? "",
+                text: activityDetailsModel.postponedTo ??
+                    activityDetailsModel.activityDate ??
+                    "",
                 multiLang: false,
                 fontWeight: FontWeight.w400,
                 fontSize: FontSize.fontSize12,
@@ -108,272 +112,288 @@ class ActivityDetailsSections extends BaseStatelessWidget {
           ),
         ]);
       case ActivitiesType.consultant:
-        return
-        fromMyActivity?
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextApp(
-                multiLang: true,
-                fontWeight: FontWeight.w500,
-                text: LocalizationKeys.days,
-                fontSize: FontSize.fontSize16,
-              ),
-              SizedBox(
-                height: SizeManager.sizeSp8,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppColors.cardBorderPrimary100,
-                    ),
-                    borderRadius: BorderRadius.all(SizeManager.circularRadius10)),
-                margin: EdgeInsets.only(bottom: SizeManager.sizeSp16),
-                padding: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp8),
-                child: Column(
-                  children: List.generate(
-                    status == MyActivityStatus.ongoing
-                        ? 1
-                        : activityDetailsModel.consultSubscriptions?.length ?? 0,
+        return fromMyActivity
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextApp(
+                    multiLang: true,
+                    fontWeight: FontWeight.w500,
+                    text: LocalizationKeys.days,
+                    fontSize: FontSize.fontSize16,
+                  ),
+                  SizedBox(
+                    height: SizeManager.sizeSp8,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.cardBorderPrimary100,
+                        ),
+                        borderRadius:
+                            BorderRadius.all(SizeManager.circularRadius10)),
+                    margin: EdgeInsets.only(bottom: SizeManager.sizeSp16),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: SizeManager.sizeSp8),
+                    child: Column(
+                      children: List.generate(
+                        status == MyActivityStatus.ongoing
+                            ? 1
+                            : activityDetailsModel
+                                    .consultSubscriptions?.length ??
+                                0,
                         (index) {
-                      ConsultSubscription? session =
-                      activityDetailsModel.consultSubscriptions?[index];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: SizeManager.sizeSp16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextApp(
-                                  text: session?.day ?? "",
+                          ConsultSubscription? session =
+                              activityDetailsModel.consultSubscriptions?[index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: SizeManager.sizeSp16),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextApp(
+                                      text: session?.day ?? "",
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: FontSize.fontSize14,
+                                      color: AppColors.textMainColor,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: SizeManager.sizeSp16,
+                                      ),
+                                      child: Container(
+                                        padding:
+                                            EdgeInsets.all(SizeManager.sizeSp4),
+                                        decoration: BoxDecoration(
+                                            color: (status ??
+                                                        MyActivityStatus
+                                                            .fromValue(session
+                                                                    ?.satus ??
+                                                                "")) ==
+                                                    MyActivityStatus.ongoing
+                                                ? AppColors.cardBorderGold
+                                                : (status ??
+                                                            MyActivityStatus
+                                                                .fromValue(session
+                                                                        ?.satus ??
+                                                                    "")) ==
+                                                        MyActivityStatus
+                                                            .completed
+                                                    ? AppColors.cardBorderGreen
+                                                    : AppColors
+                                                        .textActivityCancelled,
+                                            borderRadius: BorderRadius.all(
+                                              SizeManager.circularRadius4,
+                                            )),
+                                        child: TextApp(
+                                          text: session?.satus ?? "",
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: FontSize.fontSize12,
+                                          color: AppColors.textWhite,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                          border: Border(
+                                              right: BorderSide(
+                                                  color: AppColors
+                                                      .cardBorderPrimary100))),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(
+                                            AppAssetPaths.calenderIconOutline,
+                                            color: AppColors.colorPrimary,
+                                            width: SizeManager.sizeSp20,
+                                            height: SizeManager.sizeSp20,
+                                          ),
+                                          SizedBox(
+                                            width: SizeManager.sizeSp8,
+                                          ),
+                                          TextApp(
+                                            text: "${session?.date ?? 0}",
+                                            multiLang: false,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: FontSize.fontSize12,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          AppAssetPaths.timerIcon,
+                                          color: AppColors.colorPrimary,
+                                          width: SizeManager.sizeSp20,
+                                          height: SizeManager.sizeSp20,
+                                        ),
+                                        SizedBox(
+                                          width: SizeManager.sizeSp8,
+                                        ),
+                                        TextApp(
+                                          text: session?.time ?? "",
+                                          multiLang: false,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: FontSize.fontSize12,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: SizeManager.sizeSp8,
+                              ),
+                              if (index ==
+                                  (activityDetailsModel
+                                              .sessionsConsults?.length ??
+                                          0) -
+                                      1) ...[
+                                SizedBox(
+                                  height: SizeManager.sizeSp8,
+                                ),
+                              ]
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextApp(
+                    multiLang: true,
+                    fontWeight: FontWeight.w500,
+                    text: LocalizationKeys.days,
+                    fontSize: FontSize.fontSize16,
+                  ),
+                  SizedBox(
+                    height: SizeManager.sizeSp8,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: AppColors.cardBorderPrimary100,
+                        ),
+                        borderRadius:
+                            BorderRadius.all(SizeManager.circularRadius10)),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: SizeManager.sizeSp8),
+                    child: Column(
+                      children: List.generate(
+                        activityDetailsModel.sessionsConsults?.length ?? 0,
+                        (index) {
+                          SessionsConsult? session =
+                              activityDetailsModel.sessionsConsults?[index];
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: SizeManager.sizeSp16),
+                                child: TextApp(
+                                  text: session?.sessionDay ?? "",
                                   fontWeight: FontWeight.w400,
                                   fontSize: FontSize.fontSize14,
                                   color: AppColors.textMainColor,
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: SizeManager.sizeSp16,
-                                  ),
-                                  child: Container(
-                                    padding: EdgeInsets.all(SizeManager.sizeSp4),
-                                    decoration: BoxDecoration(
-                                        color: (status ??
-                                            MyActivityStatus.fromValue(
-                                                session?.satus ?? "")) ==
-                                            MyActivityStatus.ongoing
-                                            ? AppColors.cardBorderGold
-                                            : (status ??
-                                            MyActivityStatus
-                                                .fromValue(
-                                                session?.satus ??
-                                                    "")) ==
-                                            MyActivityStatus.completed
-                                            ? AppColors.cardBorderGreen
-                                            : AppColors.textActivityCancelled,
-                                        borderRadius: BorderRadius.all(
-                                          SizeManager.circularRadius4,
-                                        )),
-                                    child: TextApp(
-                                      text: session?.satus ?? "",
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: FontSize.fontSize12,
-                                      color: AppColors.textWhite,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                      border: Border(
-                                          right: BorderSide(
-                                              color: AppColors
-                                                  .cardBorderPrimary100))),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        AppAssetPaths.calenderIconOutline,
-                                        color: AppColors.colorPrimary,
-                                        width: SizeManager.sizeSp20,
-                                        height: SizeManager.sizeSp20,
-                                      ),
-                                      SizedBox(
-                                        width: SizeManager.sizeSp8,
-                                      ),
-                                      TextApp(
-                                        text: "${session?.date ?? 0}",
-                                        multiLang: false,
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: FontSize.fontSize12,
-                                      )
-                                    ],
-                                  ),
-                                ),
                               ),
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      AppAssetPaths.timerIcon,
-                                      color: AppColors.colorPrimary,
-                                      width: SizeManager.sizeSp20,
-                                      height: SizeManager.sizeSp20,
-                                    ),
-                                    SizedBox(
-                                      width: SizeManager.sizeSp8,
-                                    ),
-                                    TextApp(
-                                      text: session?.time ?? "",
-                                      multiLang: false,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: FontSize.fontSize12,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: SizeManager.sizeSp8,
-                          ),
-                          if (index ==
-                              (activityDetailsModel.sessionsConsults?.length ??
-                                  0) -
-                                  1) ...[
-                            SizedBox(
-                              height: SizeManager.sizeSp8,
-                            ),
-                          ]
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ):
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextApp(
-              multiLang: true,
-              fontWeight: FontWeight.w500,
-              text: LocalizationKeys.days,
-              fontSize: FontSize.fontSize16,
-            ),
-            SizedBox(
-              height: SizeManager.sizeSp8,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: AppColors.cardBorderPrimary100,
-                  ),
-                  borderRadius: BorderRadius.all(SizeManager.circularRadius10)),
-              padding: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp8),
-              child: Column(
-                children: List.generate(
-                  activityDetailsModel.sessionsConsults?.length ?? 0,
-                      (index) {
-                    SessionsConsult? session =
-                    activityDetailsModel.sessionsConsults?[index];
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: SizeManager.sizeSp16),
-                          child: TextApp(
-                            text: session?.sessionDay ?? "",
-                            fontWeight: FontWeight.w400,
-                            fontSize: FontSize.fontSize14,
-                            color: AppColors.textMainColor,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                        right: BorderSide(
-                                            color: AppColors
-                                                .cardBorderPrimary100))),
-                                child: Row(
-                                  children: [
-                                    SvgPicture.asset(
-                                      AppAssetPaths.timerIcon,
-                                      color: AppColors.colorPrimary,
-                                      width: SizeManager.sizeSp20,
-                                      height: SizeManager.sizeSp20,
-                                    ),
-                                    SizedBox(
-                                      width: SizeManager.sizeSp8,
-                                    ),
-                                    TextApp(
-                                      text:
-                                      "${session?.sessionStartTime ?? ""} - ${session?.sessionEndTime ?? ""}",
-                                      multiLang: false,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: FontSize.fontSize12,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              Row(
                                 children: [
-                                  SvgPicture.asset(
-                                    AppAssetPaths.seatIcon,
-                                    color: AppColors.colorPrimary,
-                                    width: SizeManager.sizeSp20,
-                                    height: SizeManager.sizeSp20,
+                                  Expanded(
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                          border: Border(
+                                              right: BorderSide(
+                                                  color: AppColors
+                                                      .cardBorderPrimary100))),
+                                      child: Row(
+                                        children: [
+                                          SvgPicture.asset(
+                                            AppAssetPaths.timerIcon,
+                                            color: AppColors.colorPrimary,
+                                            width: SizeManager.sizeSp20,
+                                            height: SizeManager.sizeSp20,
+                                          ),
+                                          SizedBox(
+                                            width: SizeManager.sizeSp8,
+                                          ),
+                                          TextApp(
+                                            text:
+                                                "${session?.sessionStartTime ?? ""} - ${session?.sessionEndTime ?? ""}",
+                                            multiLang: false,
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: FontSize.fontSize12,
+                                          )
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  SizedBox(
-                                    width: SizeManager.sizeSp8,
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          AppAssetPaths.seatIcon,
+                                          color: AppColors.colorPrimary,
+                                          width: SizeManager.sizeSp20,
+                                          height: SizeManager.sizeSp20,
+                                        ),
+                                        SizedBox(
+                                          width: SizeManager.sizeSp8,
+                                        ),
+                                        TextApp(
+                                          text:
+                                              "${session?.seessionAvailableSeats ?? 0} ${translate(LocalizationKeys.seats)} ",
+                                          multiLang: false,
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: FontSize.fontSize12,
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  TextApp(
-                                    text:
-                                    "${session?.seessionAvailableSeats ?? 0} ${translate(LocalizationKeys.seats)} ",
-                                    multiLang: false,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: FontSize.fontSize12,
-                                  )
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: SizeManager.sizeSp8,
-                        ),
-                        if (index ==
-                            (activityDetailsModel.sessionsConsults?.length ??
-                                0) -
-                                1) ...[
-                          SizedBox(
-                            height: SizeManager.sizeSp8,
-                          ),
-                        ]
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        );
+                              SizedBox(
+                                height: SizeManager.sizeSp8,
+                              ),
+                              if (index ==
+                                  (activityDetailsModel
+                                              .sessionsConsults?.length ??
+                                          0) -
+                                      1) ...[
+                                SizedBox(
+                                  height: SizeManager.sizeSp8,
+                                ),
+                              ]
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              );
       default:
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -537,24 +557,32 @@ class ActivityDetailsSections extends BaseStatelessWidget {
                             if (session?.sessionLink != null &&
                                 session!.sessionLink!.isLink) ...[
                               SizedBox(height: SizeManager.sizeSp8),
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    AppAssetPaths.playIcon,
-                                    color: AppColors.colorPrimary,
-                                    width: SizeManager.sizeSp20,
-                                    height: SizeManager.sizeSp20,
-                                  ),
-                                  SizedBox(
-                                    width: SizeManager.sizeSp8,
-                                  ),
-                                  TextApp(
-                                    text: session.sessionLink ?? "",
-                                    multiLang: false,
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: FontSize.fontSize12,
-                                  )
-                                ],
+                              InkWell(
+                                onTap: () async {
+                                  Uri uri = Uri.parse(session.sessionLink!);
+                                  if (await canLaunchUrl(uri)) {
+                                    await launchUrl(uri);
+                                  }
+                                },
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      AppAssetPaths.playIcon,
+                                      color: AppColors.colorPrimary,
+                                      width: SizeManager.sizeSp20,
+                                      height: SizeManager.sizeSp20,
+                                    ),
+                                    SizedBox(
+                                      width: SizeManager.sizeSp8,
+                                    ),
+                                    TextApp(
+                                      text: session.sessionLink ?? "",
+                                      multiLang: false,
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: FontSize.fontSize12,
+                                    )
+                                  ],
+                                ),
                               ),
                             ]
                           ],

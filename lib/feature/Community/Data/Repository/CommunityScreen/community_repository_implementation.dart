@@ -1,9 +1,11 @@
+import 'package:get_it/get_it.dart';
 import 'package:vivas/apis/models/meta/paging_send_model.dart';
 import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
 import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
 import 'package:vivas/feature/Community/Data/Models/SendModels/paginated_club_activity_model.dart';
 import 'package:vivas/feature/Community/Data/Repository/CommunityScreen/community_repository.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/community_bloc.dart';
+import 'package:vivas/preferences/preferences_manager.dart';
 
 class CommunityRepositoryImplementation implements CommunityRepository {
   CommunityManager communityManager;
@@ -66,4 +68,16 @@ class CommunityRepositoryImplementation implements CommunityRepository {
     return communityState;
   }
 
+  @override
+  Future<CommunityState> checkLoggedIn() async {
+    late CommunityState state;
+    PreferencesManager preferencesManager = GetIt.I<PreferencesManager>();
+    bool isLoggedIn = await preferencesManager.isLoggedIn();
+    if (isLoggedIn) {
+      state = IsLoggedInState();
+    } else {
+      state = IsGuestModeState();
+    }
+    return state;
+  }
 }

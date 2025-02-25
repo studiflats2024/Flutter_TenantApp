@@ -15,6 +15,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     on<GetCommunityMonthlyActivities>(_getMonthlyActivities);
     on<GetCommunityClubActivities>(_getClubActivities);
     on<GetCommunitySubscriptionPlans>(_getSubscriptionPlans);
+    on<CheckLoggedInEvent>(_checkLoggedIn);
   }
 
   _getMonthlyActivities(GetCommunityMonthlyActivities event, Emitter<CommunityState> emit) async {
@@ -29,6 +30,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   _getSubscriptionPlans(GetCommunitySubscriptionPlans event, Emitter<CommunityState> emit) async {
     emit(CommunityLoadingState());
     emit(await communityRepository.getSubscriptionPlans(event.pageNumber));
+  }
+
+  _checkLoggedIn(CheckLoggedInEvent event, Emitter<CommunityState> emit) async {
+    emit(await communityRepository.checkLoggedIn());
   }
 
 }

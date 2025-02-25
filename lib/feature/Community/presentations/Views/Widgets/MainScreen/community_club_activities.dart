@@ -288,7 +288,9 @@ class CommunityClubActivities extends BaseStatelessWidget {
                       ),
                       TextApp(
                         multiLang: false,
-                        text: activityItem.activityDate ?? "",
+                        text: activityItem.postponedTo ??
+                            activityItem.activityDate ??
+                            "",
                         style: textTheme.bodyMedium?.copyWith(
                           fontSize: 12.sp,
                           fontWeight: FontWeight.w400,

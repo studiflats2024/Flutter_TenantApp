@@ -135,6 +135,7 @@ class AppAssetPaths {
   static const communityNoActivities = 'assets/icons/community/no_activities.svg';
   static const communityIconSuccess = 'assets/icons/community/community_icon_success.svg';
   static const communityIconViewPlans = 'assets/icons/community/community_icon_view_plans.svg';
+  static const communityIconPostponed = 'assets/icons/community/postponed_icon.svg';
 
   static const imageMonthlyActivities = 'assets/images/monthly_activities.png';
   static const aboutCommunity = 'assets/images/about.png';

@@ -18,6 +18,7 @@ class PlanDetailsBloc extends Bloc<PlanDetailsEvent, PlanDetailsState> {
     on<GetPlanDetailsEvent>(_getPlanDetails);
     on<SubscribeEvent>(_subscribePlan);
     on<PaySubscriptionEvent>(_paySubscriptionPlan);
+    on<CheckLoggedInEvent>(_checkLoggedIn);
   }
 
   FutureOr<void> _getPlanDetails(
@@ -43,4 +44,9 @@ class PlanDetailsBloc extends Bloc<PlanDetailsEvent, PlanDetailsState> {
     emit(PlanDetailsLoadingState());
     emit(await repository.paySubscriptionPlan(event.model));
   }
+
+  _checkLoggedIn(CheckLoggedInEvent event, Emitter<PlanDetailsState> emit) async {
+    emit(await repository.checkLoggedIn());
+  }
+
 }

@@ -7,6 +7,10 @@ class ActivityDetailsInitial extends ActivityDetailsState {}
 
 class ActivityDetailsLoadingState extends ActivityDetailsState {}
 
+class IsLoggedInState extends ActivityDetailsState {}
+
+class IsGuestModeState extends ActivityDetailsState {}
+
 class GetActivityDetailsState extends ActivityDetailsState {
   final ActivityDetailsModel activityDetailsModel;
 

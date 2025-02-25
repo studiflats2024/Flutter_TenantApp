@@ -7,4 +7,6 @@ abstract class ActivityDetailsRepository {
       ActivityDetailsSendModel activityDetailsSendModel);
 
   Future<ActivityDetailsState> enroll(EnrollActivitySendModel model);
+
+  Future<ActivityDetailsState> checkLoggedIn();
 }

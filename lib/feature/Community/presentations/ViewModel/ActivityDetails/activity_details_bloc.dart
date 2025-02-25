@@ -23,6 +23,7 @@ class ActivityDetailsBloc
     on<ChooseDayTimeEvent>(_chooseDay);
     on<ChooseTimeEvent>(_chooseTime);
     on<FilterRatingEvent>(_filterRating);
+    on<CheckLoggedInEvent>(_checkLoggedIn);
   }
 
   FutureOr<void> _getActivityDetails(
@@ -40,18 +41,20 @@ class ActivityDetailsBloc
 
   void _chooseDay(
       ChooseDayTimeEvent event, Emitter<ActivityDetailsState> emit) {
-
     emit(ChooseDayTimeState(event.day));
   }
 
-  void _chooseTime(
-      ChooseTimeEvent event, Emitter<ActivityDetailsState> emit) {
-
+  void _chooseTime(ChooseTimeEvent event, Emitter<ActivityDetailsState> emit) {
     emit(ChooseTimeState(event.time));
   }
+
   void _filterRating(
       FilterRatingEvent event, Emitter<ActivityDetailsState> emit) {
-
     emit(FilterRatingState(event.filter));
+  }
+
+  void _checkLoggedIn(
+      CheckLoggedInEvent event, Emitter<ActivityDetailsState> emit) async {
+    emit(await activityDetailsRepository.checkLoggedIn());
   }
 }

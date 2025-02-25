@@ -21,3 +21,8 @@ class GetCommunitySubscriptionPlans extends CommunityEvent {
 
   GetCommunitySubscriptionPlans(this.pageNumber);
 }
+
+class CheckLoggedInEvent extends CommunityEvent {
+
+  CheckLoggedInEvent();
+}

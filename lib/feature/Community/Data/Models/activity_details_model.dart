@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:vivas/feature/Community/Data/Managers/activity_enum.dart';
+import 'package:vivas/feature/Community/Data/Managers/subscription_enum.dart';
 import 'package:vivas/feature/Community/Data/Models/consult_subscription.dart';
 
 ActivityDetailsModel activityDetailsModelFromJson(String str) =>
@@ -18,8 +19,13 @@ class ActivityDetailsModel {
   num? availableSeats;
   String? activityLocation;
   String? activityDate;
+  String? postponedTo;
+  String? activityStartDate;
+  String? activityEndDate;
   num? activityRating;
   num? ratingCount;
+  num? latitude;
+  num? longitude;
   bool? activityIsWish;
   String? activityTime;
   List<String>? subscripersPhotos;
@@ -30,30 +36,36 @@ class ActivityDetailsModel {
   List<ConsultSubscription>? consultSubscriptions;
   bool? hasEnrolled;
   bool? hasPlan;
+  SubscriptionStatus? subscriptionStatus;
 
-  ActivityDetailsModel({
-    this.activityId,
-    this.activityMedia,
-    this.activityType,
-    this.activityName,
-    this.activityDescription,
-    this.activitySeats,
-    this.availableSeats,
-    this.activityLocation,
-    this.activityDate,
-    this.activityRating,
-    this.ratingCount,
-    this.activityIsWish,
-    this.activityTime,
-    this.subscripersPhotos,
-    this.sessionsCourseWorkshop,
-    this.ratings,
-    this.sessionsConsults,
-    this.consultDays,
-    this.hasEnrolled,
-    this.hasPlan,
-    this.consultSubscriptions
-  });
+  ActivityDetailsModel(
+      {this.activityId,
+      this.activityMedia,
+      this.activityType,
+      this.activityName,
+      this.activityDescription,
+      this.activitySeats,
+      this.availableSeats,
+      this.activityLocation,
+      this.activityDate,
+        this.postponedTo,
+      this.activityStartDate,
+      this.activityEndDate,
+      this.activityRating,
+      this.ratingCount,
+      this.latitude,
+      this.longitude,
+      this.activityIsWish,
+      this.activityTime,
+      this.subscripersPhotos,
+      this.sessionsCourseWorkshop,
+      this.ratings,
+      this.sessionsConsults,
+      this.consultDays,
+      this.hasEnrolled,
+      this.hasPlan,
+      this.consultSubscriptions,
+      this.subscriptionStatus});
 
   factory ActivityDetailsModel.fromJson(Map<String, dynamic> json) =>
       ActivityDetailsModel(
@@ -68,8 +80,13 @@ class ActivityDetailsModel {
         availableSeats: num.parse(json["available_Seats"]),
         activityLocation: json["activity_Location"],
         activityDate: json["activity_Date"],
+        postponedTo: json["postponed_To"],
+        activityStartDate: json["activity_Start_Date"],
+        activityEndDate: json["activity_End_Date"],
         activityRating: json["activity_Rating"],
         ratingCount: json["rating_Count"],
+        latitude: json["lat"],
+        longitude: json["long"],
         activityIsWish: json["activity_Is_Wish"],
         activityTime: json["activity_Time"],
         subscripersPhotos: json["subscripers_Photos"] == null
@@ -97,7 +114,9 @@ class ActivityDetailsModel {
         consultSubscriptions: json["consult_subscription"] == null
             ? []
             : List<ConsultSubscription>.from(json["consult_subscription"]!
-            .map((x) => ConsultSubscription.fromJson(x))),
+                .map((x) => ConsultSubscription.fromJson(x))),
+        subscriptionStatus:
+            SubscriptionStatus.fromValue(json["plan_Status"]??""),
       );
 
   Map<String, dynamic> toJson() => {
@@ -129,9 +148,10 @@ class ActivityDetailsModel {
             : List<dynamic>.from(sessionsConsults!.map((x) => x.toJson())),
         "has_Enrolled": hasEnrolled,
         "has_Plan": hasPlan,
-    "consult_subscription": consultSubscriptions == null
-        ? []
-        : List<dynamic>.from(consultSubscriptions!.map((x) => x.toJson())),
+        "consult_subscription": consultSubscriptions == null
+            ? []
+            : List<dynamic>.from(consultSubscriptions!.map((x) => x.toJson())),
+        "subscription_Status": subscriptionStatus?.name,
       };
 }
 

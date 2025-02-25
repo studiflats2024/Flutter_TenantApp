@@ -82,6 +82,7 @@ class MyActivitiesModel {
   ActivitiesType? activityType;
   String? activityName;
   String? activityDate;
+  String? activityPostponedDate;
   int? reviews;
   String? activityStatus;
   bool? hasRated;
@@ -94,6 +95,7 @@ class MyActivitiesModel {
       this.activityType,
       this.activityName,
       this.activityDate,
+      this.activityPostponedDate,
       this.reviews,
       this.activityStatus,
       this.hasRated,
@@ -109,6 +111,7 @@ class MyActivitiesModel {
             : null,
         activityName: json["activity_Name"],
         activityDate: json["activity_Date"],
+        activityPostponedDate: json["postponed_To"],
         reviews: json["reviews"],
         activityStatus: json["activity_Status"],
         hasRated: json["has_Rated"],
@@ -125,6 +128,7 @@ class MyActivitiesModel {
         "activity_Type": activityType,
         "activity_Name": activityName,
         "activity_Date": activityDate,
+        "postponed_To": activityPostponedDate,
         "reviews": reviews,
         "activity_Status": activityStatus,
         "has_Rated": hasRated,

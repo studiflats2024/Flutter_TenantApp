@@ -139,6 +139,7 @@ class _MyActivitiesWithBloc extends BaseScreenState<MyActivitiesWithBloc>
           Expanded(
             child: TabBarView(
                 controller: controller,
+                physics: const NeverScrollableScrollPhysics(),
                 children:
                     List.generate(MyActivityStatus.values.length, (index) {
                   return MyActivitiesPage(
@@ -255,11 +256,13 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
                 return item(
                     MyActivityModel(
                         id: data.activityId ?? "",
+                        itemId: data.id ?? "",
                         image: data.activityPhoto ?? "",
                         name: data.activityName ?? "",
                         activitiesType:
                             data.activityType ?? ActivitiesType.course,
                         date: data.activityDate ?? '',
+                        postponed: data.activityPostponedDate,
                         consultSubscription: data.consultSubscriptions ?? [],
                         hasRated: data.hasRated ?? false,
                         rate: data.reviews ?? 0),
@@ -307,218 +310,257 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
             autoDeleteItem(removeIndex!);
           }
         },
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: AppColors.cardBorderPrimary100,
-            ),
-            borderRadius: BorderRadius.all(SizeManager.circularRadius10),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 105.r,
-                height: 112.r,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: SizeManager.circularRadius10,
-                      bottomLeft: SizeManager.circularRadius10),
-                  image: model.image.isLink
-                      ? DecorationImage(
-                          image: NetworkImage(
-                            model.image,
-                          ),
-                          fit: BoxFit.cover)
-                      : const DecorationImage(
-                          image:
-                              AssetImage(AppAssetPaths.imageMonthlyActivities),
-                          fit: BoxFit.cover),
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.cardBorderPrimary100,
                 ),
+                borderRadius: BorderRadius.all(SizeManager.circularRadius10),
               ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(SizeManager.sizeSp8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Row(
+                children: [
+                  Container(
+                    width: 105.r,
+                    height: 112.r,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: SizeManager.circularRadius10,
+                          bottomLeft: SizeManager.circularRadius10),
+                      image: model.image.isLink
+                          ? DecorationImage(
+                              image: NetworkImage(
+                                model.image,
+                              ),
+                              fit: BoxFit.cover)
+                          : const DecorationImage(
+                              image: AssetImage(
+                                  AppAssetPaths.imageMonthlyActivities),
+                              fit: BoxFit.cover),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(SizeManager.sizeSp8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          widget.status == MyActivityStatus.cancelled
-                              ? Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: SizeManager.sizeSp15,
-                                    vertical: SizeManager.sizeSp8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                      color: AppColors
-                                          .cardBackgroundActivityCancelled,
-                                      borderRadius: BorderRadius.all(
-                                          SizeManager.circularRadius8)),
-                                  child: TextApp(
-                                    multiLang: true,
-                                    text: LocalizationKeys.cancelled,
-                                    style: textTheme.bodyLarge?.copyWith(
-                                      color: AppColors.textActivityCancelled,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: SizeManager.sizeSp15,
-                                    vertical: SizeManager.sizeSp8,
-                                  ),
-                                  decoration: BoxDecoration(
-                                      color:
-                                          cardTypeColor(model.activitiesType),
-                                      borderRadius: BorderRadius.all(
-                                          SizeManager.circularRadius8)),
-                                  child: TextApp(
-                                    multiLang: false,
-                                    text: model.activitiesType.name.capitalize,
-                                    style: textTheme.bodyLarge?.copyWith(
-                                      color: textActivityColor(
-                                          model.activitiesType),
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                ),
-                          widget.status == MyActivityStatus.ongoing
-                              ? PopupMenuButton(
-                                  constraints: BoxConstraints(minWidth: 285.r),
-                                  padding: EdgeInsets.zero,
-                                  position: PopupMenuPosition.under,
-                                  itemBuilder: (context) => [
-                                    PopupMenuItem(
-                                      height: SizeManager.sizeSp32,
-                                      value: "un_enroll",
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          TextApp(
-                                            multiLang: true,
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w400,
-                                            text: LocalizationKeys.unEnroll,
-                                          ),
-                                          SvgPicture.asset(
-                                            AppAssetPaths.unEnrollIcon,
-                                          )
-                                        ],
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              widget.status == MyActivityStatus.cancelled
+                                  ? Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: SizeManager.sizeSp15,
+                                        vertical: SizeManager.sizeSp8,
                                       ),
-                                    ),
-                                    // PopupMenuItem(
-                                    //     height: SizeManager.sizeSp4,
-                                    //     child: const Divider()),
-                                    // PopupMenuItem(
-                                    //   value: "add_to_calender",
-                                    //   height: SizeManager.sizeSp32,
-                                    //   child: Row(
-                                    //     mainAxisAlignment:
-                                    //         MainAxisAlignment.spaceBetween,
-                                    //     children: [
-                                    //       TextApp(
-                                    //         multiLang: true,
-                                    //         fontSize: 14.sp,
-                                    //         fontWeight: FontWeight.w400,
-                                    //         text: LocalizationKeys.addToCalender,
-                                    //       ),
-                                    //       SvgPicture.asset(
-                                    //         AppAssetPaths.calenderIconOutline,
-                                    //         color: AppColors.colorPrimary,
-                                    //         width: SizeManager.sizeSp20,
-                                    //         height: SizeManager.sizeSp20,
-                                    //       )
-                                    //     ],
-                                    //   ),
-                                    // )
-                                  ],
-                                  onSelected: (value) {
-                                    if (value == "un_enroll") {
-                                      widget.myActivityBloc
-                                          .add(UnEnrollEvent(model.id, index));
-                                    }
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          SizeManager.circularRadius10)),
-                                  child: SvgPicture.asset(
-                                    AppAssetPaths.menuIcon,
-                                    fit: BoxFit.none,
-                                  ),
-                                )
-                              : widget.status == MyActivityStatus.completed
-                                  ? Visibility(
-                                      visible: !(model.hasRated ?? false),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (_) {
-                                                return MyActivityRating(
-                                                  model,
-                                                  widget.myActivityBloc,
-                                                  index,
-                                                );
-                                              },
-                                            ),
-                                          ).then((v){
-                                            resetPagination();
-                                            getMyActivity(
-                                                isFirst: true,
-                                                pageNum: 1);
-                                          });
-                                        },
-                                        child: SvgPicture.asset(
-                                          AppAssetPaths.editRateIcon,
+                                      decoration: BoxDecoration(
+                                          color: AppColors
+                                              .cardBackgroundActivityCancelled,
+                                          borderRadius: BorderRadius.all(
+                                              SizeManager.circularRadius8)),
+                                      child: TextApp(
+                                        multiLang: true,
+                                        text: LocalizationKeys.cancelled,
+                                        style: textTheme.bodyLarge?.copyWith(
+                                          color:
+                                              AppColors.textActivityCancelled,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12.sp,
                                         ),
                                       ),
                                     )
-                                  : Container(),
-                        ],
-                      ),
-                      SizedBox(
-                        height: SizeManager.sizeSp8,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                                  : Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: SizeManager.sizeSp15,
+                                        vertical: SizeManager.sizeSp8,
+                                      ),
+                                      decoration: BoxDecoration(
+                                          color: cardTypeColor(
+                                              model.activitiesType),
+                                          borderRadius: BorderRadius.all(
+                                              SizeManager.circularRadius8)),
+                                      child: TextApp(
+                                        multiLang: false,
+                                        text: model
+                                            .activitiesType.name.capitalize,
+                                        style: textTheme.bodyLarge?.copyWith(
+                                          color: textActivityColor(
+                                              model.activitiesType),
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12.sp,
+                                        ),
+                                      ),
+                                    ),
+                              widget.status == MyActivityStatus.ongoing
+                                  ? PopupMenuButton(
+                                      constraints:
+                                          BoxConstraints(minWidth: 285.r),
+                                      padding: EdgeInsets.zero,
+                                      position: PopupMenuPosition.under,
+                                      itemBuilder: (context) => [
+                                        PopupMenuItem(
+                                          height: SizeManager.sizeSp32,
+                                          value: "un_enroll",
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              TextApp(
+                                                multiLang: true,
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.w400,
+                                                text: LocalizationKeys.unEnroll,
+                                              ),
+                                              SvgPicture.asset(
+                                                AppAssetPaths.unEnrollIcon,
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                      onSelected: (value) {
+                                        if (value == "un_enroll") {
+                                          widget.myActivityBloc.add(
+                                              UnEnrollEvent(model.itemId, index));
+                                        }
+                                      },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              SizeManager.circularRadius10)),
+                                      child: SvgPicture.asset(
+                                        AppAssetPaths.menuIcon,
+                                        fit: BoxFit.none,
+                                      ),
+                                    )
+                                  : widget.status == MyActivityStatus.completed
+                                      ? Visibility(
+                                          visible: !(model.hasRated ?? false),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (_) {
+                                                    return MyActivityRating(
+                                                      model,
+                                                      widget.myActivityBloc,
+                                                      index,
+                                                    );
+                                                  },
+                                                ),
+                                              ).then((v) {
+                                                resetPagination();
+                                                getMyActivity(
+                                                    isFirst: true, pageNum: 1);
+                                              });
+                                            },
+                                            child: SvgPicture.asset(
+                                              AppAssetPaths.editRateIcon,
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                            ],
+                          ),
                           SizedBox(
-                            width: 140.r,
-                            child: TextApp(
-                              text: model.name,
-                              fontSize: FontSize.fontSize12,
-                              overflow: TextOverflow.ellipsis,
-                              color: AppColors.textMainColor,
-                            ),
+                            height: SizeManager.sizeSp8,
                           ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SvgPicture.asset(AppAssetPaths.rateIcon),
-                              TextApp(
-                                text: " ${model.rate}",
-                                fontSize: FontSize.fontSize12,
-                                overflow: TextOverflow.ellipsis,
-                                color: AppColors.textNatural700,
+                              SizedBox(
+                                width: 140.r,
+                                child: TextApp(
+                                  text: model.name,
+                                  fontSize: FontSize.fontSize12,
+                                  overflow: TextOverflow.ellipsis,
+                                  color: AppColors.textMainColor,
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  SvgPicture.asset(AppAssetPaths.rateIcon),
+                                  TextApp(
+                                    text: " ${model.rate}",
+                                    fontSize: FontSize.fontSize12,
+                                    overflow: TextOverflow.ellipsis,
+                                    color: AppColors.textNatural700,
+                                  ),
+                                ],
                               ),
                             ],
                           ),
+                          SizedBox(
+                            height: SizeManager.sizeSp8,
+                          ),
+                          footer(model)
                         ],
                       ),
-                      SizedBox(
-                        height: SizeManager.sizeSp8,
-                      ),
-                      footer(model)
-                    ],
-                  ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            if (model.activitiesType == ActivitiesType.event &&
+                model.postponed != null) ...[
+              Container(
+                height: 112.r,
+                decoration: BoxDecoration(
+                  color: AppColors.textMainColor.withOpacity(0.5),
+                  borderRadius: BorderRadius.all(SizeManager.circularRadius10),
                 ),
-              )
-            ],
-          ),
+                padding: EdgeInsets.all(SizeManager.sizeSp8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.textWhite,
+                        borderRadius:
+                            BorderRadius.all(SizeManager.circularRadius8),
+                      ),
+                      padding: EdgeInsets.all(SizeManager.sizeSp8),
+                      child: SvgPicture.asset(
+                        AppAssetPaths.communityIconPostponed,
+                      ),
+                    ),
+                    SizedBox(
+                      width: SizeManager.sizeSp8,
+                    ),
+                    SizedBox(
+                      width: 260.r,
+                      child: RichText(
+                        maxLines: 2,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: translate(
+                                      LocalizationKeys.rescheduleMessage) ??
+                                  "",
+                              style: TextStyle(
+                                color: AppColors.textWhite,
+                                fontWeight: FontWeight.w500,
+                                fontSize: FontSize.fontSize14,
+                              ),
+                            ),
+                            TextSpan(
+                              text: model.postponed ?? "",
+                              style: TextStyle(
+                                color: AppColors.cardBorderGold,
+                                fontWeight: FontWeight.w500,
+                                fontSize: FontSize.fontSize12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]
+          ],
         ),
       ),
     );
@@ -583,7 +625,7 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
           Row(
             children: [
               TextApp(
-                text: model.date,
+                text: model.postponed ?? model.date,
                 fontWeight: FontWeight.w400,
                 overflow: TextOverflow.ellipsis,
                 fontSize: 12.sp,

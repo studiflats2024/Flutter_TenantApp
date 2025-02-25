@@ -121,10 +121,11 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
             hideLoading();
           }
           if (state is GetMyPlanState) {
-            if(state.model != null) {
+            if (state.model != null) {
               planModel = state.model!;
-            }else{
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) {
+            } else {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) {
                 return ViewPlans();
               }));
             }
@@ -303,20 +304,23 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
       ),
       bottomNavigationBar: (planModel.subscriptionStatus ==
                   SubscriptionStatus.active &&
-              DateFormat("dd/MM/yyyy").parse(planModel.endDate ?? "").day !=
-                  DateTime.now().day)
+              DateFormat("dd/MM/yyyy")
+                  .parse(planModel.endDate ?? "")
+                  .isAfter(DateTime.now()))
           ? null
           : SizedBox(
               height: 110.r,
               child: SubmitButtonWidget(
-                  title: translate(planModel.subscriptionStatus ==
-                              SubscriptionStatus.waitingPayment
+                  title: translate((planModel.subscriptionStatus ==
+                                  SubscriptionStatus.waitingPayment &&
+                              !(planModel.isTrial ?? false))
                           ? LocalizationKeys.payNow
                           : LocalizationKeys.upgradeNow) ??
                       "",
                   onClicked: () {
                     if (planModel.subscriptionStatus ==
-                        SubscriptionStatus.waitingPayment) {
+                            SubscriptionStatus.waitingPayment &&
+                        !(planModel.isTrial ?? false)) {
                       AppBottomSheet.openAppBottomSheet(
                           context: context,
                           child: Column(
