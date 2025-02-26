@@ -42,7 +42,6 @@ class StaticMapWidget extends StatelessWidget {
                   position: LatLng(latitude, longitude),
                 ),
               },
-              mapType: MapType.satellite,
               myLocationButtonEnabled: false,
               zoomControlsEnabled: false,
               gestureRecognizers: {

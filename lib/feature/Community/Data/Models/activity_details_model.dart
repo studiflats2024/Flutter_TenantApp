@@ -48,7 +48,7 @@ class ActivityDetailsModel {
       this.availableSeats,
       this.activityLocation,
       this.activityDate,
-        this.postponedTo,
+      this.postponedTo,
       this.activityStartDate,
       this.activityEndDate,
       this.activityRating,
@@ -80,7 +80,9 @@ class ActivityDetailsModel {
         availableSeats: num.parse(json["available_Seats"]),
         activityLocation: json["activity_Location"],
         activityDate: json["activity_Date"],
-        postponedTo: json["postponed_To"],
+        postponedTo: json["postponed_To"] == null || json["postponed_To"] == ""
+            ? null
+            : json["postponed_To"],
         activityStartDate: json["activity_Start_Date"],
         activityEndDate: json["activity_End_Date"],
         activityRating: json["activity_Rating"],
@@ -116,7 +118,7 @@ class ActivityDetailsModel {
             : List<ConsultSubscription>.from(json["consult_subscription"]!
                 .map((x) => ConsultSubscription.fromJson(x))),
         subscriptionStatus:
-            SubscriptionStatus.fromValue(json["plan_Status"]??""),
+            SubscriptionStatus.fromValue(json["plan_Status"] ?? ""),
       );
 
   Map<String, dynamic> toJson() => {

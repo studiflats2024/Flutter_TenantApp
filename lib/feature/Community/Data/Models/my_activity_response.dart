@@ -111,7 +111,10 @@ class MyActivitiesModel {
             : null,
         activityName: json["activity_Name"],
         activityDate: json["activity_Date"],
-        activityPostponedDate: json["postponed_To"],
+        activityPostponedDate:
+            json["postponed_To"] == null || json["postponed_To"] == ""
+                ? null
+                : json["postponed_To"],
         reviews: json["reviews"],
         activityStatus: json["activity_Status"],
         hasRated: json["has_Rated"],

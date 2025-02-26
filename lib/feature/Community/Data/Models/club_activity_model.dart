@@ -123,7 +123,9 @@ class ActivitiesModel {
         ratingCount: json["rating_Count"],
         activityIsWish: json["activity_Is_Wish"],
         activityTime: json["activity_Time"],
-        postponedTo: json["postponed_To"],
+        postponedTo: json["postponed_To"] == null || json["postponed_To"] == ""
+            ? null
+            : json["postponed_To"],
       );
 
   Map<String, dynamic> toJson() => {

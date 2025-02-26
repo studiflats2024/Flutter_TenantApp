@@ -10,6 +10,7 @@
         android:allowBackup="false"
         android:fullBackupOnly="false"
         android:enableOnBackInvokedCallback="true"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

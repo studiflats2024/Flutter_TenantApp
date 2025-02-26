@@ -193,15 +193,15 @@ class CommunityQrDetailsWidget
                               fontWeight: FontWeight.w400,
                               color: AppColors.textNatural700,
                             ),
-                            SubmitButtonWidget(
-                              withoutShape: true,
-                              title: translate(
-                                      LocalizationKeys.generateDoorLock) ??
-                                  "",
-                              onClicked: () {
-                                currentBloc.add(GetDoorLock());
-                              },
-                            )
+                            // SubmitButtonWidget(
+                            //   withoutShape: true,
+                            //   title: translate(
+                            //           LocalizationKeys.generateDoorLock) ??
+                            //       "",
+                            //   onClicked: () {
+                            //     currentBloc.add(GetDoorLock());
+                            //   },
+                            // )
                           ],
                         )
                       : const Column(),
