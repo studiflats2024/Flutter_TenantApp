@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - CI-CD  # Change to your release branch
+  workflow_dispatch:  # Enables manual trigger
 
 jobs:
   build:
