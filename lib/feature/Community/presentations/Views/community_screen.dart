@@ -123,7 +123,7 @@ class _CommunityScreen extends BaseScreenState<CommunityScreenWithBloc> {
                       (monthlyActivities?.data?.isNotEmpty ?? false)) ...[
                     CommunityActivities(monthlyActivities!)
                   ],
-                  if (clubActivityModel != null) ...[
+                  if (clubActivityModel != null&& (clubActivityModel?.data?.isNotEmpty ?? false)) ...[
                     CommunityClubActivities(clubActivityModel!)
                   ],
                   CommunityAbout(),

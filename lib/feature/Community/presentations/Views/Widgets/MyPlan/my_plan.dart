@@ -196,7 +196,7 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                           children: [
                             TextApp(
                               text: (planModel.isTrial ?? false)
-                                  ? "Free Trial Month"
+                                  ? "Free Trial Plan"
                                   : planModel.planName ?? "",
                               fontWeight: FontWeight.w500,
                               fontSize: 16.sp,
@@ -325,18 +325,18 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                           context: context,
                           child: Column(
                             children: [
-                              _methodWidget(
-                                  translate(LocalizationKeys.onlinePayment)!,
-                                  AppAssetPaths.creditCardIcon, () {
-                                currentBloc.add(
-                                  PaySubscriptionEvent(
-                                    PaySubscriptionSendModel(
-                                        planModel.paymentInvoiceId ?? "",
-                                        false),
-                                  ),
-                                );
-                                Navigator.pop(context);
-                              }),
+                              // _methodWidget(
+                              //     translate(LocalizationKeys.onlinePayment)!,
+                              //     AppAssetPaths.creditCardIcon, () {
+                              //   currentBloc.add(
+                              //     PaySubscriptionEvent(
+                              //       PaySubscriptionSendModel(
+                              //           planModel.paymentInvoiceId ?? "",
+                              //           false),
+                              //     ),
+                              //   );
+                              //   Navigator.pop(context);
+                              // }),
                               _methodWidget(translate(LocalizationKeys.cash)!,
                                   AppAssetPaths.walletIcon, () {
                                 currentBloc.add(
@@ -575,24 +575,34 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
   }
 
   String getAsset(MyPlanModel? item) {
-    switch (item?.planDurationInMonths) {
-      case 12:
-        return AppAssetPaths.rateIcon;
-      case 1:
-        return AppAssetPaths.personIcon;
-      default:
-        return AppAssetPaths.calenderIcon2;
+    if(item?.isTrial??false){
+      return AppAssetPaths.prizeIcon;
+    }else{
+      switch (item?.planDurationInMonths) {
+        case 12:
+          return AppAssetPaths.rateIcon;
+        case 1:
+          return AppAssetPaths.personIcon;
+        default:
+          return AppAssetPaths.calenderIcon2;
+      }
     }
+
   }
 
   Color getColor(MyPlanModel? item) {
-    switch (item?.planDurationInMonths) {
-      case 12:
-        return AppColors.cardBorderGold;
-      case 1:
-        return AppColors.cardBorderGreen;
-      default:
-        return AppColors.colorPrimary;
+    if(item?.isTrial??false){
+      return AppColors.cardBorderBrown;
+    }else{
+      switch (item?.planDurationInMonths) {
+        case 12:
+          return AppColors.cardBorderGold;
+        case 1:
+          return AppColors.cardBorderGreen;
+        default:
+          return AppColors.colorPrimary;
+      }
     }
+
   }
 }

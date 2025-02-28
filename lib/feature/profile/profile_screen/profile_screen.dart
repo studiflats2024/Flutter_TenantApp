@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:vivas/apis/managers/profile_api_manger.dart';
 import 'package:vivas/apis/models/profile/profile_info_api_model.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/QrDetails/qr_details.dart';
 import 'package:vivas/feature/auth/login/screen/login_screen.dart';
 import 'package:vivas/feature/contact_support/screen/contact_support_screen.dart';
 import 'package:vivas/feature/invoices/screen/invoices_screen.dart';
@@ -142,6 +143,16 @@ class _ProfileScreenWithBloc extends BaseScreenState<ProfileScreenWithBloc> {
                       title: translate(LocalizationKeys.personalInformation)!,
                       onActionClicked: () =>
                           {_openEditPersonalInfoScreen(profileInfo)}),
+                  _buildProfileSection(
+                      assetPath: AppAssetPaths.qrIcon,
+                      title: translate(LocalizationKeys.qrCode)!,
+                      onActionClicked: () => {
+                            CommunityQrDetails.open(
+                              context,
+                              false,
+                              true
+                            )
+                          }),
                   _buildProfileSection(
                       assetPath: AppAssetPaths.navWishlistIcon,
                       title: translate(LocalizationKeys.wishlist)!,

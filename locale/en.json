@@ -676,5 +676,8 @@
   "review_submitted_successfully": "Review submitted successfully",
   "reschedule_message": "This event has been rescheduled ",
   "subscription_warning": "To complete your invitation, you need to pay your subscription",
-  "book_consultation": "Book a Consultation"
+  "book_consultation": "Book a Consultation",
+  "show_code_agent": "Show This Code To Our Agent To Confirm Your identity",
+  "welcome_community_club": "Welcome to the Community Club!",
+  "show_club_agent" : "Show This Code At The Club Gate To Confirm Your Membership"
 }

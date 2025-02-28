@@ -98,6 +98,7 @@ class CommunityHeader extends BaseStatelessWidget {
                     CommunityQrDetails.open(
                       context,
                       false,
+                      false
                     );
                   },
                 context: context,

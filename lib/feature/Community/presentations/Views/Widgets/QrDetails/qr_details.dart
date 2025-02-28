@@ -27,22 +27,31 @@ class CommunityQrDetails extends BaseStatelessWidget {
   CommunityQrDetails({super.key});
 
   static const routeName = '/my_qr_code_community';
+  static const routeFromProfile = '/from_profile';
   final DioApiManager dioApiManager = GetIt.I<DioApiManager>();
 
   static Future<void> open(
     BuildContext context,
     bool replacement,
+    bool fromProfile,
   ) async {
     if (replacement) {
       await Navigator.of(context).pushReplacementNamed(
         routeName,
+        arguments: {
+          routeFromProfile: fromProfile,
+        },
       );
     } else {
-      await Navigator.of(context).pushNamed(
-        routeName,
-      );
+      await Navigator.of(context).pushNamed(routeName, arguments: {
+        routeFromProfile: fromProfile,
+      });
     }
   }
+
+  bool fromProfile(BuildContext context) =>
+      (ModalRoute.of(context)!.settings.arguments
+          as Map)[CommunityQrDetails.routeFromProfile] as bool;
 
   @override
   Widget baseBuild(BuildContext context) {
@@ -54,13 +63,15 @@ class CommunityQrDetails extends BaseStatelessWidget {
           ),
         ),
       )..add(GetQrDetails()),
-      child: const CommunityQrDetailsWithBloc(),
+      child: CommunityQrDetailsWithBloc(fromProfile(context)),
     );
   }
 }
 
 class CommunityQrDetailsWithBloc extends BaseStatefulScreenWidget {
-  const CommunityQrDetailsWithBloc({super.key});
+  final bool fromProfile;
+
+  const CommunityQrDetailsWithBloc(this.fromProfile, {super.key});
 
   @override
   BaseScreenState<BaseStatefulScreenWidget> baseScreenCreateState() {
@@ -178,21 +189,37 @@ class CommunityQrDetailsWidget
                             SizedBox(
                               height: SizeManager.sizeSp24,
                             ),
-                            TextApp(
-                              text: "Welcome to the Community Club!",
-                              fontSize: FontSize.fontSize14,
-                            ),
-                            SizedBox(
-                              height: SizeManager.sizeSp8,
-                            ),
-                            TextApp(
-                              text:
-                                  "Show This Code At The Club Gate To Confirm Your Membership",
-                              textAlign: TextAlign.center,
-                              fontSize: FontSize.fontSize12,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.textNatural700,
-                            ),
+                            if (widget.fromProfile) ...[
+
+                              TextApp(
+                                text:
+                                LocalizationKeys.showCodeAgent,
+                                multiLang: true,
+                                textAlign: TextAlign.center,
+                                fontSize: FontSize.fontSize12,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.textNatural700,
+                              ),
+                            ] else ...[
+                              TextApp(
+                                text:
+                                LocalizationKeys.welcomeCommunityClub,
+                                multiLang: true,
+                                fontSize: FontSize.fontSize14,
+                              ),
+                              SizedBox(
+                                height: SizeManager.sizeSp8,
+                              ),
+                              TextApp(
+                                text:
+                                    LocalizationKeys.showClubAgent,
+                                multiLang: true,
+                                textAlign: TextAlign.center,
+                                fontSize: FontSize.fontSize12,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.textNatural700,
+                              ),
+                            ]
                             // SubmitButtonWidget(
                             //   withoutShape: true,
                             //   title: translate(

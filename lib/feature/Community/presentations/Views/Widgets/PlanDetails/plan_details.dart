@@ -135,16 +135,16 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
                 context: context,
                 child: Column(
                   children: [
-                    _methodWidget(translate(LocalizationKeys.onlinePayment)!,
-                        AppAssetPaths.creditCardIcon, () {
-                      currentBloc.add(
-                        PaySubscriptionEvent(
-                          PaySubscriptionSendModel(
-                              state.model.invoiceId ?? "", false),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    }),
+                    // _methodWidget(translate(LocalizationKeys.onlinePayment)!,
+                    //     AppAssetPaths.creditCardIcon, () {
+                    //   currentBloc.add(
+                    //     PaySubscriptionEvent(
+                    //       PaySubscriptionSendModel(
+                    //           state.model.invoiceId ?? "", false),
+                    //     ),
+                    //   );
+                    //   Navigator.pop(context);
+                    // }),
                     _methodWidget(translate(LocalizationKeys.cash)!,
                         AppAssetPaths.walletIcon, () {
                       currentBloc.add(

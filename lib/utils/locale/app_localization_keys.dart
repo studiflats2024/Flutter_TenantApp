@@ -753,5 +753,8 @@ class LocalizationKeys {
 
   static var reviewSubmittedSuccessfully = "review_submitted_successfully";
   static var bookConsultation = "book_consultation";
+  static var showCodeAgent = "show_code_agent";
+  static var welcomeCommunityClub = "welcome_community_club";
+  static var showClubAgent = "show_club_agent";
 }
 
