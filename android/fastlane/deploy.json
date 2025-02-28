@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "vivas-apratments",
+  "private_key_id": "c1209e98d84697668d6f4679b26340e72380ccf3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDH8QjtOrN1tlY0\nC84DrpU77ZBjfGQn0f9709Xq1cang6aJ7+he6n5DSRfEIjeaS0pw+hyX6+wi3DLb\nr56vUsx2z5Gkq4mztVK4NJe7IX/ZXEAm8uCqYN3TpO1pQCV/S23SLcRtfnzfJHe+\nMJR3LWGv/HlOIznSyRB+NN6RM7eJ2w0aKlTEL4a/HiW7m0bFzPl6mU3D7lhVfXHx\noyKaxgzTeYZmi6jg6lueq5xAy4WYwo9JTAM4/84FFngYQ0t5jQV5meA7Qyi3fQx+\nI5cweJPwzskHPY/moKpWRDPy1lEo0Er9z6Stp8X+N27BlLIsdyu4OaRUUVP0dqXA\nEjWH+ETdAgMBAAECggEAGf5l7vOV/7x6Fg+f0743hCBFSI3UNpIYYTif48Uxq7cT\nqHSydN6PFj/TMWpSaMKXlbsKixy+qSSQDxwUqQ3+a4beVDaB80VkUPLzc/5tsOxL\nodSrLTNlO34CaI/QoC1GBJBzLFoIsXj8AVOvBZR2kgrkmWo+ev8tX/8PHXkICEmh\nnGDnaMaEMGke/CKbgxImyLwVGpRvKuZ+F/UGlzgGzLiTm9OGengjyMKqkIjW9+DS\nEQabpK7ICpiM3qVenxleV2X/tCu3uPNlNHgz1Hw35h7UPnwd9lDUyz0Q4vHB2g8p\nw1X86aBeNXbLZi9+9OAL10pflwfZHR7w5wa87gXuwQKBgQDqSWp+k6jyD2EdonrF\n7pfJOMBlgqb+kuF5+LoSYYUUBrVuw9NvyLGLoZxDVT5pexcoBuIEnrPivvdM8Feq\nwDM7TZGpNou8YDX348UT7CxkKAxgsHWx8KtCub1TeJuqcrnnhGx8CwOhIpKXZH02\nP+loVcjIi3QVXGjhAf1B820enQKBgQDaeMJOjHgKIZiecs/LjWb209wzv5Vu09QO\nrHJ0gKedvs5IdqForiQHKeH148eYK2gtTDQtTPPmXXUQVXxQa1n4x8uy9fsz7KQA\nMsITkJz4D6VwkdcnkXIZod0/f3H+o5vSK+Irx3oL//oduYBmkppvqJeL4zOT2cFg\nLebNUuHLQQKBgQCtYa+CBNyeZmtEdx3MpQmHTIx1kv7qnuBmV3+8YpcNfvl+A0XS\nD//0iaEO42LQxNsaMB3LtXcCcripI6R9JMfFN154j3lR6xGFZfZPDBS9+jVOyMgQ\n6z6SnspRn4vz0/toLkPqeGwzL1a02xUetKWTJQj2AN3jgQPMoKA/0loKsQKBgDwJ\nl4wyegJ+vQw+DPCpSTRngEoQSiaMu+fUaBewC2AEQXgUccLsqCX30oraL82XkCdy\nm5wfW59g63yzoVgQSEdf0JC7nG7mhyMuz7rEsP5SfmpzCadsBukYXE7I3TDXEUku\nmhbh2J5XmAp3IdwOSbaJpCvjIhdtbgDaXGTsc/SBAoGAdHEBl27KnkGRzlUfqoH5\nFcWnMnPL2ahqDu05ORr7xbIA9tnUVQUe17fg7rYdNXK9MI60DkadyjvdtyEuRHvP\n1LxY/CMUEP6ikGk0WibWOM5+MslCeNEaxmfYNVlIfCnC5GMSA1po6VQB8NcS8OJw\nc617bhTimL5LNBigWiPZJ7s=\n-----END PRIVATE KEY-----\n",
+  "client_email": "fastlane-deploy@vivas-apratments.iam.gserviceaccount.com",
+  "client_id": "116959501182098585787",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fastlane-deploy%40vivas-apratments.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
