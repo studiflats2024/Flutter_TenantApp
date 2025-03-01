@@ -27,7 +27,8 @@ platform :android do
       track: "internal",   # Internal testing track
       #json_key: "fastlane/deploy.json",
       aab: "../build/app/outputs/bundle/release/app-release.aab",
-      status: "draft"
+      release_status: "draft",  # ✅ Use `release_status` instead
+
     )
   end
 
