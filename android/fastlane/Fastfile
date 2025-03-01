@@ -25,6 +25,7 @@ platform :android do
      sh"cd .. && flutter build appbundle"
     upload_to_play_store(
       track: "internal",   # Internal testing track
+      json_key: "fastlane/deploy.json",
       aab: "../build/app/outputs/bundle/release/app-release.aab",
       release_status: "draft",  # ✅ Use `release_status` instead
 
