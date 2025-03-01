@@ -29,6 +29,16 @@ jobs:
       - name: Verify Java Version
         run: java -version
         
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1' # Use a compatible version for Fastlane
+          bundler-cache: true  # Caches installed gems for faster builds
+
+      - name: Install Bundler (Ensure It's Installed)
+        run: gem install bundler
+
+        
       - name: Decode Google Play JSON key
         run: |
           echo '${{ secrets.PLAY_STORE_JSON }}' > android/fastlane/deploy.json
