@@ -35,8 +35,11 @@ jobs:
           ruby-version: '3.1' # Use a compatible version for Fastlane
           bundler-cache: true  # Caches installed gems for faster builds
 
-      - name: Install Bundler (Ensure It's Installed)
-        run: gem install bundler
+      - name: Install Bundler
+        run: |
+          cd android  # Ensure we are in the correct directory
+          gem install bundler
+          bundle install
 
         
       - name: Decode Google Play JSON key
