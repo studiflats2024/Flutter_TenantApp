@@ -24,11 +24,15 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin' # Temurin is a reliable OpenJDK distribution
-          java-version: '8'  # Use '11' or '17' based on your project's requirements
+          java-version: '17'  # Use '11' or '17' based on your project's requirements
 
       - name: Verify Java Version
         run: java -version
-
+        
+      - name: Decode Google Play JSON key
+        run: |
+          echo '${{ secrets.PLAY_STORE_JSON }}' > android/fastlane/deploy.json
+          
       - name: Install Flutter Dependencies
         run: flutter pub get
 
