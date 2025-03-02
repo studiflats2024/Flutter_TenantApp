@@ -25,27 +25,28 @@ platform :android do
     # Extract version details from pubspec.yaml
   pubspec_path = File.expand_path("../../pubspec.yaml", __dir__)
 
-  # Debugging: Check if pubspec.yaml exists
-  sh "ls -la #{pubspec_path}"
+    version_line = File.read(pubspec_path).match(/version: (\d+\.\d+\.\d+)\+(\d+)/)
+    current_version_name = version_line[1]
+    current_version_code = version_line[2].to_i
 
-  version_line = File.read(pubspec_path).match(/version: (\d+\.\d+\.\d+)\+(\d+)/)
-  current_version_name = version_line[1]
-  current_version_code = version_line[2].to_i
+    new_version_code = current_version_code + 1
 
-  # Increase version code
-  new_version_code = current_version_code + 1
+    escaped_current_version_code = current_version_code.to_s.gsub("+", "\\+")
+    escaped_new_version_code = new_version_code.to_s.gsub("+", "\\+")
 
-  # Escape special characters for sed
-  escaped_current_version_code = current_version_code.to_s.gsub("+", "\\+")
-  escaped_new_version_code = new_version_code.to_s.gsub("+", "\\+")
+    puts "Updating version in pubspec.yaml..."
+    sh "sed -i 's/version: #{current_version_name}+#{escaped_current_version_code}/version: #{current_version_name}+#{escaped_new_version_code}/' #{pubspec_path}"
 
-  # Debug: Print sed command
-  puts "sed -i \"s/version: #{current_version_name}\\+#{escaped_current_version_code}/version: #{current_version_name}\\+#{escaped_new_version_code}/\" #{pubspec_path}"
+    # Confirm that the update worked
+    puts "Updated pubspec.yaml content:"
+    sh "cat #{pubspec_path} | grep version"
 
-  # Update pubspec.yaml with new version using Ubuntu's sed
-  sh "sed -i \"s/version: #{current_version_name}\\+#{escaped_current_version_code}/version: #{current_version_name}\\+#{escaped_new_version_code}/\" #{pubspec_path}"
+    # Ensure Flutter recognizes changes
+    sh "flutter pub get"
 
-     sh"cd .. && flutter build appbundle"
+    # Clean and rebuild
+    sh "flutter clean"
+    sh "flutter build appbundle"
     upload_to_play_store(
       track: "internal",   # Internal testing track
       json_key: "./fastlane/deploy.json",
