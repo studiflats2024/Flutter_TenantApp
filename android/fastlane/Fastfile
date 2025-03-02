@@ -22,19 +22,29 @@ platform :android do
   # Internal Testing Deployment
   desc "Upload to Google Play Internal Testing"
   lane :internal_test do
-    # Extract current version name and code from pubspec.yaml
-     pubspec_path = File.expand_path("../../pubspec.yaml", __dir__)
-     version_line = File.read(pubspec_path).match(/version: (\d+\.\d+\.\d+)\+(\d+)/)
-  
-     current_version_name = version_line[1] # e.g., "1.1.5"
-     current_version_code = version_line[2].to_i # e.g., "23"
+    # Extract version details from pubspec.yaml
+  pubspec_path = File.expand_path("../../pubspec.yaml", __dir__)
 
-    # Increase the version code
-     new_version_code = current_version_code + 1
+  # Debugging: Check if pubspec.yaml exists
+  sh "ls -la #{pubspec_path}"
 
-    # Update pubspec.yaml with the new version
-     new_version_string = "version: #{current_version_name}+#{new_version_code}"
-     sh "sed -i '' -e 's/version: #{current_version_name}+#{current_version_code}/#{new_version_string}/' #{pubspec_path}"
+  version_line = File.read(pubspec_path).match(/version: (\d+\.\d+\.\d+)\+(\d+)/)
+  current_version_name = version_line[1]
+  current_version_code = version_line[2].to_i
+
+  # Increase version code
+  new_version_code = current_version_code + 1
+
+  # Escape special characters for sed
+  escaped_current_version_code = current_version_code.to_s.gsub("+", "\\+")
+  escaped_new_version_code = new_version_code.to_s.gsub("+", "\\+")
+
+  # Debug: Print sed command
+  puts "sed -i \"s/version: #{current_version_name}\\+#{escaped_current_version_code}/version: #{current_version_name}\\+#{escaped_new_version_code}/\" #{pubspec_path}"
+
+  # Update pubspec.yaml with new version using Ubuntu's sed
+  sh "sed -i \"s/version: #{current_version_name}\\+#{escaped_current_version_code}/version: #{current_version_name}\\+#{escaped_new_version_code}/\" #{pubspec_path}"
+
      sh"cd .. && flutter build appbundle"
     upload_to_play_store(
       track: "internal",   # Internal testing track
