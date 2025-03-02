@@ -22,6 +22,18 @@ platform :android do
   # Internal Testing Deployment
   desc "Upload to Google Play Internal Testing"
   lane :internal_test do
+    # Extract current version name and code from pubspec.yaml
+     version_line = File.read("../pubspec.yaml").match(/version: (\d+\.\d+\.\d+)\+(\d+)/)
+     current_version_name = version_line[1] # e.g., "1.1.5"
+     current_version_code = version_line[2].to_i # e.g., "23"
+
+    # Increase the version code
+     new_version_code = current_version_code + 1
+
+    # Update pubspec.yaml with the new version
+     new_version_string = "version: #{current_version_name}+#{new_version_code}"
+     sh "sed -i '' 's/version: #{current_version_name}+#{current_version_code}/#{new_version_string}/' ../pubspec.yaml"
+
      sh"cd .. && flutter build appbundle"
     upload_to_play_store(
       track: "internal",   # Internal testing track
