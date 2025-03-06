@@ -1,0 +1,55 @@
+name: Flutter Build & Upload to TestFlight/App Store (Development)
+
+on:
+  push:
+    branches:
+      - Development  # Change to your release branch
+  workflow_dispatch:  # Enables manual trigger
+
+jobs:
+  build:
+    name: Build & Upload iOS App
+    runs-on: macos-latest  # macOS is required for iOS builds
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24"  # Change this based on your Flutter version
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'  # Use a compatible version for Fastlane
+          bundler-cache: true  # Caches installed gems for faster builds
+
+      - name: Install Bundler
+        run: |
+          cd ios  # Ensure we are in the correct directory
+          gem install bundler
+          bundle install
+
+      - name: Install Xcode Command Line Tools
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_14.3.app/Contents/Developer
+          sudo xcodebuild -runFirstLaunch  # Ensure Xcode is properly configured
+
+      - name: Build iOS App
+        run: flutter build ios --release --no-codesign  # Change IS_DEV_MODE to false for production
+
+      - name: Decode Apple Developer Credentials (if necessary)
+        run: |
+          echo '${{ secrets.APPLE_CERTIFICATE_P12 }}' > ios/cert.p12
+          echo '${{ secrets.APPLE_PROVISIONING_PROFILE }}' > ios/profile.mobileprovision
+
+      - name: Upload to TestFlight (Internal Test) or App Store (Production)
+        run: |
+          cd ios
+          bundle install
+          bundle exec fastlane internal_test  # Adjust this depending on your Fastlane lane
