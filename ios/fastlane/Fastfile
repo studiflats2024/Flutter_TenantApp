@@ -5,16 +5,15 @@ app_identifier = app_identifier # Bundle identifier (e.g., com.studiflats.app)
 apple_id = apple_id # Apple Developer Portal username (e.g., G638PCV8XP)
 
 platform :ios do
-
   # Internal Testing Deployment
   desc "Upload to TestFlight for Internal Testing"
   lane :internal_test do
     # Path to Info.plist
     info_plist_path = "./ios/Runner/Info.plist"
 
-    # Read the current version and build number from Info.plist
-    current_version_name = sh("defaults read #{info_plist_path} CFBundleShortVersionString").strip
-    current_build_number = sh("defaults read #{info_plist_path} CFBundleVersion").strip.to_i
+    # Read the current version and build number from Info.plist using plutil
+    current_version_name = sh("plutil -extract CFBundleShortVersionString xml1 -o - #{info_plist_path} | xpath //string/text()").strip
+    current_build_number = sh("plutil -extract CFBundleVersion xml1 -o - #{info_plist_path} | xpath //integer/text()").strip.to_i
 
     # Increment the build number by 1
     new_build_number = current_build_number + 1
@@ -24,17 +23,17 @@ platform :ios do
     version_parts[2] += 1  # Increment patch version
     new_version_name = version_parts.join('.')
 
-    # Update CFBundleShortVersionString and CFBundleVersion in Info.plist
+    # Update CFBundleShortVersionString and CFBundleVersion in Info.plist using plutil
     puts "Updating CFBundleShortVersionString to #{new_version_name}..."
-    sh "defaults write #{info_plist_path} CFBundleShortVersionString '#{new_version_name}'"
+    sh "plutil -replace CFBundleShortVersionString -string '#{new_version_name}' #{info_plist_path}"
 
     puts "Updating CFBundleVersion (build number) to #{new_build_number}..."
-    sh "defaults write #{info_plist_path} CFBundleVersion '#{new_build_number}'"
+    sh "plutil -replace CFBundleVersion -integer #{new_build_number} #{info_plist_path}"
 
     # Confirm the updates
     puts "Updated Info.plist content:"
-    sh "defaults read #{info_plist_path} CFBundleShortVersionString"
-    sh "defaults read #{info_plist_path} CFBundleVersion"
+    sh "plutil -extract CFBundleShortVersionString xml1 -o - #{info_plist_path} | xpath //string/text()"
+    sh "plutil -extract CFBundleVersion xml1 -o - #{info_plist_path} | xpath //integer/text()"
 
     # Ensure Flutter recognizes changes
     sh "flutter pub get"
@@ -51,6 +50,8 @@ platform :ios do
       skip_waiting_for_build_processing: true  # Optionally skip waiting for build processing
     )
   end
+end
+
 
   # Production Deployment
   desc "Upload to App Store Production"
