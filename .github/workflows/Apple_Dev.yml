@@ -37,7 +37,7 @@ jobs:
 
       - name: Install Xcode Command Line Tools
         run: |
-          sudo xcode-select --switch /Applications/Xcode_14.3.app/Contents/Developer
+          sudo xcode-select --reset  # Reset to the default Xcode version
           sudo xcodebuild -runFirstLaunch  # Ensure Xcode is properly configured
 
       - name: Build iOS App
