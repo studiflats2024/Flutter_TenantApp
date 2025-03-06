@@ -1,0 +1,59 @@
+name: Flutter Build & Upload to Google Play Store (Production)
+
+on:
+  push:
+    branches:
+      - Production  # Change to your release branch
+  workflow_dispatch:  # Enables manual trigger
+
+jobs:
+  build:
+    name: Build & Upload
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.24"  # Change this based on your Flutter version
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # Temurin is a reliable OpenJDK distribution
+          java-version: '17'  # Use '11' or '17' based on your project's requirements
+
+      - name: Verify Java Version
+        run: java -version
+        
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1' # Use a compatible version for Fastlane
+          bundler-cache: true  # Caches installed gems for faster builds
+
+      - name: Install Bundler
+        run: |
+          cd android  # Ensure we are in the correct directory
+          gem install bundler
+          bundle install
+
+        
+      - name: Decode Google Play JSON key
+        run: |
+          echo '${{ secrets.PLAY_STORE_JSON }}' > android/fastlane/deploy.json
+          
+      - name: Install Flutter Dependencies
+        run: flutter pub get
+
+      - name: Build Android App Bundle (AAB)
+        run: flutter build appbundle
+
+      - name: Upload AAB to Google Play (Optional)
+        run: |
+          cd android
+          bundle install
+          bundle exec fastlane production
