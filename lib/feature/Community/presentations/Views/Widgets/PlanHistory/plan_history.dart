@@ -192,8 +192,7 @@ class _PlanHistoryWithBloc extends BaseScreenState<PlanHistoryWithBloc>
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) {
-                        return CommunityInvoiceDetails(
-                            currentBloc, plan.invoiceId ?? "");
+                        return CommunityInvoiceDetails(plan.invoiceId ?? "");
                       },
                     ),
                   );

@@ -219,7 +219,8 @@ class BookingDetailsModel {
   bool get passportInReview {
     bool passportInReview = false;
     for (int x = 0; x < (guests?.length ?? 0); x++) {
-      if (guests![x].passportStatus == "InReview") {
+      if (guests![x].passportStatus == "InReview" &&
+          guests![guestIndex].passportStatus == "InReview") {
         passportInReview = true;
         break;
       }
@@ -260,7 +261,8 @@ class BookingDetailsModel {
   }
 
   bool get isSelfie {
-    return (guests?.isNotEmpty ?? false) && guests?[guestIndex].identityStatus == "Approved";
+    return (guests?.isNotEmpty ?? false) &&
+        guests?[guestIndex].identityStatus == "Approved";
   }
 
   bool get paidRent {

@@ -12,12 +12,12 @@ final class GetPlanHistory extends PlanHistoryState {
 
   GetPlanHistory(this.planHistoryModel);
 }
-
-final class GetInvoiceDetails extends PlanHistoryState {
-  final InvoiceClubDetailsModel model;
-
-  GetInvoiceDetails(this.model);
-}
+//
+// final class GetInvoiceDetails extends PlanHistoryState {
+//   final InvoiceClubDetailsModel model;
+//
+//   GetInvoiceDetails(this.model);
+// }
 
 final class ErrorPlanHistoryState extends PlanHistoryState {
   final String errorMassage;

@@ -73,7 +73,9 @@ class MyPlanModel {
         dateTimeRange: json["end_Date"] != null && json["end_Date"] != ''
             ? DateTimeRange(
                 start: DateTime.now(),
-                end: DateFormat("dd/MM/yyyy").parse(json["end_Date"]),
+                end: DateFormat("MM/dd/yyyy")
+                    .parse(json["end_Date"])
+                    .add(const Duration(days: 1)),
               )
             : null,
       );

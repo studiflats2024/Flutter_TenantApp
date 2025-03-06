@@ -87,60 +87,63 @@ class _CommunityScreen extends BaseScreenState<CommunityScreenWithBloc> {
           currentBloc.add(GetCommunitySubscriptionPlans(1));
         },
         child: BlocConsumer<CommunityBloc, CommunityState>(
-            listener: (context, state) {
-          if (state is CommunityLoadingState) {
-            showLoading();
-          } else {
-            hideLoading();
-          }
-          if (state is CommunityLoadedMonthlyActivityState) {
-            monthlyActivities = state.clubActivityModel;
-          } else if (state is IsLoggedInState) {
-            isGuest = false;
-          } else if (state is IsGuestModeState) {
-            AppBottomSheet.showLoginOrRegisterDialog(context);
-            isGuest = true;
-          } else if (state is CommunityLoadedClubActivityState) {
-            clubActivityModel = state.clubActivityModel;
-          } else if (state is CommunityLoadedSubscriptionPlansState) {
-            subscriptions = state.subscriptionPlansModel;
-          } else if (state is CommunityErrorState) {
-            showFeedbackMessage(state.errorMassage);
-          }
-        }, builder: (context, state) {
-          return SafeArea(
-            child: Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: SizeManager.sizeSp16,
-                vertical: SizeManager.sizeSp8,
-              ),
-              child: ListView(
-                shrinkWrap: true,
-                clipBehavior: Clip.none,
-                children: [
-                  CommunityHeader(isGuest),
-                  if (monthlyActivities != null &&
-                      (monthlyActivities?.data?.isNotEmpty ?? false)) ...[
-                    CommunityActivities(monthlyActivities!)
-                  ],
-                  if (clubActivityModel != null&& (clubActivityModel?.data?.isNotEmpty ?? false)) ...[
-                    CommunityClubActivities(clubActivityModel!)
-                  ],
-                  CommunityAbout(),
-                  if (subscriptions != null &&
-                      (subscriptions?.isNotEmpty ?? false))
+          listener: (context, state) {
+            if (state is CommunityLoadingState) {
+              showLoading();
+            } else {
+              hideLoading();
+            }
+            if (state is CommunityLoadedMonthlyActivityState) {
+              monthlyActivities = state.clubActivityModel;
+            } else if (state is IsLoggedInState) {
+              isGuest = false;
+            } else if (state is IsGuestModeState) {
+              AppBottomSheet.showLoginOrRegisterDialog(context);
+              isGuest = true;
+            } else if (state is CommunityLoadedClubActivityState) {
+              clubActivityModel = state.clubActivityModel;
+            } else if (state is CommunityLoadedSubscriptionPlansState) {
+              subscriptions = state.subscriptionPlansModel;
+            } else if (state is CommunityErrorState) {
+              showFeedbackMessage(state.errorMassage);
+            }
+          },
+          builder: (context, state) {
+            return SafeArea(
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: SizeManager.sizeSp16,
+                  vertical: SizeManager.sizeSp8,
+                ),
+                child: ListView(
+                  shrinkWrap: true,
+                  clipBehavior: Clip.none,
+                  children: [
+                    CommunityHeader(isGuest),
+                    if (monthlyActivities != null &&
+                        (monthlyActivities?.data?.isNotEmpty ?? false)) ...[
+                      CommunityActivities(monthlyActivities!)
+                    ],
+                    if (clubActivityModel != null &&
+                        (clubActivityModel?.data?.isNotEmpty ?? false)) ...[
+                      CommunityClubActivities(clubActivityModel!)
+                    ],
+                    CommunityAbout(),
+                    if (subscriptions != null &&
+                        (subscriptions?.isNotEmpty ?? false))
+                      SizedBox(
+                        height: 330.r,
+                        child: CommunitySubscription(subscriptions!),
+                      ),
                     SizedBox(
-                      height: 330.r,
-                      child: CommunitySubscription(subscriptions!),
-                    ),
-                  SizedBox(
-                    height: SizeManager.sizeSp6,
-                  )
-                ],
+                      height: SizeManager.sizeSp6,
+                    )
+                  ],
+                ),
               ),
-            ),
-          );
-        }),
+            );
+          },
+        ),
       ),
       floatingActionButton: Container(
         margin: EdgeInsets.only(bottom: SizeManager.sizeSp20),

@@ -344,6 +344,7 @@ class ApartmentDetailsApiModelV2 {
   bool haveUnAvailableBedsByDateRange(DateTimeRange range,
       DateTimeRange contractRange) {
     bool haveUnAvailableBed = false;
+
     for (int x = 0; x < apartmentRooms!.length; x++) {
       if (apartmentRooms![x].haveUnAvailableBedsByRangeDate(
           range, contractRange)) {

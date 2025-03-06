@@ -153,7 +153,6 @@ class TenantWidgetV2 extends BaseStatelessWidget {
   }
 
   void _editTenantClicked(BuildContext context) {
-    print(guestsRequestModel.status);
     if (guestsRequestModel.status == "Approved" ||
         guestsRequestModel.status == "InReview") {} else {
       AppBottomSheet.openAppBottomSheet(

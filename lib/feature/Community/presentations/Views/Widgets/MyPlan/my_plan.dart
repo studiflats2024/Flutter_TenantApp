@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,6 +23,7 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/AllPlans/all
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/contdown_timer.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/pay_subscription.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_history.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_invoice_details.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
@@ -128,16 +131,6 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                   MaterialPageRoute(builder: (_) {
                 return ViewPlans();
               }));
-            }
-          } else if (state is PaySubscribePlanSuccessState) {
-            if (state.response.isLink) {
-              PaySubscription.open(
-                      context, planModel.paymentInvoiceId ?? "", state.response)
-                  .then((v) {
-                return currentBloc.add(GetMyPlanEvent());
-              });
-            } else {
-              showFeedbackMessage(state.response);
             }
           } else if (state is ErrorMyPlanState) {
             showFeedbackMessage(state.isLocalizationKey
@@ -321,35 +314,16 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                     if (planModel.subscriptionStatus ==
                             SubscriptionStatus.waitingPayment &&
                         !(planModel.isTrial ?? false)) {
-                      AppBottomSheet.openAppBottomSheet(
-                          context: context,
-                          child: Column(
-                            children: [
-                              // _methodWidget(
-                              //     translate(LocalizationKeys.onlinePayment)!,
-                              //     AppAssetPaths.creditCardIcon, () {
-                              //   currentBloc.add(
-                              //     PaySubscriptionEvent(
-                              //       PaySubscriptionSendModel(
-                              //           planModel.paymentInvoiceId ?? "",
-                              //           false),
-                              //     ),
-                              //   );
-                              //   Navigator.pop(context);
-                              // }),
-                              _methodWidget(translate(LocalizationKeys.cash)!,
-                                  AppAssetPaths.walletIcon, () {
-                                currentBloc.add(
-                                  PaySubscriptionEvent(
-                                    PaySubscriptionSendModel(
-                                        planModel.paymentInvoiceId ?? "", true),
-                                  ),
-                                );
-                                Navigator.pop(context);
-                              }),
-                            ],
-                          ),
-                          title: "Pay Methods");
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) {
+                            return CommunityInvoiceDetails(
+                                planModel.paymentInvoiceId ?? "");
+                          },
+                        ),
+                      ).then((v) {
+                        return currentBloc.add(GetMyPlanEvent());
+                      });
                     } else {
                       Navigator.push(context, MaterialPageRoute(builder: (_) {
                         return ViewPlans();
@@ -537,47 +511,10 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
     );
   }
 
-  Widget _methodWidget(String title, String logoPath, VoidCallback onClick) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: InkWell(
-        onTap: onClick,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 1, color: Color(0xFFF5F5F5)),
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          child: Row(
-            children: [
-              SvgPicture.asset(logoPath),
-              SizedBox(width: 16.w),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Color(0xFF606060),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const Spacer(),
-              const Icon(Icons.arrow_forward_ios_outlined,
-                  color: Color(0xff1D2939)),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   String getAsset(MyPlanModel? item) {
-    if(item?.isTrial??false){
+    if (item?.isTrial ?? false) {
       return AppAssetPaths.prizeIcon;
-    }else{
+    } else {
       switch (item?.planDurationInMonths) {
         case 12:
           return AppAssetPaths.rateIcon;
@@ -587,13 +524,12 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
           return AppAssetPaths.calenderIcon2;
       }
     }
-
   }
 
   Color getColor(MyPlanModel? item) {
-    if(item?.isTrial??false){
+    if (item?.isTrial ?? false) {
       return AppColors.cardBorderBrown;
-    }else{
+    } else {
       switch (item?.planDurationInMonths) {
         case 12:
           return AppColors.cardBorderGold;
@@ -603,6 +539,5 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
           return AppColors.colorPrimary;
       }
     }
-
   }
 }

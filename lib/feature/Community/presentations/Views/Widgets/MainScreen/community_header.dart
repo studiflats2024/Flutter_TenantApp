@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:vivas/_core/widgets/base_stateless_widget.dart'
-    show BaseStatelessWidget;
+import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/invite_frindes.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/my_plan.dart';

@@ -14,7 +14,7 @@ class PlanHistoryBloc extends Bloc<PlanHistoryEvent, PlanHistoryState> {
 
   PlanHistoryBloc(this.repository) : super(PlanHistoryInitial()) {
     on<GetPlanTransactions>(_getTransaction);
-    on<GetPlanTransactionDetails>(_getTransactionDetails);
+
   }
 
   _getTransaction(
@@ -23,9 +23,5 @@ class PlanHistoryBloc extends Bloc<PlanHistoryEvent, PlanHistoryState> {
     emit(await repository.getMyHistory(event.model));
   }
 
-  _getTransactionDetails(
-      GetPlanTransactionDetails event, Emitter<PlanHistoryState> emit) async {
-    emit(PlanHistoryLoading());
-    emit(await repository.getDetails(event.id));
-  }
+
 }
