@@ -1,43 +1,103 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 default_platform(:ios)
 
+# Load the values from the Appfile
+app_identifier = app_identifier # Bundle identifier (e.g., com.studiflats.app)
+apple_id = apple_id # Apple Developer Portal username (e.g., G638PCV8XP)
+
 platform :ios do
-  desc "Upload to TestFlight"
-  lane :testflight do
-    build_app(
-      scheme: "Runner"
+
+  # Internal Testing Deployment
+  desc "Upload to TestFlight for Internal Testing"
+  lane :internal_test do
+    # Path to Info.plist
+    info_plist_path = "./ios/Runner/Info.plist"
+
+    # Read the current version and build number from Info.plist
+    current_version_name = sh("defaults read #{info_plist_path} CFBundleShortVersionString").strip
+    current_build_number = sh("defaults read #{info_plist_path} CFBundleVersion").strip.to_i
+
+    # Increment the build number by 1
+    new_build_number = current_build_number + 1
+
+    # Optionally, increment the version number (e.g., increment patch version)
+    version_parts = current_version_name.split('.').map(&:to_i)
+    version_parts[2] += 1  # Increment patch version
+    new_version_name = version_parts.join('.')
+
+    # Update CFBundleShortVersionString and CFBundleVersion in Info.plist
+    puts "Updating CFBundleShortVersionString to #{new_version_name}..."
+    sh "defaults write #{info_plist_path} CFBundleShortVersionString '#{new_version_name}'"
+
+    puts "Updating CFBundleVersion (build number) to #{new_build_number}..."
+    sh "defaults write #{info_plist_path} CFBundleVersion '#{new_build_number}'"
+
+    # Confirm the updates
+    puts "Updated Info.plist content:"
+    sh "defaults read #{info_plist_path} CFBundleShortVersionString"
+    sh "defaults read #{info_plist_path} CFBundleVersion"
+
+    # Ensure Flutter recognizes changes
+    sh "flutter pub get"
+
+    # Clean and rebuild
+    sh "flutter clean"
+    sh "flutter build ios --release --no-codesign"
+
+    # Upload to TestFlight for internal testing
+    upload_to_testflight(
+      username: apple_id,        # Use the Apple ID from the Appfile
+      app_identifier: app_identifier,  # Use the bundle identifier from the Appfile
+      ipa: "../build/ios/ipa/yourapp.ipa",    # Path to your generated .ipa file
+      skip_waiting_for_build_processing: true  # Optionally skip waiting for build processing
     )
-    upload_to_testflight
   end
 
-  desc "Upload to App Store"
-  lane :appstore do
-    build_app(
-      scheme: "Runner"
+  # Production Deployment
+  desc "Upload to App Store Production"
+  lane :production do
+    # Path to Info.plist
+    info_plist_path = "./ios/Runner/Info.plist"
+
+    # Read the current version and build number from Info.plist
+    current_version_name = sh("defaults read #{info_plist_path} CFBundleShortVersionString").strip
+    current_build_number = sh("defaults read #{info_plist_path} CFBundleVersion").strip.to_i
+
+    # Increment the build number by 1
+    new_build_number = current_build_number + 1
+
+    # Optionally, increment the version number (e.g., increment patch version)
+    version_parts = current_version_name.split('.').map(&:to_i)
+    version_parts[2] += 1  # Increment patch version
+    new_version_name = version_parts.join('.')
+
+    # Update CFBundleShortVersionString and CFBundleVersion in Info.plist
+    puts "Updating CFBundleShortVersionString to #{new_version_name}..."
+    sh "defaults write #{info_plist_path} CFBundleShortVersionString '#{new_version_name}'"
+
+    puts "Updating CFBundleVersion (build number) to #{new_build_number}..."
+    sh "defaults write #{info_plist_path} CFBundleVersion '#{new_build_number}'"
+
+    # Confirm the updates
+    puts "Updated Info.plist content:"
+    sh "defaults read #{info_plist_path} CFBundleShortVersionString"
+    sh "defaults read #{info_plist_path} CFBundleVersion"
+
+    # Ensure Flutter recognizes changes
+    sh "flutter pub get"
+
+    # Clean and rebuild for iOS
+    sh "flutter clean"
+    sh "flutter build ios --release --no-codesign"
+
+    # Upload to App Store for production release
+    upload_to_app_store(
+      username: apple_id,        # Use the Apple ID from the Appfile
+      app_identifier: app_identifier,  # Use the bundle identifier from the Appfile
+      ipa: "../build/ios/ipa/yourapp.ipa",    # Path to your generated .ipa file
+      skip_waiting_for_build_processing: true, # Optionally skip waiting for build processing
+      release_notes: "Update for new features and bug fixes",  # Optional release notes
+      submit_for_review: true  # Submit for review automatically
     )
-    upload_to_app_store
   end
+
 end
-
-# default_platform(:ios)
-#
-# platform :ios do
-#   desc "Description of what the lane does"
-#   lane :custom_lane do
-#     # add actions here: https://docs.fastlane.tools/actions
-#   end
-# end
