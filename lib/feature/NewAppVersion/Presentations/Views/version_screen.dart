@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:open_store/open_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vivas/feature/widgets/app_buttons/app_elevated_button.dart';
 import 'package:vivas/res/app_asset_paths.dart';
@@ -46,16 +47,16 @@ class VersionScreen extends StatelessWidget {
                 ),
                 AppElevatedButton.whiteWithTitle(
                   style: ButtonStyle(
-                    minimumSize: MaterialStateProperty.all(Size(300.r, 50.r)),
-                    maximumSize: MaterialStateProperty.all(Size(300.r, 50.r)),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        side: const BorderSide(
-                          width: 1,
-                          color: AppColors.appButtonBorder,
-                        ),
-                        borderRadius: BorderRadius.circular(10))),
-                    backgroundColor: MaterialStateProperty.all(AppColors.background)
-                  ),
+                      minimumSize: MaterialStateProperty.all(Size(300.r, 50.r)),
+                      maximumSize: MaterialStateProperty.all(Size(300.r, 50.r)),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          side: const BorderSide(
+                            width: 1,
+                            color: AppColors.appButtonBorder,
+                          ),
+                          borderRadius: BorderRadius.circular(10))),
+                      backgroundColor:
+                          MaterialStateProperty.all(AppColors.background)),
                   onPressed: () {
                     _openStore();
                   },
@@ -83,10 +84,17 @@ class VersionScreen extends StatelessWidget {
       throw "Unsupported platform";
     }
 
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
+    if (Platform.isIOS) {
+      await OpenStore.instance.open(
+        appStoreId: '6474908385',
+        androidAppBundleId: packageName,
+      );
     } else {
-      throw "Could not launch $url";
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
+      } else {
+        throw "Could not launch $url";
+      }
     }
   }
 }

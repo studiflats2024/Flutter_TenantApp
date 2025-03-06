@@ -113,7 +113,10 @@ class _SelfieScreenState extends BaseScreenState<SelfieScreenFull> {
             imageP = state.imageP;
           }
           if (state is SelfieSendingSuccess) {
-            if (widget.bookingDetailsModel.paidRent) {
+            if (!widget.bookingDetailsModel.shouldPayRent &&
+                !widget.bookingDetailsModel.canResumeBookingAsMainTenant) {
+              Navigator.pop(context);
+            } else if (widget.bookingDetailsModel.paidRent) {
               HandoverProtocolsScreen.open(
                 context,
                 widget.bookingDetailsModel,

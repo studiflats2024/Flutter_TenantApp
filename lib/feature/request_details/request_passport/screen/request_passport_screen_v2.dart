@@ -95,23 +95,29 @@ class _RequestPassportScreenWithBloc
               guestId: e.guestId ?? "",
               bedId: e.bedId ?? "",
               status: e.passportStatus == "Uploading" ? null : e.passportStatus,
-              passportImgRejected: e.guestPassport==null || e.guestPassport!.isNotEmpty? e.guestPassport : null,
+              passportImgRejected:
+                  e.guestPassport == null || e.guestPassport!.isNotEmpty
+                      ? e.guestPassport
+                      : null,
               validPassport: e.passportStatus != "Rejected",
               invalidReason: e.passportRejectReason));
         }
       }
     } else {
       for (int x = 0;
-      x < (widget.apartmentRequestsApiModel.guests?.length ?? 0);
-      x++) {
+          x < (widget.apartmentRequestsApiModel.guests?.length ?? 0);
+          x++) {
         var e = widget.apartmentRequestsApiModel.guests![x];
-        if (e.passportStatus != "Approved") {
+        if (e.passportStatus != "Approved" && e.passportStatus != 'InReview') {
           guestList.add(PassportRequestModel(
               guestName: e.guestName ?? "",
               guestId: e.guestId ?? "",
               bedId: e.bedId ?? "",
               status: e.passportStatus == "Uploading" ? null : e.passportStatus,
-              passportImgRejected: e.guestPassport==null || e.guestPassport!.isNotEmpty? e.guestPassport : null,
+              passportImgRejected:
+                  e.guestPassport == null || e.guestPassport!.isNotEmpty
+                      ? e.guestPassport
+                      : null,
               validPassport: e.passportStatus != "Rejected",
               invalidReason: e.passportRejectReason));
         }
@@ -301,7 +307,6 @@ class _RequestPassportScreenWithBloc
 
   void _updateList(PassportRequestModel oldData, PassportRequestModel newData) {
     int i = guestList.indexWhere((guest) => guest.bedId == oldData.bedId);
-    print("guest index : ${i} ");
     guestList[i] = newData;
   }
 

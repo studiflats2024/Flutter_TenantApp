@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class ApartmentRoom {
@@ -111,13 +113,18 @@ class ApartmentRoom {
   bool haveUnAvailableBedsByRangeDate(
       DateTimeRange range, DateTimeRange contractRange) {
     bool haveUnAvailableBed = false;
-    for (int x = 0; x < roomBeds!.length; x++) {
-      if (!(roomBeds![x].bedAvailableByDateRange(range, contractRange) ??
-          false)) {
-        haveUnAvailableBed = true;
-        break;
+    if((roomBeds?.isNotEmpty ?? false) && bedsNo == roomBeds!.length){
+      for (int x = 0; x < roomBeds!.length; x++) {
+        if (!(roomBeds![x].bedAvailableByDateRange(range, contractRange) ??
+            false)) {
+          haveUnAvailableBed = true;
+          break;
+        }
       }
+    }else{
+      haveUnAvailableBed = true;
     }
+
     return haveUnAvailableBed;
   }
 
@@ -177,6 +184,7 @@ class ApartmentRoom {
   int countOfAvailableBedByDateRange(
       DateTimeRange range, DateTimeRange contractRange) {
     int count = 0;
+
     for (int x = 0; x < roomBeds!.length; x++) {
       if (roomBeds![x].bedAvailableByDateRange(range, contractRange)) {
         count += 1;

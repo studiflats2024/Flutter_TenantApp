@@ -15,6 +15,7 @@ import 'package:vivas/feature/Community/Data/Repository/Plans/PlanDetails/plan_d
 import 'package:vivas/feature/Community/presentations/Component/custom_app_bar.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/Plans/PlanDetails/plan_details_bloc.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/pay_subscription.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_invoice_details.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
@@ -131,33 +132,40 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
             isGuest = true;
           } else if (state is SubscribePlanSuccessState) {
             subscribePlanModel = state.model;
-            AppBottomSheet.openAppBottomSheet(
-                context: context,
-                child: Column(
-                  children: [
-                    // _methodWidget(translate(LocalizationKeys.onlinePayment)!,
-                    //     AppAssetPaths.creditCardIcon, () {
-                    //   currentBloc.add(
-                    //     PaySubscriptionEvent(
-                    //       PaySubscriptionSendModel(
-                    //           state.model.invoiceId ?? "", false),
-                    //     ),
-                    //   );
-                    //   Navigator.pop(context);
-                    // }),
-                    _methodWidget(translate(LocalizationKeys.cash)!,
-                        AppAssetPaths.walletIcon, () {
-                      currentBloc.add(
-                        PaySubscriptionEvent(
-                          PaySubscriptionSendModel(
-                              state.model.invoiceId ?? "", true),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    }),
-                  ],
-                ),
-                title: "Pay Methods");
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) {
+                  return CommunityInvoiceDetails(state.model.invoiceId ?? "");
+                },
+              ),
+            );
+            // AppBottomSheet.openAppBottomSheet(
+            //     context: context,
+            //     child: Column(
+            //       children: [
+            //         // _methodWidget(translate(LocalizationKeys.onlinePayment)!,
+            //         //     AppAssetPaths.creditCardIcon, () {
+            //         //   currentBloc.add(
+            //         //     PaySubscriptionEvent(
+            //         //       PaySubscriptionSendModel(
+            //         //           state.model.invoiceId ?? "", false),
+            //         //     ),
+            //         //   );
+            //         //   Navigator.pop(context);
+            //         // }),
+            //         _methodWidget(translate(LocalizationKeys.cash)!,
+            //             AppAssetPaths.walletIcon, () {
+            //           currentBloc.add(
+            //             PaySubscriptionEvent(
+            //               PaySubscriptionSendModel(
+            //                   state.model.invoiceId ?? "", true),
+            //             ),
+            //           );
+            //           Navigator.pop(context);
+            //         }),
+            //       ],
+            //     ),
+            //     title: "Pay Methods");
           } else if (state is PaySubscribePlanSuccessState) {
             if (state.response.isLink) {
               PaySubscription.open(context, subscribePlanModel?.invoiceId ?? "",
