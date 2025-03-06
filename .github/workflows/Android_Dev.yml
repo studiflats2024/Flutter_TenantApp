@@ -1,9 +1,9 @@
-name: Flutter Build & Upload to Play Store
+name: Flutter Build & Upload to Google Play Store
 
 on:
   push:
     branches:
-      - CI-CD  # Change to your release branch
+      - Development  # Change to your release branch
   workflow_dispatch:  # Enables manual trigger
 
 jobs:
