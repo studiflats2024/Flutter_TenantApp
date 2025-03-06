@@ -45,9 +45,14 @@ jobs:
 
       - name: Copy Apple Developer Certificates
         run: |
-          # Assuming you have uploaded the certificate and provisioning profile to the ios/ directory
+          # Create the required directories if they don't exist
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          mkdir -p ~/Library/Keychains/
+      
+          # Copy the files
           cp ./ios/cert.p12 ~/Library/Keychains/
           cp ./ios/cicd.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+
 
 
       - name: Upload to TestFlight (Internal Test) or App Store (Production)
