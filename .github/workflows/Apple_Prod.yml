@@ -46,7 +46,7 @@ jobs:
       - name: Decode Apple Developer Credentials (if necessary)
         run: |
           echo '${{ secrets.APPLE_CERTIFICATE_P12 }}' > ios/cert.p12
-          echo '${{ secrets.APPLE_PROVISIONING_PROFILE }}' > ios/profile.mobileprovision
+          echo '${{ secrets.APPLE_PROVISIONING_PROFILE }}' > ios/cicd.mobileprovision
 
       - name: Upload to TestFlight (Internal Test) or App Store (Production)
         run: |
