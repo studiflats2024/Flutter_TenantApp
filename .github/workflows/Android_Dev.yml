@@ -1,4 +1,4 @@
-name: Flutter Build & Upload to Google Play Store
+name: Flutter Build & Upload to Google Play Store (Testing)
 
 on:
   push:
