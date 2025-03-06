@@ -47,7 +47,7 @@ platform :ios do
     upload_to_testflight(
       username: apple_id,        # Use the Apple ID from the Appfile
       app_identifier: app_identifier,  # Use the bundle identifier from the Appfile
-      ipa: "../build/ios/ipa/yourapp.ipa",    # Path to your generated .ipa file
+      ipa: "../build/ios/ipa/Runner.ipa",    # Path to your generated .ipa file
       skip_waiting_for_build_processing: true  # Optionally skip waiting for build processing
     )
   end
@@ -93,7 +93,7 @@ platform :ios do
     upload_to_app_store(
       username: apple_id,        # Use the Apple ID from the Appfile
       app_identifier: app_identifier,  # Use the bundle identifier from the Appfile
-      ipa: "../build/ios/ipa/yourapp.ipa",    # Path to your generated .ipa file
+      ipa: "../build/ios/ipa/Runner.ipa",    # Path to your generated .ipa file
       skip_waiting_for_build_processing: true, # Optionally skip waiting for build processing
       release_notes: "Update for new features and bug fixes",  # Optional release notes
       submit_for_review: true  # Submit for review automatically
