@@ -8,13 +8,15 @@ platform :ios do
   # Internal Testing Deployment
   desc "Upload to TestFlight for Internal Testing"
   lane :internal_test do
-    # Path to Info.plist
-    info_plist_path = "./ios/Runner/Info.plist"
+    # Correct path to Info.plist from the fastlane directory
+    info_plist_path = "../ios/Runner/Info.plist"
 
     # Verify that Info.plist exists
     unless File.exist?(info_plist_path)
       UI.user_error!("Error: Info.plist not found at #{info_plist_path}")
     end
+
+    puts "Using Info.plist at #{info_plist_path}"
 
     # Read the current version and build number from Info.plist using plutil -p
     current_version_name = sh("plutil -p #{info_plist_path} | grep CFBundleShortVersionString | awk -F '\"' '{print $4}'").strip
@@ -28,20 +30,19 @@ platform :ios do
     # Increment the build number by 1
     new_build_number = current_build_number + 1
 
-    # Optionally, increment the version number (e.g., increment patch version)
+    # Optionally, increment the version number (patch version)
     version_parts = current_version_name.split('.').map(&:to_i)
     version_parts[2] += 1  # Increment patch version
     new_version_name = version_parts.join('.')
 
-    # Update CFBundleShortVersionString and CFBundleVersion in Info.plist
+    # Update Info.plist
     puts "Updating CFBundleShortVersionString to #{new_version_name}..."
     sh "plutil -replace CFBundleShortVersionString -string '#{new_version_name}' #{info_plist_path}"
 
     puts "Updating CFBundleVersion (build number) to #{new_build_number}..."
     sh "plutil -replace CFBundleVersion -integer #{new_build_number} #{info_plist_path}"
 
-    # Confirm the updates
-    puts "Updated Info.plist content:"
+    # Confirm updates
     sh "plutil -p #{info_plist_path} | grep CFBundleShortVersionString"
     sh "plutil -p #{info_plist_path} | grep CFBundleVersion"
 
@@ -52,14 +53,16 @@ platform :ios do
     sh "flutter clean"
     sh "flutter build ios --release --no-codesign"
 
-    # Upload to TestFlight for internal testing
+    # Upload to TestFlight
     upload_to_testflight(
-      username: apple_id,        # Use the Apple ID from the Appfile
-      app_identifier: app_identifier,  # Use the bundle identifier from the Appfile
-      ipa: "../build/ios/ipa/Runner.ipa",    # Path to your generated .ipa file
-      skip_waiting_for_build_processing: true  # Optionally skip waiting for build processing
+      username: apple_id,
+      app_identifier: app_identifier,
+      ipa: "../build/ios/ipa/Runner.ipa",
+      skip_waiting_for_build_processing: true
     )
   end
+
+
 
 
 
