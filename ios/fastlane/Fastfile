@@ -50,7 +50,6 @@ platform :ios do
       skip_waiting_for_build_processing: true  # Optionally skip waiting for build processing
     )
   end
-end
 
 
   # Production Deployment
