@@ -3,12 +3,14 @@ class InviteFriendSendModel {
   String email;
   String phone;
   DateTime? invitationDate;
+  bool isReminder ;
 
   InviteFriendSendModel.create({
     this.name = '',
     this.email = '',
     this.phone = '',
     this.invitationDate,
+    this.isReminder = false
   });
 
   InviteFriendSendModel({
@@ -16,6 +18,7 @@ class InviteFriendSendModel {
     required this.email,
     required this.phone,
     required this.invitationDate,
+    this.isReminder = false
   });
 
   toMap() {
@@ -23,7 +26,8 @@ class InviteFriendSendModel {
       "friend_Name": name,
       "friend_Mail": email,
       "friend_Phone": phone,
-      "invitation_Date": invitationDate?.toIso8601String()
+      "invitation_Date": invitationDate?.toIso8601String(),
+      "is_Reminder": isReminder
     };
   }
 }

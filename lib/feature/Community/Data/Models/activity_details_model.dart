@@ -28,6 +28,7 @@ class ActivityDetailsModel {
   num? longitude;
   bool? activityIsWish;
   String? activityTime;
+  String? invId;
   List<String>? subscripersPhotos;
   List<SessionsCourseWorkshop>? sessionsCourseWorkshop;
   List<Rating>? ratings;
@@ -65,7 +66,8 @@ class ActivityDetailsModel {
       this.hasEnrolled,
       this.hasPlan,
       this.consultSubscriptions,
-      this.subscriptionStatus});
+      this.subscriptionStatus,
+      this.invId});
 
   factory ActivityDetailsModel.fromJson(Map<String, dynamic> json) =>
       ActivityDetailsModel(
@@ -119,6 +121,7 @@ class ActivityDetailsModel {
                 .map((x) => ConsultSubscription.fromJson(x))),
         subscriptionStatus:
             SubscriptionStatus.fromValue(json["plan_Status"] ?? ""),
+        invId: json["inv_ID"],
       );
 
   Map<String, dynamic> toJson() => {

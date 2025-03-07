@@ -721,7 +721,9 @@ class LocalizationKeys {
   static const enrollNow = "enroll_now";
   static const myQrCode = "my_qr_code";
   static const subscription = "subscription";
+  static const subscribe = "subscribe";
   static const invitationSent = "invitation_sent";
+  static const reminderSent = "reminder_sent";
   static const features = "features";
   static const upgradeNow = "upgrade_now";
   static const generateDoorLock = "generate_door_lock";

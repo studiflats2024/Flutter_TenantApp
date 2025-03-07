@@ -12,6 +12,7 @@ import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/apis/_base/dio_api_manager.dart';
 import 'package:vivas/apis/models/meta/paging_send_model.dart';
 import 'package:vivas/feature/Community/Data/Managers/community_manager.dart';
+import 'package:vivas/feature/Community/Data/Models/SendModels/invite_frind_send_model.dart';
 import 'package:vivas/feature/Community/Data/Models/invitations_history_model.dart';
 import 'package:vivas/feature/Community/Data/Repository/InviteFriend/invite_friend_repository_implementation.dart';
 import 'package:vivas/feature/Community/presentations/ViewModel/InviteFrindes/invite_frindes_bloc.dart';
@@ -141,7 +142,9 @@ class _HistoryInviteFriendsWithBloc
                     height: SizeManager.sizeSp8,
                   ),
                   TextApp(
-                    text: LocalizationKeys.invitationSent,
+                    text: state.isReminder
+                        ? LocalizationKeys.reminderSent
+                        : LocalizationKeys.invitationSent,
                     multiLang: true,
                     textAlign: TextAlign.center,
                     fontWeight: FontWeight.w400,
@@ -184,17 +187,6 @@ class _HistoryInviteFriendsWithBloc
               showPagingLoader: currentLoadingState,
               itemClickable: false,
             ),
-            // ListView.separated(
-            //   itemCount: 5,
-            //   itemBuilder: (context, index) {
-            //     return itemHistory(context);
-            //   },
-            //   separatorBuilder: (context, index) {
-            //     return SizedBox(
-            //       height: SizeManager.sizeSp16,
-            //     );
-            //   },
-            // ),
           );
         },
       ),
@@ -304,6 +296,14 @@ class _HistoryInviteFriendsWithBloc
                                 height: 200.r,
                                 child: InviteAgain(currentBloc, model)),
                           );
+                        } else if (value == "reminder") {
+                          currentBloc.add(InviteFriendEvent(
+                              InviteFriendSendModel(
+                                  name: model.name ?? "",
+                                  email: model.email ?? "",
+                                  phone: model.phone ?? "",
+                                  invitationDate: model.date ?? DateTime.now(),
+                                  isReminder: true)));
                         }
                       },
                       shape: RoundedRectangleBorder(

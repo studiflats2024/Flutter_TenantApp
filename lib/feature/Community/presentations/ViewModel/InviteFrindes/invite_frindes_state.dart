@@ -7,7 +7,11 @@ final class InviteFrindesInitial extends InviteFrindesState {}
 
 class InviteFriendsLoading extends InviteFrindesState {}
 
-class InviteFriendState extends InviteFrindesState {}
+class InviteFriendState extends InviteFrindesState {
+  bool isReminder;
+
+  InviteFriendState({this.isReminder = false});
+}
 
 class InviteHistoryFriendState extends InviteFrindesState {
   final InvitationsHistoryModel model;

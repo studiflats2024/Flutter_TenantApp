@@ -22,6 +22,7 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDeta
 import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDetails/Components/enroll_consultant_widget.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/AllPlans/all_plans.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
+import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_invoice_details.dart';
 import 'package:vivas/feature/unit_details/widget/static_map_widget.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
@@ -616,19 +617,138 @@ class _ActivityDetailsWithBloc
                       if (isGuest) {
                         AppBottomSheet.showLoginOrRegisterDialog(context);
                       } else {
-                        if (activityDetailsModel.subscriptionStatus ==
-                            SubscriptionStatus.waitingPayment) {
-                          ArtSweetAlert.show(
-                            context: context,
-                            artDialogArgs: ArtDialogArgs(
-                              type: ArtSweetAlertType.warning,
-                              text: translate(
-                                      LocalizationKeys.subscriptionWarning) ??
-                                  '',
-                              confirmButtonColor: AppColors.colorPrimary,
-                            ),
-                          );
-                        } else if (!(activityDetailsModel.hasPlan ?? false)) {
+                        if (activityDetailsModel.hasPlan ?? false) {
+                          if (activityDetailsModel.subscriptionStatus ==
+                              SubscriptionStatus.waitingPayment) {
+                            ArtSweetAlert.show(
+                              context: context,
+                              artDialogArgs: ArtDialogArgs(
+                                type: ArtSweetAlertType.warning,
+                                text: translate(
+                                        LocalizationKeys.subscriptionWarning) ??
+                                    '',
+                                showCancelBtn: true,
+                                cancelButtonText:
+                                    translate(LocalizationKeys.payLater) ?? "",
+                                confirmButtonColor: AppColors.colorPrimary,
+                                confirmButtonText:
+                                    translate(LocalizationKeys.payNow) ?? "",
+                                onConfirm: () {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (_) {
+                                    return CommunityInvoiceDetails(
+                                        activityDetailsModel.invId ?? "");
+                                  })).then((v) {
+                                    Navigator.pop(context);
+                                    currentBloc.add(GetActivityDetailsEvent(
+                                        widget.sendModel));
+                                  });
+                                },
+                              ),
+                            );
+                          } else if (activityDetailsModel.subscriptionStatus ==
+                              SubscriptionStatus.expired) {
+                            ArtSweetAlert.show(
+                              context: context,
+                              artDialogArgs: ArtDialogArgs(
+                                confirmButtonText:
+                                    translate(LocalizationKeys.viewPlans) ?? "",
+                                confirmButtonColor: AppColors.colorPrimary,
+                                onConfirm: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (_) {
+                                    return ViewPlans();
+                                  }));
+                                },
+                                dialogDecoration: BoxDecoration(
+                                    color: AppColors.textWhite,
+                                    borderRadius: BorderRadius.all(
+                                        SizeManager.circularRadius10)),
+                                customColumns: [
+                                  SvgPicture.asset(
+                                      AppAssetPaths.communityIconViewPlans),
+                                  SizedBox(
+                                    height: SizeManager.sizeSp8,
+                                  ),
+                                  TextApp(
+                                    text: LocalizationKeys.unHaveSubscription,
+                                    multiLang: true,
+                                    textAlign: TextAlign.center,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  SizedBox(
+                                    height: SizeManager.sizeSp16,
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else if (activityDetailsModel.hasEnrolled ??
+                              false) {
+                          } else if (activityDetailsModel.activityType !=
+                              ActivitiesType.consultant) {
+                            currentBloc.add(
+                              EnrollEvent(
+                                EnrollActivitySendModel(
+                                  activityDetailsModel.activityId ?? '',
+                                  activityDetailsModel.activityType!,
+                                ),
+                              ),
+                            );
+                          } else {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (_) {
+                              return EnrollConsultantWidget(
+                                activityDetailsModel,
+                                currentBloc,
+                              );
+                            })).then((v) {
+                              if (v == true) {
+                                ArtSweetAlert.show(
+                                  context: context,
+                                  artDialogArgs: ArtDialogArgs(
+                                    customColumns: [
+                                      SvgPicture.asset(
+                                          AppAssetPaths.communityIconSuccess),
+                                      SizedBox(
+                                        height: SizeManager.sizeSp8,
+                                      ),
+                                      TextApp(
+                                        text: LocalizationKeys
+                                            .enrollSuccessMessage,
+                                        multiLang: true,
+                                        textAlign: TextAlign.center,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      SizedBox(
+                                        height: SizeManager.sizeSp16,
+                                      ),
+                                    ],
+                                    dialogDecoration: BoxDecoration(
+                                        color: AppColors.textWhite,
+                                        borderRadius: BorderRadius.all(
+                                            SizeManager.circularRadius10)),
+                                    confirmButtonColor: AppColors.colorPrimary,
+                                    confirmButtonText: translate(
+                                            LocalizationKeys.goToMyActivity) ??
+                                        "",
+                                    onConfirm: () {
+                                      Navigator.pop(context);
+                                      currentBloc.add(GetActivityDetailsEvent(
+                                          widget.sendModel));
+                                      MyActivities.open(
+                                        context,
+                                        false,
+                                      );
+                                    },
+                                  ),
+                                );
+                                currentBloc.add(
+                                    GetActivityDetailsEvent(widget.sendModel));
+                              }
+                            });
+                          }
+                        } else {
                           ArtSweetAlert.show(
                             context: context,
                             artDialogArgs: ArtDialogArgs(
@@ -664,69 +784,6 @@ class _ActivityDetailsWithBloc
                               ],
                             ),
                           );
-                        } else if (activityDetailsModel.hasEnrolled ?? false) {
-                        } else if (activityDetailsModel.activityType !=
-                            ActivitiesType.consultant) {
-                          currentBloc.add(
-                            EnrollEvent(
-                              EnrollActivitySendModel(
-                                activityDetailsModel.activityId ?? '',
-                                activityDetailsModel.activityType!,
-                              ),
-                            ),
-                          );
-                        } else {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (_) {
-                            return EnrollConsultantWidget(
-                              activityDetailsModel,
-                              currentBloc,
-                            );
-                          })).then((v) {
-                            if (v == true) {
-                              ArtSweetAlert.show(
-                                context: context,
-                                artDialogArgs: ArtDialogArgs(
-                                  customColumns: [
-                                    SvgPicture.asset(
-                                        AppAssetPaths.communityIconSuccess),
-                                    SizedBox(
-                                      height: SizeManager.sizeSp8,
-                                    ),
-                                    TextApp(
-                                      text:
-                                          LocalizationKeys.enrollSuccessMessage,
-                                      multiLang: true,
-                                      textAlign: TextAlign.center,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    SizedBox(
-                                      height: SizeManager.sizeSp16,
-                                    ),
-                                  ],
-                                  dialogDecoration: BoxDecoration(
-                                      color: AppColors.textWhite,
-                                      borderRadius: BorderRadius.all(
-                                          SizeManager.circularRadius10)),
-                                  confirmButtonColor: AppColors.colorPrimary,
-                                  confirmButtonText: translate(
-                                          LocalizationKeys.goToMyActivity) ??
-                                      "",
-                                  onConfirm: () {
-                                    Navigator.pop(context);
-                                    currentBloc.add(GetActivityDetailsEvent(
-                                        widget.sendModel));
-                                    MyActivities.open(
-                                      context,
-                                      false,
-                                    );
-                                  },
-                                ),
-                              );
-                              currentBloc.add(
-                                  GetActivityDetailsEvent(widget.sendModel));
-                            }
-                          });
                         }
                       }
                     },

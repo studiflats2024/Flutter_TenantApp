@@ -365,18 +365,63 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                           text:
                               translate(LocalizationKeys.subscriptionWarning) ??
                                   '',
-                          // confirmButtonText:
-                          //     translate(LocalizationKeys.payNow) ?? "",
-                          // showCancelBtn: true,
+                          showCancelBtn: true,
+                          cancelButtonText:
+                              translate(LocalizationKeys.payLater) ?? "",
                           confirmButtonColor: AppColors.colorPrimary,
-                          // confirmButtonColor: AppColors.colorPrimary,
-                          // onConfirm: () =>
-                              // Navigator.push(context, MaterialPageRoute(builder: (_){
-                              //   return  CommunityInvoiceDetails(, id);
-                              // })),
+                          confirmButtonText:
+                              translate(LocalizationKeys.payNow) ?? "",
+                          onConfirm: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) {
+                              return CommunityInvoiceDetails(
+                                  planModel.paymentInvoiceId ?? "");
+                            })).then((v) {
+                              Navigator.pop(context);
+                              currentBloc.add(GetMyPlanEvent());
+
+                            });
+                          },
                         ),
                       );
-                    } else {
+                    } if (planModel.subscriptionStatus ==
+                        SubscriptionStatus.expired) {
+                      ArtSweetAlert.show(
+                        context: context,
+                        artDialogArgs: ArtDialogArgs(
+                          confirmButtonText:
+                          translate(LocalizationKeys.viewPlans) ?? "",
+                          confirmButtonColor: AppColors.colorPrimary,
+                          onConfirm: () {
+                            Navigator.pop(context);
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) {
+                                  return ViewPlans();
+                                }));
+                          },
+                          dialogDecoration: BoxDecoration(
+                              color: AppColors.textWhite,
+                              borderRadius: BorderRadius.all(
+                                  SizeManager.circularRadius10)),
+                          customColumns: [
+                            SvgPicture.asset(
+                                AppAssetPaths.communityIconViewPlans),
+                            SizedBox(
+                              height: SizeManager.sizeSp8,
+                            ),
+                            TextApp(
+                              text: LocalizationKeys.unHaveSubscription,
+                              multiLang: true,
+                              textAlign: TextAlign.center,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            SizedBox(
+                              height: SizeManager.sizeSp16,
+                            ),
+                          ],
+                        ),
+                      );
+                    }else {
                       if ((inviteForm.currentState?.validate() ?? false) &&
                           invitesNumber != 0) {
                         currentBloc.add(
@@ -404,8 +449,8 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
   InviteFrindesBloc get currentBloc => context.read<InviteFrindesBloc>();
 
   resetForm() {
-    nameController.clear();
-    emailController.clear();
+    nameController.text="";
+    emailController.text="";
     phoneController.value = const PhoneNumber(isoCode: IsoCode.DE, nsn: '');
     setState(() {
       dateTime = null;

@@ -48,10 +48,15 @@ class SplashRepository implements BaseSplashRepository {
     late AppVersionState appVersionState;
     await generalApiManger.checkVersionApi((checkingResponse) async {
 
-      if(checkingResponse.version == version){
+      if(checkingResponse.version == version ){
         appVersionState = AppVersionReadyForUse();
       }else{
-        appVersionState = AppVersionNeedToUpdate();
+        if(checkingResponse.canSkip){
+          appVersionState = AppVersionReadyForUse();
+        }else{
+          appVersionState = AppVersionNeedToUpdate();
+        }
+
       }
 
     }, (errorApiModel) {

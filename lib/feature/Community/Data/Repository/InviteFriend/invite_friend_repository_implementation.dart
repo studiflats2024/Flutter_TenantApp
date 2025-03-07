@@ -16,7 +16,7 @@ class InviteFriendRepositoryImplementation implements InviteFriendRepository {
     await communityManager.inviteFriend(
       model,
       (successModel) {
-        state = InviteFriendState();
+        state = InviteFriendState(isReminder: model.isReminder);
       },
       (fail) {
         state = ErrorInviteFriendState(

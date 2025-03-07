@@ -297,7 +297,7 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
       ),
       bottomNavigationBar: (planModel.subscriptionStatus ==
                   SubscriptionStatus.active &&
-              DateFormat("dd/MM/yyyy")
+              DateFormat("MM/dd/yyyy")
                   .parse(planModel.endDate ?? "")
                   .isAfter(DateTime.now()))
           ? null
