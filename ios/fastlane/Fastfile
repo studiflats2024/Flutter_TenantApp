@@ -11,9 +11,19 @@ platform :ios do
     # Path to Info.plist
     info_plist_path = "./ios/Runner/Info.plist"
 
-    # Read the current version and build number from Info.plist using plutil
-    current_version_name = sh("plutil -extract CFBundleShortVersionString xml1 -o - #{info_plist_path} | xpath //string/text()").strip
-    current_build_number = sh("plutil -extract CFBundleVersion xml1 -o - #{info_plist_path} | xpath //integer/text()").strip.to_i
+    # Verify that Info.plist exists
+    unless File.exist?(info_plist_path)
+      UI.user_error!("Error: Info.plist not found at #{info_plist_path}")
+    end
+
+    # Read the current version and build number from Info.plist using plutil -p
+    current_version_name = sh("plutil -p #{info_plist_path} | grep CFBundleShortVersionString | awk -F '\"' '{print $4}'").strip
+    current_build_number = sh("plutil -p #{info_plist_path} | grep CFBundleVersion | awk '{print $NF}'").strip.to_i
+
+    # Ensure values were retrieved
+    if current_version_name.empty? || current_build_number.zero?
+      UI.user_error!("Error: Failed to read CFBundleShortVersionString or CFBundleVersion from Info.plist")
+    end
 
     # Increment the build number by 1
     new_build_number = current_build_number + 1
@@ -23,7 +33,7 @@ platform :ios do
     version_parts[2] += 1  # Increment patch version
     new_version_name = version_parts.join('.')
 
-    # Update CFBundleShortVersionString and CFBundleVersion in Info.plist using plutil
+    # Update CFBundleShortVersionString and CFBundleVersion in Info.plist
     puts "Updating CFBundleShortVersionString to #{new_version_name}..."
     sh "plutil -replace CFBundleShortVersionString -string '#{new_version_name}' #{info_plist_path}"
 
@@ -32,8 +42,8 @@ platform :ios do
 
     # Confirm the updates
     puts "Updated Info.plist content:"
-    sh "plutil -extract CFBundleShortVersionString xml1 -o - #{info_plist_path} | xpath //string/text()"
-    sh "plutil -extract CFBundleVersion xml1 -o - #{info_plist_path} | xpath //integer/text()"
+    sh "plutil -p #{info_plist_path} | grep CFBundleShortVersionString"
+    sh "plutil -p #{info_plist_path} | grep CFBundleVersion"
 
     # Ensure Flutter recognizes changes
     sh "flutter pub get"
@@ -50,6 +60,8 @@ platform :ios do
       skip_waiting_for_build_processing: true  # Optionally skip waiting for build processing
     )
   end
+
+
 
 
   # Production Deployment
