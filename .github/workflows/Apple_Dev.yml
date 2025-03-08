@@ -3,13 +3,13 @@ name: Flutter Build & Upload to TestFlight/App Store (Development)
 on:
   push:
     branches:
-      - Development  # Change to your release branch
-  workflow_dispatch:  # Enables manual trigger
+      - Development
+  workflow_dispatch:
 
 jobs:
   build:
     name: Build & Upload iOS App
-    runs-on: macos-latest  # macOS is required for iOS builds
+    runs-on: macos-latest
 
     steps:
       - name: Checkout Repository
@@ -18,39 +18,40 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24"  # Change this based on your Flutter version
+          flutter-version: "3.24"
+
       - name: Cache Flutter Build Artifacts
         uses: actions/cache@v3
         with:
-            path: |
-              ~/.pub-cache
-              build/
-              ios/.symlinks
-              ios/Pods
-              ios/Flutter/Generated.xcconfig
-              ios/Flutter/App.framework
-              ios/Flutter/Flutter.framework
-            key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
-            restore-keys: |
-              ${{ runner.os }}-flutter-
+          path: |
+            ~/.pub-cache
+            build/
+            ios/.symlinks
+            ios/Pods
+            ios/Flutter/Generated.xcconfig
+            ios/Flutter/App.framework
+            ios/Flutter/Flutter.framework
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
               
       - name: Install Dependencies
         run: flutter pub get
-      
-        
+
       - name: Precompile Flutter for iOS
         run: flutter precache --ios
-        
+
       - name: Reset Xcode Derived Data
         run: rm -rf ~/Library/Developer/Xcode/DerivedData
 
       - name: Install CocoaPods Dependencies
         run: |
           cd ios
-          pod deintegrate
-          pod repo update
-          pod install --verbose --clean-install
-          
+          pod install --repo-update --verbose
+
+      - name: Ensure Flutter Generates iOS Artifacts
+        run: flutter build ios --no-codesign
+
       - name: Build iOS with Xcode (Faster)
         run: |
           cd ios
@@ -59,25 +60,23 @@ jobs:
                      -sdk iphoneos \
                      -configuration Release \
                      build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'  # Use a compatible version for Fastlane
-          bundler-cache: true  # Caches installed gems for faster builds
+          ruby-version: '3.1'
+          bundler-cache: true
 
       - name: Install Bundler
         run: |
-          cd ios  # Ensure we are in the correct directory
+          cd ios
           gem install bundler
           bundle install
 
       - name: Install Xcode Command Line Tools
         run: |
-          sudo xcode-select --reset  # Reset to the default Xcode version
-          sudo xcodebuild -runFirstLaunch  # Ensure Xcode is properly configured
-
-      - name: Build iOS App
-        run: flutter build ios --no-codesign  # Change IS_DEV_MODE to false for production
+          sudo xcode-select --reset
+          sudo xcodebuild -runFirstLaunch
 
       - name: Debug Info.plist and Directory Structure
         run: |
@@ -92,21 +91,14 @@ jobs:
             exit 1
           fi
 
-
       - name: Copy Apple Developer Certificates
         run: |
-          # Create the required directories if they don't exist
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           mkdir -p ~/Library/Keychains/
-      
-          # Copy the files
           cp ./ios/cert.p12 ~/Library/Keychains/
           cp ./ios/cicd.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
 
-
-
-      - name: Upload to TestFlight (Internal Test) or App Store (Production)
+      - name: Upload to TestFlight
         run: |
           cd ios
-          bundle install
-          bundle exec fastlane internal_test  # Adjust this depending on your Fastlane lane
+          bundle exec fastlane internal_test
