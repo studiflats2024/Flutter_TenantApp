@@ -5,51 +5,49 @@ app_identifier = app_identifier # Bundle identifier (e.g., com.studiflats.app)
 apple_id = apple_id # Apple Developer Portal username (e.g., G638PCV8XP)
 
 platform :ios do
-  # Internal Testing Deployment
   desc "Upload to TestFlight for Internal Testing"
   lane :internal_test do
-    # Correct path to Info.plist from the fastlane directory
-    info_plist_path = "../ios/Runner/Info.plist"
+    # Automatically find Info.plist
+    possible_paths = [
+      "../ios/Runner/Info.plist",
+      "./ios/Runner/Info.plist"
+    ]
+    
+    info_plist_path = possible_paths.find { |path| File.exist?(path) }
 
-    # Verify that Info.plist exists
-    unless File.exist?(info_plist_path)
-      UI.user_error!("Error: Info.plist not found at #{info_plist_path}")
+    unless info_plist_path
+      UI.user_error!("❌ Error: Info.plist not found in expected locations. Check your project structure.")
     end
 
-    puts "Using Info.plist at #{info_plist_path}"
+    puts "✅ Using Info.plist at #{info_plist_path}"
 
-    # Read the current version and build number from Info.plist using plutil -p
+    # Read current version/build number
     current_version_name = sh("plutil -p #{info_plist_path} | grep CFBundleShortVersionString | awk -F '\"' '{print $4}'").strip
     current_build_number = sh("plutil -p #{info_plist_path} | grep CFBundleVersion | awk '{print $NF}'").strip.to_i
 
-    # Ensure values were retrieved
     if current_version_name.empty? || current_build_number.zero?
-      UI.user_error!("Error: Failed to read CFBundleShortVersionString or CFBundleVersion from Info.plist")
+      UI.user_error!("❌ Error: Failed to read version information from Info.plist")
     end
 
-    # Increment the build number by 1
+    # Increment build number
     new_build_number = current_build_number + 1
-
-    # Optionally, increment the version number (patch version)
     version_parts = current_version_name.split('.').map(&:to_i)
-    version_parts[2] += 1  # Increment patch version
+    version_parts[2] += 1
     new_version_name = version_parts.join('.')
 
     # Update Info.plist
-    puts "Updating CFBundleShortVersionString to #{new_version_name}..."
+    puts "🔄 Updating CFBundleShortVersionString to #{new_version_name}..."
     sh "plutil -replace CFBundleShortVersionString -string '#{new_version_name}' #{info_plist_path}"
 
-    puts "Updating CFBundleVersion (build number) to #{new_build_number}..."
+    puts "🔄 Updating CFBundleVersion to #{new_build_number}..."
     sh "plutil -replace CFBundleVersion -integer #{new_build_number} #{info_plist_path}"
 
     # Confirm updates
     sh "plutil -p #{info_plist_path} | grep CFBundleShortVersionString"
     sh "plutil -p #{info_plist_path} | grep CFBundleVersion"
 
-    # Ensure Flutter recognizes changes
+    # Flutter cleanup & build
     sh "flutter pub get"
-
-    # Clean and rebuild
     sh "flutter clean"
     sh "flutter build ios --release --no-codesign"
 
@@ -61,6 +59,7 @@ platform :ios do
       skip_waiting_for_build_processing: true
     )
   end
+
 
 
 
