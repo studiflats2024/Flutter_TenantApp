@@ -41,7 +41,7 @@ jobs:
           sudo xcodebuild -runFirstLaunch  # Ensure Xcode is properly configured
 
       - name: Build iOS App
-        run: flutter build ios --release --no-codesign  # Change IS_DEV_MODE to false for production
+        run: flutter build ios --no-codesign  # Change IS_DEV_MODE to false for production
 
       - name: Debug Info.plist and Directory Structure
         run: |
