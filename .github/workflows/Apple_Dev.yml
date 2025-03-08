@@ -36,9 +36,21 @@ jobs:
               
       - name: Install Dependencies
         run: flutter pub get
+      
         
       - name: Precompile Flutter for iOS
         run: flutter precache --ios
+        
+      - name: Reset Xcode Derived Data
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData
+
+      - name: Install CocoaPods Dependencies
+        run: |
+          cd ios
+          pod deintegrate
+          pod repo update
+          pod install --verbose --clean-install
+          
       - name: Build iOS with Xcode (Faster)
         run: |
           cd ios
