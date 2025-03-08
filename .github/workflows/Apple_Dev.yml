@@ -19,10 +19,34 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.24"  # Change this based on your Flutter version
-
+      - name: Cache Flutter Build Artifacts
+        uses: actions/cache@v3
+        with:
+            path: |
+              ~/.pub-cache
+              build/
+              ios/.symlinks
+              ios/Pods
+              ios/Flutter/Generated.xcconfig
+              ios/Flutter/App.framework
+              ios/Flutter/Flutter.framework
+            key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
+            restore-keys: |
+              ${{ runner.os }}-flutter-
+              
       - name: Install Dependencies
         run: flutter pub get
-
+        
+      - name: Precompile Flutter for iOS
+        run: flutter precache --ios
+      - name: Build iOS with Xcode (Faster)
+        run: |
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+                     -scheme Runner \
+                     -sdk iphoneos \
+                     -configuration Release \
+                     build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
