@@ -30,6 +30,7 @@ platform :android do
     # Clean and rebuild
     sh "flutter clean"
     sh "flutter build appbundle"
+    sh "echo \"$DEPLOY_KEY\" | base64 --decode > ./fastlane/deploy.json"
     upload_to_play_store(
       track: "internal",   # Internal testing track
       json_key: "./fastlane/deploy.json",
