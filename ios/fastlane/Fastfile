@@ -8,12 +8,7 @@ platform :ios do
   desc "Upload to TestFlight for Internal Testing"
   lane :internal_test do
     # Automatically find Info.plist
-    possible_paths = [
-      "../ios/Runner/Info.plist",
-      "./ios/Runner/Info.plist"
-    ]
-    
-    info_plist_path = possible_paths.find { |path| File.exist?(path) }
+    info_plist_path = Dir.glob("**/Runner/Info.plist").first
 
     unless info_plist_path
       UI.user_error!("❌ Error: Info.plist not found in expected locations. Check your project structure.")
