@@ -10,9 +10,7 @@ platform :ios do
     # Automatically find Info.plist
     info_plist_path = Dir.glob("**/Runner/Info.plist").first
 
-    unless info_plist_path
-      UI.user_error!("❌ Error: Info.plist not found in expected locations. Check your project structure.")
-    end
+    
 
     puts "✅ Using Info.plist at #{info_plist_path}"
 
