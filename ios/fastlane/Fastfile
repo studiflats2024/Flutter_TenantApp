@@ -9,7 +9,9 @@ platform :ios do
   lane :internal_test do
     # Automatically find Info.plist
     info_plist_path = File.expand_path("../ios/Runner/Info.plist")
-
+     if !File.exist?(info_plist_path)
+      UI.user_error!("❌ Error: Info.plist not found at #{info_plist_path}")
+    end
     
 
     puts "✅ Using Info.plist at #{info_plist_path}"
