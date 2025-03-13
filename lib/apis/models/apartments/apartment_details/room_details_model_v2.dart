@@ -113,7 +113,7 @@ class ApartmentRoom {
   bool haveUnAvailableBedsByRangeDate(
       DateTimeRange range, DateTimeRange contractRange) {
     bool haveUnAvailableBed = false;
-    if((roomBeds?.isNotEmpty ?? false) && bedsNo == roomBeds!.length){
+    if ((roomBeds?.isNotEmpty ?? false) && bedsNo == roomBeds!.length) {
       for (int x = 0; x < roomBeds!.length; x++) {
         if (!(roomBeds![x].bedAvailableByDateRange(range, contractRange) ??
             false)) {
@@ -121,7 +121,7 @@ class ApartmentRoom {
           break;
         }
       }
-    }else{
+    } else {
       haveUnAvailableBed = true;
     }
 
@@ -280,13 +280,17 @@ class RoomBed {
     } else {
       for (int z = 0; z < bedsBookedDates!.length; z++) {
         var dates = bedsBookedDates!;
-        if (dates[z].from!.month >= range.start.month) {
+        if ((dates[z].from!.month >= range.start.month &&
+                bedsBookedDates!.length > 1) ||
+            dates[z].from!.month <= range.start.month) {
+
           if (z == (dates.length - 1)) {
             if (range.start.isAfter(dates[z].to!) &&
                 range.end.isAfter(dates[z].to!)) {
               _bedAv = true;
             } else if (range.start.isAfter(contractRange.start) &&
-                range.end.isBefore(dates[z].from!)) {
+                range.end.isBefore(dates[z].from!) &&
+                range.end.isBefore(dates[z].to!)) {
               _bedAv = true;
             }
           } else {

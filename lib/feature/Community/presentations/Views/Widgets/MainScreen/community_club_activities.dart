@@ -286,15 +286,19 @@ class CommunityClubActivities extends BaseStatelessWidget {
                       SizedBox(
                         width: SizeManager.sizeSp8,
                       ),
-                      TextApp(
-                        multiLang: false,
-                        text: activityItem.postponedTo ??
-                            activityItem.activityDate ??
-                            "",
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.formFieldHintText,
+                      SizedBox(
+                        width: 225.r,
+                        child: TextApp(
+                          multiLang: false,
+                          text: activityItem.postponedTo ??
+                              activityItem.activityDate ??
+                              "",
+                          overflow: TextOverflow.ellipsis,
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: AppColors.formFieldHintText,
+                          ),
                         ),
                       )
                     ],

@@ -6,10 +6,12 @@ import 'package:vivas/utils/extensions/extension_string.dart';
 class PagingCommunityActivitiesListSendModel extends Equatable {
   final int? pageNumber;
   final int pageSize;
+  final bool isHome;
   final ActivitiesType? activitiesType;
 
   const PagingCommunityActivitiesListSendModel({
     this.pageNumber,
+    this.isHome = false,
     this.pageSize = 10,
     this.activitiesType ,
   });
@@ -20,7 +22,8 @@ class PagingCommunityActivitiesListSendModel extends Equatable {
   };
 
   Map<String, dynamic> toParameters() => {
-    '_Type': activitiesType?.filter?? ActivitiesType.all.filter
+    '_Type': activitiesType?.filter?? ActivitiesType.all.filter,
+    "is_Home": isHome
   };
 
   @override

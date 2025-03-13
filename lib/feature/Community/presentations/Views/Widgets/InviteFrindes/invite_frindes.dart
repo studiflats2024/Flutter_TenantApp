@@ -315,6 +315,13 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                               color: AppColors.textMainColor,
                               fontWeight: FontWeight.w500),
                           iconStart: true,
+                          validator: (v){
+                            if(v == null){
+                              return translate(LocalizationKeys.required);
+                            }else{
+                              return null;
+                            }
+                          },
                           onSaved: (v) {
                             setState(() {
                               dateTime = v;

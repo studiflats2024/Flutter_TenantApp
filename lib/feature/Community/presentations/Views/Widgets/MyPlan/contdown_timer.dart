@@ -101,7 +101,8 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
             TextApp(
               fontSize: FontSize.fontSize14,
               color: AppColors.textMainColor,
-              text: "Only 7 days left in your ${widget.planName}! ",
+              text:
+                  "Only ${days != 0 ? days : hours != 0 ? hours : minutes != 0 ? minutes : seconds} days left in your ${widget.planName}! ",
             ),
             SizedBox(
               height: SizeManager.sizeSp24,
@@ -155,57 +156,56 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
                       )
                     ],
                   ),
-                    SizedBox(
-                      width: SizeManager.sizeSp8,
-                    ),
-                    Column(
-                      children: [
-                        TextApp(
-                          text: ":",
-                          fontSize: FontSize.fontSize32,
-                        ),
-                        SizedBox(
-                          height: SizeManager.sizeSp24,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: SizeManager.sizeSp8,
-                    ),
-                ],
+                  SizedBox(
+                    width: SizeManager.sizeSp8,
+                  ),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      timeItem(minutes, 2),
-                      SizedBox(
-                        height: SizeManager.sizeSp4,
-                      ),
                       TextApp(
-                        text: "Minutes",
-                        fontSize: FontSize.fontSize14,
+                        text: ":",
+                        fontSize: FontSize.fontSize32,
+                      ),
+                      SizedBox(
+                        height: SizeManager.sizeSp24,
                       )
                     ],
                   ),
-                  if (hours == 0) ...[
+                  SizedBox(
+                    width: SizeManager.sizeSp8,
+                  ),
+                ],
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    timeItem(minutes, 2),
                     SizedBox(
-                      width: SizeManager.sizeSp8,
+                      height: SizeManager.sizeSp4,
                     ),
-                    Column(
-                      children: [
-                        TextApp(
-                          text: ":",
-                          fontSize: FontSize.fontSize32,
-                        ),
-                        SizedBox(
-                          height: SizeManager.sizeSp24,
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      width: SizeManager.sizeSp8,
-                    ),
-                  ]
-                ,
+                    TextApp(
+                      text: "Minutes",
+                      fontSize: FontSize.fontSize14,
+                    )
+                  ],
+                ),
+                if (hours == 0) ...[
+                  SizedBox(
+                    width: SizeManager.sizeSp8,
+                  ),
+                  Column(
+                    children: [
+                      TextApp(
+                        text: ":",
+                        fontSize: FontSize.fontSize32,
+                      ),
+                      SizedBox(
+                        height: SizeManager.sizeSp24,
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    width: SizeManager.sizeSp8,
+                  ),
+                ],
                 if (hours == 0) ...[
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

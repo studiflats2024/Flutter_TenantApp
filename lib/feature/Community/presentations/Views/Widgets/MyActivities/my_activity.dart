@@ -423,7 +423,8 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
                                       onSelected: (value) {
                                         if (value == "un_enroll") {
                                           widget.myActivityBloc.add(
-                                              UnEnrollEvent(model.itemId, index));
+                                              UnEnrollEvent(
+                                                  model.itemId, index));
                                         }
                                       },
                                       shape: RoundedRectangleBorder(
@@ -503,6 +504,7 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
               ),
             ),
             if (model.activitiesType == ActivitiesType.event &&
+                widget.status == MyActivityStatus.ongoing &&
                 model.postponed != null) ...[
               Container(
                 height: 112.r,

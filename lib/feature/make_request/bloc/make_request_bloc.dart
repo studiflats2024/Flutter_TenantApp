@@ -119,37 +119,42 @@ class MakeRequestBloc extends Bloc<MakeRequestEvent, MakeRequestState> {
   allBedSelected(int roomIndex, Emitter<MakeRequestState> emit,
       {int numOfGuest = 0}) {
     if (apartmentDetailsApiModelV2!
-        .apartmentRooms![roomIndex].allBedsSelected) {
+            .apartmentRooms![roomIndex].allBedsSelected &&
+        apartmentDetailsApiModelV2!.apartmentRooms![roomIndex].bedsNo ==
+            apartmentDetailsApiModelV2!
+                .apartmentRooms![roomIndex].roomBeds!.length) {
       apartmentDetailsApiModelV2!.apartmentRooms![roomIndex].isSelected = true;
     } else {
-      if (numOfGuest == 1 && apartmentDetailsApiModelV2!.apartmentRooms![roomIndex].isSelected) {
+      if (numOfGuest == 1 &&
+          apartmentDetailsApiModelV2!.apartmentRooms![roomIndex].isSelected) {
         for (int x = 0;
-        x <
-            apartmentDetailsApiModelV2!
-                .apartmentRooms![roomIndex].roomBeds!.length;
-        x++) {
+            x <
+                apartmentDetailsApiModelV2!
+                    .apartmentRooms![roomIndex].roomBeds!.length;
+            x++) {
           if (apartmentDetailsApiModelV2!
               .apartmentRooms![roomIndex].roomBeds![x].isSelected) {
             apartmentDetailsApiModelV2!
-                .apartmentRooms![roomIndex].roomBeds![x].isSelected =
-            !apartmentDetailsApiModelV2!
-                .apartmentRooms![roomIndex].roomBeds![x].isSelected;
+                    .apartmentRooms![roomIndex].roomBeds![x].isSelected =
+                !apartmentDetailsApiModelV2!
+                    .apartmentRooms![roomIndex].roomBeds![x].isSelected;
           }
         }
       }
       apartmentDetailsApiModelV2!.apartmentRooms![roomIndex].isSelected = false;
-
     }
     emit(const OnSelectedRoomState());
   }
 
-  _chooseWhereWillStay(ChooseWhereWillStay event , Emitter<MakeRequestState> emit){
+  _chooseWhereWillStay(
+      ChooseWhereWillStay event, Emitter<MakeRequestState> emit) {
     RequestUiModel requestUiModel = event.requestUiModel;
 
     emit(ChangeWhereStay(requestUiModel));
   }
 
-  _setDataOnRequestModel(ChangeRequestData event , Emitter<MakeRequestState> emit){
+  _setDataOnRequestModel(
+      ChangeRequestData event, Emitter<MakeRequestState> emit) {
     RequestUiModel requestUiModel = event.requestUiModel;
 
     emit(SetDataOnRequest(requestUiModel));
@@ -240,35 +245,31 @@ class MakeRequestBloc extends Bloc<MakeRequestEvent, MakeRequestState> {
         event.requestUiModel.chooseBed!) {
       haveUserRoom = true;
       canSendRequest = true;
-    } else if (event.requestUiModel.numberOfGuests==1){
+    } else if (event.requestUiModel.numberOfGuests == 1) {
       haveUserRoom = true;
       canSendRequest = true;
-    }else {
+    } else {
       haveUserRoom = false;
       canSendRequest = false;
     }
-   if(event.requestUiModel.numberOfGuests==1){
-
-   }else{
-     for (var entryZ in event.requestUiModel.roomsId.entries) {
-       for (var entryI in event.requestUiModel.roomsId.entries) {
-         if (entryI.key != entryZ.key &&
-             (entryZ.value["guest_WA_No"] == entryI.value["guest_WA_No"] ||
-                 entryZ.value["guest_Email"] == entryI.value["guest_Email"] )) {
-
-           canSendRequest = false;
-         }
-       }
-     }
-   }
-
+    if (event.requestUiModel.numberOfGuests == 1) {
+    } else {
+      for (var entryZ in event.requestUiModel.roomsId.entries) {
+        for (var entryI in event.requestUiModel.roomsId.entries) {
+          if (entryI.key != entryZ.key &&
+              (entryZ.value["guest_WA_No"] == entryI.value["guest_WA_No"] ||
+                  entryZ.value["guest_Email"] == entryI.value["guest_Email"])) {
+            canSendRequest = false;
+          }
+        }
+      }
+    }
 
     if (canSendRequest && haveUserRoom) {
       emit(await makeRequestRepository.sendRequestApiV2(event.requestUiModel,
           apartmentDetailsApiModelV2?.isSelectedFullApartment ?? false));
     } else {
       if (!haveUserRoom) {
-
         emit(const MakeRequestErrorState(
             "enter your mobile and email on your room details that you are entered when registered ",
             false));

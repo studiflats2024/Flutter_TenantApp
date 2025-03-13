@@ -36,7 +36,10 @@ class CommunityRepositoryImplementation implements CommunityRepository {
     CommunityState communityState = CommunityInitial();
     await communityManager.getCommunityClubActivities(
       PagingCommunityActivitiesListSendModel(
-          activitiesType: activitiesType, pageNumber: pageNumber, pageSize: 10),
+          isHome: true,
+          activitiesType: activitiesType,
+          pageNumber: pageNumber,
+          pageSize: 10),
       (activities) {
         communityState = CommunityLoadedClubActivityState(activities);
       },

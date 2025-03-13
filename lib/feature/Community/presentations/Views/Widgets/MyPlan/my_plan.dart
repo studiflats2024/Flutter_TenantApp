@@ -299,7 +299,8 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                   SubscriptionStatus.active &&
               DateFormat("MM/dd/yyyy")
                   .parse(planModel.endDate ?? "")
-                  .isAfter(DateTime.now()))
+                  .isBefore(DateTime.now()) &&
+              (planModel.dateTimeRange?.duration.inDays ?? 0) > 7)
           ? null
           : SizedBox(
               height: 110.r,

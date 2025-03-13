@@ -21,8 +21,10 @@ class ApiKeys {
   static const baseStagingUrl = "https://stageapi.studiflats.com";
   static const baseProductionUrl = "https://api.studiflats.com";
 
-  static final currentEnvironment =
-      isDevMode() ? baseDevUrl : baseProductionUrl;
+  static final currentEnvironment = isDevMode() ? baseDevUrl : baseProductionUrl;
+
+
+  //static const currentEnvironment = baseProductionUrl;
 
   static const apiKeyUrl = "api";
   static const baseApiUrl = '/$apiKeyUrl';
