@@ -3,18 +3,29 @@ import 'package:vivas/apis/models/contract/get_contract/get_contract_send_model.
 import 'package:vivas/apis/models/contract/sign_contract/sign_contract_send_model.dart';
 import 'package:vivas/apis/models/contract/sign_contract/sign_contract_send_model_v2.dart';
 import 'package:vivas/apis/models/contract/sign_contract/sign_extend_contract_send_model.dart';
+import 'package:vivas/apis/models/contract/sign_contract/sign_member_contract_send_model.dart';
 import 'package:vivas/feature/contract/sign_contract/bloc/sign_contract_bloc.dart';
 
 abstract class BaseSignContractRepository {
   Future<SignContractState> getContractData(String requestId);
-  Future<SignContractState> getContractDataV2(String requestId , String apartmentId, String bedId);
+
+  Future<SignContractState> getContractDataV2(
+      String requestId, String apartmentId, String bedId);
+
   Future<SignContractState> getExtendContractData(String requestId);
+
   Future<SignContractState> signContract(
       String requestId, String signatureImagePath);
+
   Future<SignContractState> signContractV2(
-      String requestId, String contractId,String signatureImagePath);
+      String requestId, String contractId, String signatureImagePath);
+
   Future<SignContractState> signExtendContract(
       String requestId, String signatureImagePath);
+
+  Future<SignContractState> getMemberContract();
+
+  Future<SignContractState> signMemberContract(String signatureImagePath);
 }
 
 class SignContractRepository implements BaseSignContractRepository {
@@ -38,11 +49,15 @@ class SignContractRepository implements BaseSignContractRepository {
   }
 
   @override
-  Future<SignContractState> getContractDataV2(String requestId, String apartmentId, String bedId) async{
+  Future<SignContractState> getContractDataV2(
+      String requestId, String apartmentId, String bedId) async {
     late SignContractState signContractState;
 
     await contractApiManger.getContractListApiV2(
-        GetContractSendModelV2(requestId: requestId, apartmentId:apartmentId, bedId: bedId), (contractWrapper) {
+        GetContractSendModelV2(
+            requestId: requestId,
+            apartmentId: apartmentId,
+            bedId: bedId), (contractWrapper) {
       signContractState = SignContractLoadedStateV2(contractWrapper);
     }, (errorApiModel) {
       signContractState = SignContractErrorState(
@@ -66,6 +81,7 @@ class SignContractRepository implements BaseSignContractRepository {
 
     return signContractState;
   }
+
   @override
   Future<SignContractState> signContract(
       String requestId, String signatureImagePath) async {
@@ -86,7 +102,7 @@ class SignContractRepository implements BaseSignContractRepository {
 
   @override
   Future<SignContractState> signContractV2(
-      String requestId,String contractId, String signatureImagePath) async {
+      String requestId, String contractId, String signatureImagePath) async {
     late SignContractState signContractState;
 
     await contractApiManger.signContractApiV2(
@@ -121,5 +137,32 @@ class SignContractRepository implements BaseSignContractRepository {
     return signContractState;
   }
 
+  @override
+  Future<SignContractState> getMemberContract() async {
+    late SignContractState signContractState;
 
+    await contractApiManger.getMemberContractApi((contractWrapper) {
+      signContractState = GetContractMemberSuccessfullyState(contractWrapper);
+    }, (errorApiModel) {
+      signContractState = SignContractErrorState(
+          errorApiModel.message, errorApiModel.isMessageLocalizationKey);
+    });
+
+    return signContractState;
+  }
+
+  @override
+  Future<SignContractState> signMemberContract(
+      String signatureImagePath) async {
+    late SignContractState signContractState;
+    await contractApiManger.signMemberContractApi(
+        SignMemberContractSendModel(signatureImagePath), (contractWrapper) {
+      signContractState = ContractSignedSuccessfullyState(contractWrapper);
+    }, (errorApiModel) {
+      signContractState = SignContractErrorState(
+          errorApiModel.message, errorApiModel.isMessageLocalizationKey);
+    });
+
+    return signContractState;
+  }
 }

@@ -160,6 +160,10 @@ class ApiKeys {
       '$baseApiUrl/ApartmentV2/Get_Extend_Booking_Contract';
   static const signExtendContract =
       '$baseApiUrl/ApartmentV2/Sign_Extend_Request_Contract';
+  static const getMemberContract =
+      '$baseApiUrl/Gateway/GetSubscription_Contract';
+  static const signMemberContract =
+      '$baseApiUrl/Gateway/SignSubscription_Plan';
   static const changeCheckOutDate =
       '$baseApiUrl/ApartmentV2/UpdateCheckout_Date';
 
@@ -186,4 +190,5 @@ class ApiKeys {
   static const getPlanTransactions = '$baseApiUrl/Gateway/GetClub_Invoice_User';
   static const getPlanTransactionDetails = '$baseApiUrl/Gateway/GetClub_Invoice_Details';
   static const getInvitationsHistory = '$baseApiUrl/Gateway/GetInvitations_Histroy';
+  static const cancelPlan = '$baseApiUrl/Gateway/Cancel_Plan';
 }

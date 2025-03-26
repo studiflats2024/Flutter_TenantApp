@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vivas/apis/models/contract/get_contract/contract_member_response_model.dart';
 import 'package:vivas/apis/models/contract/get_contract/get_contract_response.dart';
 import 'package:vivas/apis/models/contract/get_contract/get_contract_response_v2.dart';
 import 'package:vivas/apis/models/contract/sign_contract/sign_contract_successfully_response.dart';
@@ -21,6 +22,8 @@ class SignContractBloc extends Bloc<SignContractEvent, SignContractState> {
     on<SignContractApiEventV2>(_signContractEventV2);
     on<GetExtendContractEvent>(_getExtendContractEvent);
     on<SignExtendContractApiEvent>(_signExtendContractEvent);
+    on<SignMemberContractApiEvent>(_signMemberContractEvent);
+    on<GetMemberContractEvent>(_getMemberContractEvent);
     on<ChangeTermsAndConditionsStatusEvent>(
         _changeTermsAndConditionsStatusEvent);
   }
@@ -42,7 +45,14 @@ class SignContractBloc extends Bloc<SignContractEvent, SignContractState> {
       GetExtendContractEvent event, Emitter<SignContractState> emit) async {
     emit(SignContractLoadingState());
     emit(await signContractRepository.getExtendContractData(
-        event.extendId,));
+      event.extendId,
+    ));
+  }
+
+  FutureOr<void> _getMemberContractEvent(
+      GetMemberContractEvent event, Emitter<SignContractState> emit) async {
+    emit(SignContractLoadingState());
+    emit(await signContractRepository.getMemberContract());
   }
 
   FutureOr<void> _signContractEvent(
@@ -56,7 +66,7 @@ class SignContractBloc extends Bloc<SignContractEvent, SignContractState> {
       SignContractApiEventV2 event, Emitter<SignContractState> emit) async {
     emit(SignContractLoadingState());
     emit(await signContractRepository.signContractV2(
-        event.requestId, event.signID,event.signatureImagePath));
+        event.requestId, event.signID, event.signatureImagePath));
   }
 
   FutureOr<void> _signExtendContractEvent(
@@ -64,6 +74,13 @@ class SignContractBloc extends Bloc<SignContractEvent, SignContractState> {
     emit(SignContractLoadingState());
     emit(await signContractRepository.signExtendContract(
         event.extendId, event.signatureImagePath));
+  }
+
+  FutureOr<void> _signMemberContractEvent(
+      SignMemberContractApiEvent event, Emitter<SignContractState> emit) async {
+    emit(SignContractLoadingState());
+    emit(await signContractRepository
+        .signMemberContract(event.signatureImagePath));
   }
 
   FutureOr<void> _changeTermsAndConditionsStatusEvent(

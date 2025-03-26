@@ -752,11 +752,27 @@ class LocalizationKeys {
   static const getStarted = "get_started";
   static const rescheduleMessage = "reschedule_message";
   static const subscriptionWarning = "subscription_warning";
+  static const signContractWarning = "sign_contract_warning";
+  static const unpaidSubscription = "unpaid_subscription";
 
   static var reviewSubmittedSuccessfully = "review_submitted_successfully";
   static var bookConsultation = "book_consultation";
   static var showCodeAgent = "show_code_agent";
   static var welcomeCommunityClub = "welcome_community_club";
   static var showClubAgent = "show_club_agent";
+  static var memberContract = "member_contract";
+  static var seeContract = "show_signed_contract";
+  static var promoCode = "promo_code";
+  static var planSettings = "plan_settings";
+  static var invoiceHistory = "invoice_history";
+  static var autoRenewal = "auto_renewal";
+  static var cancelPlan = "cancel_plan";
+  static var other = "other";
+  static var writeYourReason = "write_your_reason";
+  static var cancelPlanHint = "cancel_plan_hint";
+  static var cancelPlanWarning = "cancel_plan_warning";
+  static var cancelPlanMessage = "cancel_plan_message";
+  static var cancelSuccessMessage = "cancel_success_message";
+  static var ignore = "ignore";
 }
 

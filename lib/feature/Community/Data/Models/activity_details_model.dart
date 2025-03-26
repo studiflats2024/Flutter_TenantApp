@@ -38,6 +38,7 @@ class ActivityDetailsModel {
   bool? hasEnrolled;
   bool? hasPlan;
   SubscriptionStatus? subscriptionStatus;
+  bool? contractSigned;
 
   ActivityDetailsModel(
       {this.activityId,
@@ -67,6 +68,7 @@ class ActivityDetailsModel {
       this.hasPlan,
       this.consultSubscriptions,
       this.subscriptionStatus,
+      this.contractSigned,
       this.invId});
 
   factory ActivityDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -121,6 +123,7 @@ class ActivityDetailsModel {
                 .map((x) => ConsultSubscription.fromJson(x))),
         subscriptionStatus:
             SubscriptionStatus.fromValue(json["plan_Status"] ?? ""),
+        contractSigned: json["contract_Signed"],
         invId: json["inv_ID"],
       );
 
@@ -157,6 +160,7 @@ class ActivityDetailsModel {
             ? []
             : List<dynamic>.from(consultSubscriptions!.map((x) => x.toJson())),
         "subscription_Status": subscriptionStatus?.name,
+        "contract_Signed": contractSigned,
       };
 }
 

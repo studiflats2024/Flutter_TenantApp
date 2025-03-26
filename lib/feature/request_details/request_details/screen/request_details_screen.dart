@@ -46,12 +46,14 @@ class RequestDetailsScreen extends StatelessWidget {
   }
 
   final DioApiManager dioApiManager = GetIt.I<DioApiManager>();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<RequestDetailsBloc>(
       create: (context) => RequestDetailsBloc(RequestDetailsRepository(
-        apartmentRequestsApiManger: ApartmentRequestsApiManger(dioApiManager, context),
-        paymentApiManger: PaymentApiManger(dioApiManager , context),
+        apartmentRequestsApiManger:
+            ApartmentRequestsApiManger(dioApiManager, context),
+        paymentApiManger: PaymentApiManger(dioApiManager, context),
       )),
       child: RequestDetailsScreenWithBloc(requestId(context)),
     );
@@ -64,6 +66,7 @@ class RequestDetailsScreen extends StatelessWidget {
 
 class RequestDetailsScreenWithBloc extends BaseStatefulScreenWidget {
   final String requestId;
+
   const RequestDetailsScreenWithBloc(this.requestId, {super.key});
 
   @override
@@ -164,6 +167,7 @@ class _RequestDetailsScreenScreenWithBloc
 
   RequestDetailsBloc get currentBloc =>
       BlocProvider.of<RequestDetailsBloc>(context);
+
   void _getRequestDetailsApiEvent() {
     currentBloc.add(GetRequestDetailsApiEvent(widget.requestId));
   }
@@ -322,7 +326,8 @@ class _RequestDetailsScreenScreenWithBloc
       _showNextInvoiceSheet();
     } else if (_apartmentRequestsApiModel!.checked &&
         _apartmentRequestsApiModel!.nextInvoiceModel == null) {
-      CheckInDetailsScreen.open(context, _apartmentRequestsApiModel!.requestId , _apartmentRequestsApiModel!.unitId)
+      CheckInDetailsScreen.open(context, _apartmentRequestsApiModel!.requestId,
+              _apartmentRequestsApiModel!.unitId)
           .then((value) => _getRequestDetailsApiEvent());
     } else {
       // CompleteYourBookingScreen.open(context, _apartmentRequestsApiModel!,
@@ -342,7 +347,8 @@ class _RequestDetailsScreenScreenWithBloc
   }
 
   void _checkInDetailsClicked() {
-    CheckInDetailsScreen.open(context, _apartmentRequestsApiModel!.requestId , _apartmentRequestsApiModel!.unitId);
+    CheckInDetailsScreen.open(context, _apartmentRequestsApiModel!.requestId,
+        _apartmentRequestsApiModel!.unitId);
   }
 
   void changeDateClicked() {
@@ -401,7 +407,8 @@ class _RequestDetailsScreenScreenWithBloc
   }
 
   void _openCheckoutDetailsScreen() {
-    CheckoutDetailsScreen.open(context, _apartmentRequestsApiModel!.requestId)
+    CheckoutDetailsScreen.open(context, _apartmentRequestsApiModel!.requestId,
+            _apartmentRequestsApiModel?.unitId ?? "")
         .then((value) => _getRequestDetailsApiEvent());
   }
 
@@ -454,5 +461,4 @@ class _RequestDetailsScreenScreenWithBloc
     //         _apartmentRequestsApiModel!.nextInvoiceModel!.isCashed),
     //     title: "");
   }
-
 }

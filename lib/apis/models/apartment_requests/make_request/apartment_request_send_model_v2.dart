@@ -11,6 +11,7 @@ class ApartmentRequestsSendModelV2 {
   DateTime? bookingStartDate;
   DateTime? bookingEndDate;
   String? bookingAgentCode;
+  String? bookingPromoCode;
   List<BookingGuest>? bookingGuests;
   String? bookingGuestProfession;
   String? bookingUnvWpName;
@@ -23,6 +24,7 @@ class ApartmentRequestsSendModelV2 {
     this.bookingStartDate,
     this.bookingEndDate,
     this.bookingAgentCode,
+    this.bookingPromoCode,
     this.bookingGuests,
     this.bookingGuestProfession,
     this.bookingUnvWpName,
@@ -38,6 +40,7 @@ class ApartmentRequestsSendModelV2 {
     bookingGuestProfession: json["booking_Guest_Profession"],
     bookingUnvWpName: json["booking_Unv_WP_Name"],
       fullApartment : json["full_Apartment"],
+    bookingPromoCode : json["promo_code"],
 
   );
 
@@ -50,6 +53,7 @@ class ApartmentRequestsSendModelV2 {
     "booking_Guest_Profession": bookingGuestProfession,
     "booking_Unv_WP_Name": bookingUnvWpName,
     "full_Apartment" : fullApartment,
+    "promo_code" : bookingPromoCode,
     if(bookingRoomId != null) "room_ID" : bookingRoomId,
     if(bookingBedId != null) "bed_ID" : bookingBedId,
 

@@ -21,6 +21,7 @@ import 'package:vivas/feature/checkout/checkout_details/widget/bank_details_widg
 import 'package:vivas/feature/checkout/checkout_details/widget/checkout_invoice_widget.dart';
 import 'package:vivas/feature/checkout/checkout_details/widget/checkout_item_widget.dart';
 import 'package:vivas/feature/checkout/checkout_details/widget/checkout_sheet_widget.dart';
+import 'package:vivas/feature/contact_support/screen/chat_screen.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
 import 'package:vivas/utils/empty_result/status_widget.dart';
@@ -35,10 +36,13 @@ class CheckoutDetailsScreen extends StatelessWidget {
 
   static const routeName = '/checkout-details-screen';
   static const argumentRequestId = 'requestId';
+  static const argumentApartmentID = 'apartmentID';
 
-  static Future<void> open(BuildContext context, String requestId) async {
+  static Future<void> open(
+      BuildContext context, String requestId, apartmentID) async {
     await Navigator.of(context).pushNamed(routeName, arguments: {
       argumentRequestId: requestId,
+      argumentApartmentID: apartmentID
     });
   }
 
@@ -48,20 +52,26 @@ class CheckoutDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<CheckoutDetailsBloc>(
       create: (context) => CheckoutDetailsBloc(CheckoutRepository(
-          checkoutApiManger: CheckoutApiManger(dioApiManager , context))),
-      child: CheckoutDetailsScreenWithBloc(requestId(context)),
+          checkoutApiManger: CheckoutApiManger(dioApiManager, context))),
+      child: CheckoutDetailsScreenWithBloc(
+          requestId(context), apartmentID(context)),
     );
   }
 
   String requestId(BuildContext context) =>
       (ModalRoute.of(context)!.settings.arguments
           as Map)[CheckoutDetailsScreen.argumentRequestId] as String;
+
+  String apartmentID(BuildContext context) =>
+      (ModalRoute.of(context)!.settings.arguments
+          as Map)[CheckoutDetailsScreen.argumentApartmentID] as String;
 }
 
 class CheckoutDetailsScreenWithBloc extends BaseStatefulScreenWidget {
-  final String requestId;
+  final String requestId, apartmentID;
 
-  const CheckoutDetailsScreenWithBloc(this.requestId, {super.key});
+  const CheckoutDetailsScreenWithBloc(this.requestId, this.apartmentID,
+      {super.key});
 
   @override
   BaseScreenState<CheckoutDetailsScreenWithBloc> baseScreenCreateState() {
@@ -231,7 +241,6 @@ class _CheckoutDetailsScreenWithBloc
             ),
           ),
         ),
-
         SubmitButtonWidget(
           title: translate(LocalizationKeys.continuee)!,
           onClicked: _onContinueClicked,
@@ -375,7 +384,10 @@ class _CheckoutDetailsScreenWithBloc
     }
   }
 
-  void _supportTeamClicked(BuildContext context) {}
+  void _supportTeamClicked(BuildContext context) async {
+    await ChatScreen.open(context,
+        unitUUID: widget.apartmentID, openWithReplacement: false);
+  }
 
   void _closeScreen() {
     Navigator.of(context).pop();

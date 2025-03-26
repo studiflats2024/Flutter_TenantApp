@@ -146,7 +146,6 @@ class _MakeRequestScreenWithBlocV2 extends BaseScreenState<MakeRequestScreenWith
             _sendRequestApiEvent();
           } else if (state is ChangeWhereStay) {
             _requestUiModel = state.requestUiModel;
-            print("request after say yes : ${_requestUiModel.roomsId}");
           } else if (state is SetDataOnRequest) {
             _requestUiModel = state.requestUiModel;
           } else if (state is ChangeNumberOfGuestState) {
@@ -717,6 +716,15 @@ class _MakeRequestScreenWithBlocV2 extends BaseScreenState<MakeRequestScreenWith
                     onSaved: _agencyBrokerCodeSaved,
                     textInputAction: TextInputAction.next,
                   ),
+                  SizedBox(height: 10.h),
+                  AppTextFormField(
+                    title: translate(LocalizationKeys.promoCode)!,
+                    requiredTitle: false,
+                    hintText: translate(LocalizationKeys.eg100),
+                    onSaved: _promoCode,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  SizedBox(height: 10.h),
                 ],
               ),
             ),
@@ -1031,6 +1039,10 @@ class _MakeRequestScreenWithBlocV2 extends BaseScreenState<MakeRequestScreenWith
 
   void _universityName(String? value) {
     _requestUiModel.universityName = value;
+  }
+
+  void _promoCode(String? value) {
+    _requestUiModel.promoCode = value;
   }
 
   void _guestNAmeSavedSaved(int index, String value) {

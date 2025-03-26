@@ -9,6 +9,8 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/plan_details.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_history.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/QrDetails/qr_details.dart';
+import 'package:vivas/feature/PlanSettings/Views/cancel_plans.dart';
+import 'package:vivas/feature/PlanSettings/plan_settinngs.dart';
 import 'package:vivas/feature/app_pages/screen/faq_list_screen.dart';
 import 'package:vivas/feature/app_pages/screen/privacy_privacy_screen.dart';
 import 'package:vivas/feature/app_pages/screen/terms_conditions_screen.dart';
@@ -49,6 +51,7 @@ import 'package:vivas/feature/contract/check_in_and_rental_details/screen/check_
 import 'package:vivas/feature/contract/sign_contract/screen/sign_contract_screen.dart';
 import 'package:vivas/feature/contract/sign_contract/screen/sign_contract_screen_v2.dart';
 import 'package:vivas/feature/contract/sign_contract/screen/sign_extend_contract.dart';
+import 'package:vivas/feature/contract/sign_contract/screen/sign_member_contract.dart';
 import 'package:vivas/feature/home/screen/apartment_qr_code_details.dart';
 import 'package:vivas/feature/invoices/screen/invoices_details_screen.dart';
 import 'package:vivas/feature/invoices/screen/invoices_screen.dart';
@@ -182,12 +185,15 @@ class AppRoute {
     MyPlan.routeName: (ctx) => MyPlan(),
     HistoryInviteFriends.routeName: (ctx) => HistoryInviteFriends(),
     ClubActivity.routeName: (ctx) => ClubActivity(),
-    MyActivities.routeName: (ctx) =>  MyActivities(),
+    MyActivities.routeName: (ctx) => MyActivities(),
     ActivityDetails.routeName: (ctx) => ActivityDetails(),
     CommunityQrDetails.routeName: (ctx) => CommunityQrDetails(),
     WishlistScreen.routeName: (ctx) => WishlistScreen(),
     PlanDetails.routeName: (ctx) => PlanDetails(),
     PaySubscription.routeName: (ctx) => PaySubscription(),
-    PlanHistory.routeName: (ctx) => PlanHistory()
+    PlanHistory.routeName: (ctx) => PlanHistory(),
+    SignMemberContract.routeName: (ctx) => SignMemberContract(),
+    PlanSettings.routeName: (ctx) => PlanSettings(),
+    CancelPlans.routeName: (ctx) => CancelPlans(),
   };
 }

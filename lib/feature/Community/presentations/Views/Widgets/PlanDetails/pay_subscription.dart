@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/apis/_base/dio_api_manager.dart';
 import 'package:vivas/apis/managers/payment_api_manger.dart';
+import 'package:vivas/feature/contract/sign_contract/screen/sign_member_contract.dart';
 import 'package:vivas/feature/payment/bloc/payment_bloc.dart';
 import 'package:vivas/feature/payment/bloc/payment_repository.dart';
 import 'package:vivas/feature/widgets/payment_widget/payment_url_widget.dart';
@@ -99,7 +100,8 @@ class _PaymentScreenScreenWithBloc
           } else if (state is PaymentUrlLoadedState) {
             paymentUrl = state.paymentUrl;
           } else if (state is PaymentPaidSuccessState) {
-            Navigator.pop(context);
+
+           SignMemberContract.open(context, true,);
           }
         },
         child: _detailsWidget(),

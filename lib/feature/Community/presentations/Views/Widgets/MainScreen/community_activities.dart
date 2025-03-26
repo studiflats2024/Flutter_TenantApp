@@ -233,23 +233,26 @@ class CommunityActivities extends BaseStatelessWidget {
                               )),
                         ],
                       ),
-                      Row(
-                        children: [
-                          SvgPicture.asset(AppAssetPaths.seatIcon),
-                          SizedBox(
-                            width: SizeManager.sizeSp8,
-                          ),
-                          TextApp(
-                            multiLang: false,
-                            text:
-                                "${activityItem.activitySeats} ${translate(LocalizationKeys.seats)}",
-                            style: textTheme.bodyMedium?.copyWith(
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.textNatural700,
+                      Visibility(
+                        visible: activityItem.activityType != ActivitiesType.consultant,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(AppAssetPaths.seatIcon),
+                            SizedBox(
+                              width: SizeManager.sizeSp8,
                             ),
-                          )
-                        ],
+                            TextApp(
+                              multiLang: false,
+                              text:
+                                  "${activityItem.activitySeats} ${translate(LocalizationKeys.seats)}",
+                              style: textTheme.bodyMedium?.copyWith(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.textNatural700,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   ),

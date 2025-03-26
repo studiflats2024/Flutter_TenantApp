@@ -346,20 +346,21 @@ class _PlanDetailsWithBloc extends BaseScreenState<PlanDetailsWithBloc> {
           builder: (context, state) {
             return SubmitButtonWidget(
                 title: translate(LocalizationKeys.subscription) ?? "",
-                buttonColor: isGuest ? null:(planDetailsModel?.hasPlan ?? true)
-                    ? AppColors.buttonGrey
-                    : null,
+                buttonColor: isGuest ? null : !(planDetailsModel?.hasPlan ?? true) || (planDetailsModel?.canUpgrade ?? false)
+                    ? null
+                    : AppColors.buttonGrey,
                 onClicked: () {
                   if (isGuest) {
                     AppBottomSheet.showLoginOrRegisterDialog(context);
                   } else {
-                    if (!(planDetailsModel?.hasPlan ?? true)) {
+                    if (!(planDetailsModel?.hasPlan ?? true) || (planDetailsModel?.canUpgrade ?? false)) {
                       currentBloc.add(
                         SubscribeEvent(widget.planID),
                       );
                     }
                   }
-                });
+                },
+            );
           },
         ),
       ),

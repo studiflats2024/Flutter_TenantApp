@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:vivas/apis/_base/dio_api_manager.dart';
 import 'package:vivas/apis/api_keys.dart';
 import 'package:vivas/apis/errors/error_api_model.dart';
 import 'package:vivas/apis/models/contract/check_in_details/check_in_details_response.dart';
 import 'package:vivas/apis/models/contract/check_in_details/get_check_in_details_send_model.dart';
+import 'package:vivas/apis/models/contract/get_contract/contract_member_response_model.dart';
 import 'package:vivas/apis/models/contract/get_contract/get_contract_response.dart';
 import 'package:vivas/apis/models/contract/get_contract/get_contract_response_v2.dart';
 import 'package:vivas/apis/models/contract/get_contract/get_contract_send_model.dart';
@@ -13,10 +16,12 @@ import 'package:vivas/apis/models/contract/sign_contract/sign_contract_send_mode
 import 'package:vivas/apis/models/contract/sign_contract/sign_contract_send_model_v2.dart';
 import 'package:vivas/apis/models/contract/sign_contract/sign_contract_successfully_response.dart';
 import 'package:vivas/apis/models/contract/sign_contract/sign_extend_contract_send_model.dart';
+import 'package:vivas/apis/models/contract/sign_contract/sign_member_contract_send_model.dart';
 
 class ContractApiManger {
   final DioApiManager dioApiManager;
   final BuildContext context;
+
   ContractApiManger(this.dioApiManager, this.context);
 
   Future<void> getContractListApi(
@@ -31,7 +36,7 @@ class ContractApiManger {
       GetContractResponse wrapper = GetContractResponse.fromJson(extractedData);
       success(wrapper);
     }).catchError((error) {
-      fail(ErrorApiModel.identifyError(error: error , context:  context));
+      fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
 
@@ -40,16 +45,18 @@ class ContractApiManger {
       void Function(ContractModel) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
-        .get(ApiKeys.getContractV2, queryParameters: getContractSendModel.toMap())
+        .get(ApiKeys.getContractV2,
+            queryParameters: getContractSendModel.toMap())
         .then((response) async {
       Map<String, dynamic> extractedData =
-      response.data as Map<String, dynamic>;
+          response.data as Map<String, dynamic>;
       ContractModel wrapper = ContractModel.fromJson(extractedData);
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
+
   Future<void> getExtendContractApi(
       GetExtendContractSendModel model,
       void Function(ContractModel) success,
@@ -58,7 +65,7 @@ class ContractApiManger {
         .get(ApiKeys.getExtendContract, queryParameters: model.toMap())
         .then((response) async {
       Map<String, dynamic> extractedData =
-      response.data as Map<String, dynamic>;
+          response.data as Map<String, dynamic>;
       ContractModel wrapper = ContractModel.fromJson(extractedData);
       success(wrapper);
     }).catchError((error) {
@@ -90,15 +97,16 @@ class ContractApiManger {
       void Function(SignContractSuccessfullyResponse) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
-        .post(ApiKeys.signContractV2,
+        .post(
+      ApiKeys.signContractV2,
       data: await signContractSendModel.mapSignatureImage(),
-        //queryParameters: signContractSendModel.toMap()
-      )
+      //queryParameters: signContractSendModel.toMap()
+    )
         .then((response) async {
       Map<String, dynamic> extractedData =
-      response.data as Map<String, dynamic>;
+          response.data as Map<String, dynamic>;
       SignContractSuccessfullyResponse wrapper =
-      SignContractSuccessfullyResponse.fromJson(extractedData);
+          SignContractSuccessfullyResponse.fromJson(extractedData);
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(error: error, context: context));
@@ -111,14 +119,49 @@ class ContractApiManger {
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio
         .post(ApiKeys.signExtendContract,
-      data: await signContractSendModel.mapSignatureImage(),
-        queryParameters: signContractSendModel.toMap()
-      )
+            data: await signContractSendModel.mapSignatureImage(),
+            queryParameters: signContractSendModel.toMap())
         .then((response) async {
       Map<String, dynamic> extractedData =
-      response.data as Map<String, dynamic>;
+          response.data as Map<String, dynamic>;
       SignContractSuccessfullyResponse wrapper =
-      SignContractSuccessfullyResponse.fromJson(extractedData);
+          SignContractSuccessfullyResponse.fromJson(extractedData);
+      success(wrapper);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(error: error, context: context));
+    });
+  }
+
+  Future<void> getMemberContractApi(
+      void Function(List<ContractMemberResponseModel>) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio
+        .get(ApiKeys.getMemberContract)
+        .then((response) async {
+      List<dynamic> extractedData =
+          response.data as List<dynamic>;
+      List<ContractMemberResponseModel> wrapper =
+          contractMemberResponseModelFromJson(jsonEncode(extractedData));
+      success(wrapper);
+    }).catchError((error) {
+      fail(ErrorApiModel.identifyError(error: error, context: context));
+    });
+  }
+
+  Future<void> signMemberContractApi(
+      SignMemberContractSendModel signContractSendModel,
+      void Function(SignContractSuccessfullyResponse) success,
+      void Function(ErrorApiModel) fail) async {
+    await dioApiManager.dio
+        .post(
+      ApiKeys.signMemberContract,
+      data: await signContractSendModel.mapSignatureImage(),
+    )
+        .then((response) async {
+      Map<String, dynamic> extractedData =
+          response.data as Map<String, dynamic>;
+      SignContractSuccessfullyResponse wrapper =
+          SignContractSuccessfullyResponse.fromJson(extractedData);
       success(wrapper);
     }).catchError((error) {
       fail(ErrorApiModel.identifyError(error: error, context: context));

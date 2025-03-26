@@ -28,26 +28,27 @@ class PlanDetailsModel {
   String? subscriptionStatus;
   String? paymentInvoiceId;
   bool? hasPlan;
+  bool? canUpgrade;
 
-  PlanDetailsModel({
-    this.id,
-    this.planName,
-    this.planType,
-    this.planDuration,
-    this.invitationNOs,
-    this.planPrice,
-    this.planDiscount,
-    this.planFianlPrice,
-    this.planFeaturesJson,
-    this.planFeatures,
-    this.planDurationInMonths,
-    this.isTrial,
-    this.startDate,
-    this.endDate,
-    this.paymentInvoiceId,
-    this.subscriptionStatus,
-    this.hasPlan,
-  });
+  PlanDetailsModel(
+      {this.id,
+      this.planName,
+      this.planType,
+      this.planDuration,
+      this.invitationNOs,
+      this.planPrice,
+      this.planDiscount,
+      this.planFianlPrice,
+      this.planFeaturesJson,
+      this.planFeatures,
+      this.planDurationInMonths,
+      this.isTrial,
+      this.startDate,
+      this.endDate,
+      this.paymentInvoiceId,
+      this.subscriptionStatus,
+      this.hasPlan,
+      this.canUpgrade});
 
   factory PlanDetailsModel.fromJson(Map<String, dynamic> json) =>
       PlanDetailsModel(
@@ -69,7 +70,9 @@ class PlanDetailsModel {
           endDate: json["end_Date"],
           subscriptionStatus: json["subscription_Status"],
           paymentInvoiceId: json["payment_Invoice_ID"],
-          hasPlan: json["has_Plan"]);
+          hasPlan: json["has_Plan"],
+          canUpgrade: json["can_Upgrade"],
+      );
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -90,5 +93,6 @@ class PlanDetailsModel {
         "end_Date": endDate,
         "subscription_Status": subscriptionStatus,
         "payment_Invoice_ID": paymentInvoiceId,
+        "can_Upgrade": canUpgrade
       };
 }

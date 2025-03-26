@@ -82,16 +82,17 @@ class MakeRequestRepository implements BaseMakeRequestRepository {
     }
     await apartmentRequestsApiManger.createRequestsApiV2(
         ApartmentRequestsSendModelV2(
-          bookingApartmentId: requestUiModel.aptUUID,
-          bookingRoomId: requestUiModel.roomID,
-          bookingBedId: requestUiModel.bedID,
-          bookingStartDate: requestUiModel.startDate!,
-          bookingEndDate: requestUiModel.endDate!,
           bookingGuests: guests,
-          bookingGuestProfession: requestUiModel.role,
-          bookingAgentCode: requestUiModel.brokerCode ?? "",
-          bookingUnvWpName: requestUiModel.universityName!,
           fullApartment: isSelectedFull,
+          bookingBedId: requestUiModel.bedID,
+          bookingRoomId: requestUiModel.roomID,
+          bookingEndDate: requestUiModel.endDate!,
+          bookingPromoCode: requestUiModel.promoCode ?? "",
+          bookingApartmentId: requestUiModel.aptUUID,
+          bookingStartDate: requestUiModel.startDate!,
+          bookingGuestProfession: requestUiModel.role,
+          bookingUnvWpName: requestUiModel.universityName!,
+          bookingAgentCode: requestUiModel.brokerCode ?? "",
         ), (makeRequestResponse) {
       makeRequestState = SendRequestSuccessfullyState(
           makeRequestResponse.message, makeRequestResponse.requestId ?? "");

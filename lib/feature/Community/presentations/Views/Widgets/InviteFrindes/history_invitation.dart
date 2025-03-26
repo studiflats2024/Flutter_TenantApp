@@ -297,13 +297,15 @@ class _HistoryInviteFriendsWithBloc
                                 child: InviteAgain(currentBloc, model)),
                           );
                         } else if (value == "reminder") {
-                          currentBloc.add(InviteFriendEvent(
-                              InviteFriendSendModel(
-                                  name: model.name ?? "",
-                                  email: model.email ?? "",
-                                  phone: model.phone ?? "",
-                                  invitationDate: model.date ?? DateTime.now(),
-                                  isReminder: true)));
+                          currentBloc
+                              .add(InviteFriendEvent(InviteFriendSendModel(
+                            name: model.name ?? "",
+                            email: model.email ?? "",
+                            phone: model.phone ?? "",
+                            invitationDate: model.date ?? DateTime.now(),
+                            isReminder: true,
+                            id: model.inviteId,
+                          )));
                         }
                       },
                       shape: RoundedRectangleBorder(

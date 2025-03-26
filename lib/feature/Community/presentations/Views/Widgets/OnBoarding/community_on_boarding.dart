@@ -203,8 +203,7 @@ class AboutCommunity extends BaseStatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: 440.h,
-              width: 400.w,
+              height: 440.r,
               child: PageView.builder(
                   controller: controller,
                   itemCount: onBoardingList.length,
@@ -355,7 +354,6 @@ class AboutCommunity extends BaseStatelessWidget {
           right: 0,
           left: 0,
           child: Container(
-            height: 160.r,
             decoration: BoxDecoration(
               color: AppColors.textWhite,
               borderRadius: BorderRadius.all(
@@ -364,6 +362,7 @@ class AboutCommunity extends BaseStatelessWidget {
             ),
             padding: EdgeInsets.symmetric(
               horizontal: SizeManager.sizeSp16,
+              vertical: SizeManager.sizeSp16,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

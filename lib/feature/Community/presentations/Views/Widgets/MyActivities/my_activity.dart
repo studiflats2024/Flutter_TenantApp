@@ -531,7 +531,7 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
                       width: SizeManager.sizeSp8,
                     ),
                     SizedBox(
-                      width: 260.r,
+                      width: 250.r,
                       child: RichText(
                         maxLines: 2,
                         text: TextSpan(
@@ -558,6 +558,48 @@ class _MyActivitiesPage extends BaseScreenState<MyActivitiesPage>
                         ),
                       ),
                     ),
+                    PopupMenuButton(
+                      constraints:
+                      BoxConstraints(minWidth: 240.r),
+                      padding: EdgeInsets.zero,
+                      position: PopupMenuPosition.under,
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          height: SizeManager.sizeSp32,
+                          value: "un_enroll",
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextApp(
+                                multiLang: true,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                                text: LocalizationKeys.unEnroll,
+                              ),
+                              SvgPicture.asset(
+                                AppAssetPaths.unEnrollIcon,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                      onSelected: (value) {
+                        if (value == "un_enroll") {
+                          widget.myActivityBloc.add(
+                              UnEnrollEvent(
+                                  model.itemId, index));
+                        }
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                              SizeManager.circularRadius10)),
+                      child: SvgPicture.asset(
+                        AppAssetPaths.menuIcon,
+                        color: AppColors.textWhite,
+                        fit: BoxFit.none,
+                      ),
+                    )
                   ],
                 ),
               ),

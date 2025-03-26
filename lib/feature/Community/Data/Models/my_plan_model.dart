@@ -28,6 +28,9 @@ class MyPlanModel {
   String? startDate;
   String? endDate;
   SubscriptionStatus? subscriptionStatus;
+  bool? contractSigned;
+  String? contractPath;
+  String? paymentMethod;
   String? paymentInvoiceId;
 
   DateTimeRange? dateTimeRange;
@@ -48,7 +51,10 @@ class MyPlanModel {
     this.subscriptionStatus,
     this.paymentInvoiceId,
     this.dateTimeRange,
+    this.contractSigned,
+    this.contractPath,
     this.planDurationInMonths,
+    this.paymentMethod
   });
 
   factory MyPlanModel.fromJson(Map<String, dynamic> json) => MyPlanModel(
@@ -70,6 +76,9 @@ class MyPlanModel {
             SubscriptionStatus.fromValue(json["subscription_Status"]),
         paymentInvoiceId: json["payment_Invoice_ID"],
         planDurationInMonths: json["planDurationInMonths"],
+        contractSigned: json["contract_Signed"],
+        contractPath: json["contract_Path"],
+        paymentMethod: json["payment_Method"],
         dateTimeRange: json["end_Date"] != null && json["end_Date"] != ''
             ? DateTimeRange(
                 start: DateTime.now(),
@@ -97,6 +106,8 @@ class MyPlanModel {
         "end_Date": endDate,
         "subscription_Status": subscriptionStatus,
         "payment_Invoice_ID": paymentInvoiceId,
-        "planDurationInMonths": planDurationInMonths
+        "planDurationInMonths": planDurationInMonths,
+        "contract_Path": contractPath,
+        "contract_Signed": contractSigned
       };
 }

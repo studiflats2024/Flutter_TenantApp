@@ -147,4 +147,7 @@ class AppAssetPaths {
   static const reInviteImage = 'assets/icons/community/re_invite_image.svg';
   static const editRateIcon = 'assets/icons/community/edit_rate.svg';
   static const unEnrollIcon = 'assets/icons/community/un_enroll.svg';
+  static const autoRenewalIcon = 'assets/icons/community/auto_renewal_icon.svg';
+  static const cancelPlanIcon = 'assets/icons/community/cancel_plan_icon.svg';
+  static const cancelPlanWarningIcon = 'assets/icons/community/cancel_warning_icon.svg';
 }

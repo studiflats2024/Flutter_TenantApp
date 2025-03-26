@@ -19,6 +19,7 @@ import 'package:vivas/feature/Community/presentations/ViewModel/Plans/PlanDetail
 import 'package:vivas/feature/Community/presentations/Views/Widgets/AllPlans/all_plans.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/InviteFrindes/history_invitation.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_invoice_details.dart';
+import 'package:vivas/feature/contract/sign_contract/screen/sign_member_contract.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/feature/widgets/text_field/app_text_form_filed_widget.dart';
@@ -391,7 +392,7 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                           },
                         ),
                       );
-                    } if (planModel.subscriptionStatus ==
+                    }else if (planModel.subscriptionStatus ==
                         SubscriptionStatus.expired) {
                       ArtSweetAlert.show(
                         context: context,
@@ -428,7 +429,32 @@ class _InviteFriendWithBloc extends BaseScreenState<InviteFriendWithBloc> {
                           ],
                         ),
                       );
-                    }else {
+                    }else if (!(planModel.contractSigned ??
+                        false)) {
+                      ArtSweetAlert.show(
+                        context: context,
+                        artDialogArgs: ArtDialogArgs(
+                          type: ArtSweetAlertType.warning,
+                          text: translate(
+                              LocalizationKeys.signContractWarning) ??
+                              '',
+                          showCancelBtn: true,
+                          cancelButtonText:
+                          translate(LocalizationKeys.signItLater) ??
+                              "",
+                          cancelButtonColor: AppColors.divider,
+                          confirmButtonColor: AppColors.colorPrimary,
+                          confirmButtonText:
+                          translate(LocalizationKeys.signContract) ??
+                              "",
+                          onConfirm: () async {
+                            await SignMemberContract.open(context, false);
+                            Navigator.pop(context);
+                            currentBloc.add(GetMyPlanEvent());
+                          },
+                        ),
+                      );
+                    } else {
                       if ((inviteForm.currentState?.validate() ?? false) &&
                           invitesNumber != 0) {
                         currentBloc.add(

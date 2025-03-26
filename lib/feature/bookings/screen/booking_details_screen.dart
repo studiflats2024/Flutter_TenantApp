@@ -245,8 +245,7 @@ class _BookingDetailsScreenState
                         TextSpan(
                           children: [
                             TextSpan(
-                              text: widget.bookingDetailsModel.fullBooking ==
-                                      true
+                              text: widget.bookingDetailsModel.showFullPrices
                                   ? "${translate(LocalizationKeys.rentPrice)}"
                                   : '${translate(LocalizationKeys.room)} ${widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].roomName ?? ""} ',
                               style: TextStyle(
@@ -257,8 +256,7 @@ class _BookingDetailsScreenState
                               ),
                             ),
                             TextSpan(
-                              text: widget.bookingDetailsModel.fullBooking ==
-                                      true
+                              text: widget.bookingDetailsModel.showFullPrices
                                   ? ""
                                   : "(${widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].bedName ?? ""})",
                               style: TextStyle(
@@ -276,8 +274,7 @@ class _BookingDetailsScreenState
                         TextSpan(
                           children: [
                             TextSpan(
-                              text: widget.bookingDetailsModel.fullBooking ==
-                                      true
+                              text: widget.bookingDetailsModel.showFullPrices
                                   ? "€${(widget.bookingDetailsModel.fullRent ?? 0.0).toStringAsFixed(2)} / "
                                   : '€${(widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].bedPrice ?? 0.00).toStringAsFixed(2)}/',
                               style: TextStyle(
@@ -359,7 +356,7 @@ class _BookingDetailsScreenState
                         height: 4.h,
                       ),
                       Text(
-                        widget.bookingDetailsModel.fullBooking == true
+                        widget.bookingDetailsModel.showFullPrices
                             ? "€${(widget.bookingDetailsModel.fullService ?? 0.0).toStringAsFixed(2)}"
                             : '€ ${(widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].serviceFee ?? 0.0).toStringAsFixed(2)}',
                         textAlign: TextAlign.center,
@@ -392,7 +389,7 @@ class _BookingDetailsScreenState
                         height: 4.h,
                       ),
                       Text(
-                        widget.bookingDetailsModel.fullBooking == true
+                        widget.bookingDetailsModel.showFullPrices
                             ? "€${(widget.bookingDetailsModel.fullSecurity ?? 0.0).toStringAsFixed(2)}"
                             : '€ ${(widget.bookingDetailsModel.guests?[widget.bookingDetailsModel.guestIndex].securityDeposit ?? 0.00).toStringAsFixed(2)}',
                         textAlign: TextAlign.center,

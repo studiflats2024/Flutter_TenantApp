@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
@@ -23,6 +24,7 @@ import 'package:vivas/res/app_colors.dart';
 import 'package:vivas/res/font_size.dart';
 import 'package:vivas/utils/extensions/extension_string.dart';
 import 'package:vivas/utils/feedback/feedback_message.dart';
+import 'package:vivas/utils/format/app_date_format.dart';
 
 import 'package:vivas/utils/locale/app_localization_keys.dart';
 import 'package:vivas/utils/size_manager.dart';
@@ -290,13 +292,19 @@ class InvoiceCardWithNotches extends BaseStatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildColumn("Payment Date",
-                              invoiceClubDetailsModel.paymentDate ?? ""),
+                          _buildColumn(
+                              "Payment Date",
+                              invoiceClubDetailsModel.paymentStatus == "Pending"
+                                  ? DateFormat.yMMMd().format(
+                                      DateTime.now())
+                                  : invoiceClubDetailsModel.paymentDate ?? ""),
                           SizedBox(
                             height: SizeManager.sizeSp8,
                           ),
-                          _buildColumn("Start Date",
-                              invoiceClubDetailsModel.paymentDate ?? ""),
+                          _buildColumn(
+                              "Start Date",
+                              invoiceClubDetailsModel.subscriptionStartDate ??
+                                  ""),
                         ],
                       ),
                       Column(
@@ -480,15 +488,19 @@ class InvoiceCardWithNotches extends BaseStatelessWidget {
                                   ),
                                   onPressed: () async {
                                     // Add your download invoice logic here
-                                    if ((invoiceClubDetailsModel.url?.isLink ??
-                                            false) &&
-                                        await canLaunchUrl(Uri.parse(
-                                            invoiceClubDetailsModel.url ??
-                                                ""))) {
-                                      await launchUrl(Uri.parse(
-                                          invoiceClubDetailsModel.url ?? ""));
-                                    } else {
-                                      showFeedbackMessage("Download Failed");
+                                    if (invoiceClubDetailsModel.url != "" &&
+                                        invoiceClubDetailsModel.url != "") {
+                                      if ((invoiceClubDetailsModel
+                                                  .url?.isLink ??
+                                              false) &&
+                                          await canLaunchUrl(Uri.parse(
+                                              invoiceClubDetailsModel.url ??
+                                                  ""))) {
+                                        await launchUrl(Uri.parse(
+                                            invoiceClubDetailsModel.url ?? ""));
+                                      } else {
+                                        showFeedbackMessage("Download Failed");
+                                      }
                                     }
                                   },
                                   icon: SvgPicture.asset(
@@ -508,29 +520,33 @@ class InvoiceCardWithNotches extends BaseStatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar:invoiceClubDetailsModel.paymentStatus == "Pending"
+      bottomNavigationBar: invoiceClubDetailsModel.paymentStatus == "Pending"
           ? SizedBox(
-        height: 110.r,
-        child: SubmitButtonWidget(
-            titleStyle: TextStyle(
-              color: checkTerms ? AppColors.textWhite : AppColors.textMainColor,
-            ),
-            buttonColor:
-                checkTerms ? AppColors.colorPrimary : AppColors.buttonGrey,
-            title: translate(LocalizationKeys.payNow) ?? "",
-            onClicked: () {
-              if (checkTerms) {
-                onClickPayNow();
-              } else {
-                ArtSweetAlert.show(
-                    context: context,
-                    artDialogArgs: ArtDialogArgs(
-                        type: ArtSweetAlertType.info,
-                        text:
-                            "To pay your Subscription , please read and confirm our terms and conditions."));
-              }
-            }),
-      ) : null,
+              height: 110.r,
+              child: SubmitButtonWidget(
+                  titleStyle: TextStyle(
+                    color: checkTerms
+                        ? AppColors.textWhite
+                        : AppColors.textMainColor,
+                  ),
+                  buttonColor: checkTerms
+                      ? AppColors.colorPrimary
+                      : AppColors.buttonGrey,
+                  title: translate(LocalizationKeys.payNow) ?? "",
+                  onClicked: () {
+                    if (checkTerms) {
+                      onClickPayNow();
+                    } else {
+                      ArtSweetAlert.show(
+                          context: context,
+                          artDialogArgs: ArtDialogArgs(
+                              type: ArtSweetAlertType.info,
+                              text:
+                                  "To pay your Subscription , please read and confirm our terms and conditions."));
+                    }
+                  }),
+            )
+          : null,
     );
   }
 

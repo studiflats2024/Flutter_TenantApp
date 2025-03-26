@@ -189,15 +189,17 @@ class RequestWidgetV2 extends BaseStatelessWidget {
             ],
           ),
         ),
-        (apartmentRequestsApiModel.isOffered ?? false) && status == "Pending"
-            ? AcceptRejectOfferWidget(
-                acceptOfferClickedCallBack: acceptOfferClickedCallBack,
-                rejectOfferClickedCallBack: rejectOfferClickedCallBack)
-            : SubmitButtonWidget(
-                hint: hintTextOfSubmitWidget,
-                title: actionBottomTitle,
-                buttonColor: colorOfSubmitWidget,
-                onClicked: actionClickedCallBack),
+        if (apartmentRequestsApiModel.canResumeBookingAsMainTenant) ...[
+          (apartmentRequestsApiModel.isOffered ?? false) && status == "Pending"
+              ? AcceptRejectOfferWidget(
+                  acceptOfferClickedCallBack: acceptOfferClickedCallBack,
+                  rejectOfferClickedCallBack: rejectOfferClickedCallBack)
+              : SubmitButtonWidget(
+                  hint: hintTextOfSubmitWidget,
+                  title: actionBottomTitle,
+                  buttonColor: colorOfSubmitWidget,
+                  onClicked: actionClickedCallBack)
+        ],
       ],
     );
   }

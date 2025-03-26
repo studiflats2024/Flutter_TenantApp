@@ -8,6 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'package:vivas/apis/managers/profile_api_manger.dart';
 import 'package:vivas/apis/models/profile/profile_info_api_model.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/QrDetails/qr_details.dart';
+import 'package:vivas/feature/PlanSettings/plan_settinngs.dart';
 import 'package:vivas/feature/auth/login/screen/login_screen.dart';
 import 'package:vivas/feature/contact_support/screen/contact_support_screen.dart';
 import 'package:vivas/feature/invoices/screen/invoices_screen.dart';
@@ -151,6 +152,16 @@ class _ProfileScreenWithBloc extends BaseScreenState<ProfileScreenWithBloc> {
                               context,
                               false,
                               true
+                            )
+                          }),
+                  _buildProfileSection(
+                      assetPath: AppAssetPaths.myPlanIcon,
+
+                      title: translate(LocalizationKeys.planSettings)!,
+                      onActionClicked: () => {
+                            PlanSettings.open(
+                              context,
+                              false
                             )
                           }),
                   _buildProfileSection(
@@ -336,7 +347,7 @@ class _ProfileScreenWithBloc extends BaseScreenState<ProfileScreenWithBloc> {
         children: [
           Row(
             children: [
-              SvgPicture.asset(assetPath),
+              SvgPicture.asset(assetPath, color: AppColors.textMainColor,),
               SizedBox(width: 16.h),
               Text(title,
                   style: themeData.textTheme.labelMedium?.copyWith(

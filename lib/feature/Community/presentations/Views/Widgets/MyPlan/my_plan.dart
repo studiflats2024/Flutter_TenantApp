@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vivas/_core/widgets/base_stateful_screen_widget.dart';
 import 'package:vivas/_core/widgets/base_stateless_widget.dart';
 import 'package:vivas/apis/_base/dio_api_manager.dart';
@@ -24,6 +25,7 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/MyPlan/contd
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanDetails/pay_subscription.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_history.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_invoice_details.dart';
+import 'package:vivas/feature/contract/sign_contract/screen/sign_member_contract.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
 import 'package:vivas/feature/widgets/text_app.dart';
@@ -165,49 +167,92 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          width: 40.r,
-                          height: 40.r,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: SizeManager.sizeSp4,
-                              vertical: SizeManager.sizeSp8),
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(SizeManager.circularRadius10),
-                            color: getColor(planModel).withOpacity(0.1),
-                          ),
-                          child: SvgPicture.asset(
-                            getAsset(planModel),
-                          ),
-                        ),
-                        SizedBox(
-                          width: SizeManager.sizeSp12,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
-                            TextApp(
-                              text: (planModel.isTrial ?? false)
-                                  ? "Free Trial Plan"
-                                  : planModel.planName ?? "",
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.sp,
+                            Container(
+                              width: 40.r,
+                              height: 40.r,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: SizeManager.sizeSp4,
+                                  vertical: SizeManager.sizeSp8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                    SizeManager.circularRadius10),
+                                color: getColor(planModel).withOpacity(0.1),
+                              ),
+                              child: SvgPicture.asset(
+                                getAsset(planModel),
+                              ),
                             ),
                             SizedBox(
-                              height: SizeManager.sizeSp4,
+                              width: SizeManager.sizeSp12,
                             ),
-                            if (planModel.isTrial ?? false) ...[
-                              TextApp(
-                                text: (planModel.isTrial ?? false)
-                                    ? "Enjoy exclusive access "
-                                    : "${planModel.planFianlPrice}",
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                                color: AppColors.textNatural700,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                TextApp(
+                                  text: (planModel.isTrial ?? false)
+                                      ? "Free Trial Plan"
+                                      : planModel.planName ?? "",
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16.sp,
+                                ),
+                                SizedBox(
+                                  height: SizeManager.sizeSp4,
+                                ),
+                                if (planModel.isTrial ?? false) ...[
+                                  TextApp(
+                                    text: (planModel.isTrial ?? false)
+                                        ? "Enjoy exclusive access "
+                                        : "${planModel.planFianlPrice}",
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.textNatural700,
+                                  ),
+                                ] else
+                                  ...[],
+                              ],
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            TextApp(
+                              text: planModel.paymentMethod ?? "",
+                              color: AppColors.colorPrimary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: FontSize.fontSize14,
+                            ),
+                            SizedBox(
+                              height: SizeManager.sizeSp8,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: planModel.subscriptionStatus ==
+                                        SubscriptionStatus.waitingPayment
+                                    ? AppColors.cardBackgroundActivityCancelled
+                                    : AppColors.cardBackgroundEvent,
+                                borderRadius: BorderRadius.all(
+                                    SizeManager.circularRadius8),
                               ),
-                            ] else
-                              ...[],
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 4,
+                                horizontal: 8,
+                              ),
+                              child: TextApp(
+                                text: planModel.subscriptionStatus ==
+                                        SubscriptionStatus.waitingPayment
+                                    ? "UnPaid"
+                                    : "Paid",
+                                color: planModel.subscriptionStatus ==
+                                        SubscriptionStatus.waitingPayment
+                                    ? AppColors.textActivityCancelled
+                                    : AppColors.cardBorderGreen,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -218,7 +263,7 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                     if (planModel.isTrial ?? false) ...[
                       TextApp(
                         text:
-                            "You are currently enjoying a free trial month of your subscription.🎉",
+                            "You are currently enjoying a free trial duration of your subscription.🎉",
                         textAlign: TextAlign.center,
                         fontWeight: FontWeight.w400,
                         fontSize: 14.sp,
@@ -297,40 +342,72 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
       ),
       bottomNavigationBar: (planModel.subscriptionStatus ==
                   SubscriptionStatus.active &&
-              DateFormat("MM/dd/yyyy")
-                  .parse(planModel.endDate ?? "")
-                  .isBefore(DateTime.now()) &&
-              (planModel.dateTimeRange?.duration.inDays ?? 0) > 7)
-          ? null
-          : SizedBox(
+              !(planModel.isTrial ?? false) &&
+              !(planModel.contractSigned ?? false))
+          ? SizedBox(
               height: 110.r,
               child: SubmitButtonWidget(
-                  title: translate((planModel.subscriptionStatus ==
-                                  SubscriptionStatus.waitingPayment &&
-                              !(planModel.isTrial ?? false))
-                          ? LocalizationKeys.payNow
-                          : LocalizationKeys.upgradeNow) ??
-                      "",
-                  onClicked: () {
+                  withoutShape: true,
+                  title: translate(LocalizationKeys.signContract) ?? "",
+                  onClicked: () async {
                     if (planModel.subscriptionStatus ==
-                            SubscriptionStatus.waitingPayment &&
-                        !(planModel.isTrial ?? false)) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) {
-                            return CommunityInvoiceDetails(
-                                planModel.paymentInvoiceId ?? "");
-                          },
-                        ),
-                      ).then((v) {
-                        return currentBloc.add(GetMyPlanEvent());
-                      });
+                        SubscriptionStatus.active) {
+                      await SignMemberContract.open(context, false);
+                      currentBloc.add(GetMyPlanEvent());
                     } else {
                       Navigator.push(context, MaterialPageRoute(builder: (_) {
                         return ViewPlans();
                       }));
                     }
-                  })),
+                  }))
+          : (planModel.subscriptionStatus == SubscriptionStatus.active &&
+                      (planModel.contractSigned ?? false) &&
+                      !(planModel.isTrial ?? false)) &&
+                  (planModel.dateTimeRange?.duration.inDays ?? 0) > 7
+              ? SizedBox(
+                  height: 110.r,
+                  child: SubmitButtonWidget(
+                    withoutShape: true,
+                    title: translate(LocalizationKeys.seeContract) ?? "",
+                    onClicked: () async {
+                      launchUrl(Uri.parse(planModel.contractPath ?? ""));
+                    },
+                  ),
+                )
+              : planModel.subscriptionStatus == SubscriptionStatus.active &&
+                      (planModel.dateTimeRange?.duration.inDays ?? 0) > 7
+                  ? null
+                  : SizedBox(
+                      height: 110.r,
+                      child: SubmitButtonWidget(
+                        withoutShape: true,
+                          title: translate((planModel.subscriptionStatus ==
+                                          SubscriptionStatus.waitingPayment &&
+                                      !(planModel.isTrial ?? false))
+                                  ? LocalizationKeys.payNow
+                                  : LocalizationKeys.upgradeNow) ??
+                              "",
+                          onClicked: () {
+                            if (planModel.subscriptionStatus ==
+                                    SubscriptionStatus.waitingPayment &&
+                                !(planModel.isTrial ?? false)) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) {
+                                    return CommunityInvoiceDetails(
+                                        planModel.paymentInvoiceId ?? "");
+                                  },
+                                ),
+                              ).then((v) {
+                                return currentBloc.add(GetMyPlanEvent());
+                              });
+                            } else {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (_) {
+                                return ViewPlans();
+                              }));
+                            }
+                          })),
     );
   }
 

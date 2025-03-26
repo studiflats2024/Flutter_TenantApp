@@ -17,6 +17,7 @@ class RequestUiModel extends Equatable {
   String? role;
   String aptUUID;
   String? brokerCode;
+  String? promoCode;
   String? purposeOfComingToGermany;
   String? universityName;
 
@@ -33,6 +34,7 @@ class RequestUiModel extends Equatable {
     this.invoiceType = 0,
     this.role,
     this.brokerCode,
+    this.promoCode,
     this.universityName,
     this.purposeOfComingToGermany,
   });

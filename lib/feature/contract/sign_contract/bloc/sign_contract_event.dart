@@ -34,6 +34,11 @@ class GetExtendContractEvent extends SignContractEvent {
   List<Object?> get props => [extendId];
 }
 
+class GetMemberContractEvent extends SignContractEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class SignContractApiEvent extends SignContractEvent {
   final String requestId;
   final String signatureImagePath;
@@ -63,6 +68,15 @@ class SignExtendContractApiEvent extends SignContractEvent {
 
   @override
   List<Object?> get props => [extendId, signatureImagePath];
+}
+
+class SignMemberContractApiEvent extends SignContractEvent {
+  final String signatureImagePath;
+
+  SignMemberContractApiEvent(this.signatureImagePath);
+
+  @override
+  List<Object?> get props => [signatureImagePath];
 }
 
 class ChangeTermsAndConditionsStatusEvent extends SignContractEvent {

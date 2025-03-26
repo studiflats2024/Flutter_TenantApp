@@ -23,6 +23,7 @@ import 'package:vivas/feature/Community/presentations/Views/Widgets/ActivityDeta
 import 'package:vivas/feature/Community/presentations/Views/Widgets/AllPlans/all_plans.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/MyActivities/my_activity.dart';
 import 'package:vivas/feature/Community/presentations/Views/Widgets/PlanHistory/plan_invoice_details.dart';
+import 'package:vivas/feature/contract/sign_contract/screen/sign_member_contract.dart';
 import 'package:vivas/feature/unit_details/widget/static_map_widget.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
 import 'package:vivas/feature/widgets/modal_sheet/app_bottom_sheet.dart';
@@ -625,7 +626,7 @@ class _ActivityDetailsWithBloc
                               artDialogArgs: ArtDialogArgs(
                                 type: ArtSweetAlertType.warning,
                                 text: translate(
-                                        LocalizationKeys.subscriptionWarning) ??
+                                        LocalizationKeys.unpaidSubscription) ??
                                     '',
                                 showCancelBtn: true,
                                 cancelButtonText:
@@ -685,6 +686,31 @@ class _ActivityDetailsWithBloc
                             );
                           } else if (activityDetailsModel.hasEnrolled ??
                               false) {
+                          } else if (!(activityDetailsModel.contractSigned ??
+                              false)) {
+                            ArtSweetAlert.show(
+                              context: context,
+                              artDialogArgs: ArtDialogArgs(
+                                type: ArtSweetAlertType.warning,
+                                text: translate(
+                                        LocalizationKeys.signContractWarning) ??
+                                    '',
+                                showCancelBtn: true,
+                                cancelButtonText:
+                                    translate(LocalizationKeys.signItLater) ??
+                                        "",
+                                confirmButtonColor: AppColors.colorPrimary,
+                                confirmButtonText:
+                                    translate(LocalizationKeys.signContract) ??
+                                        "",
+                                onConfirm: () async {
+                                  await SignMemberContract.open(context, false);
+                                  Navigator.pop(context);
+                                  currentBloc.add(GetActivityDetailsEvent(
+                                      widget.sendModel));
+                                },
+                              ),
+                            );
                           } else if (activityDetailsModel.activityType !=
                               ActivitiesType.consultant) {
                             currentBloc.add(

@@ -102,7 +102,7 @@ class _CountdownTimerState extends BaseScreenState<CountdownTimer> {
               fontSize: FontSize.fontSize14,
               color: AppColors.textMainColor,
               text:
-                  "Only ${days != 0 ? days : hours != 0 ? hours : minutes != 0 ? minutes : seconds} days left in your ${widget.planName}! ",
+                  "Only ${days != 0 ? days : hours != 0 ? hours : minutes != 0 ? minutes : seconds} ${days != 0 ? "days" : hours != 0 ? "hours" : minutes != 0 ? "minutes" : "seconds"} left in your ${widget.planName}! ",
             ),
             SizedBox(
               height: SizeManager.sizeSp24,

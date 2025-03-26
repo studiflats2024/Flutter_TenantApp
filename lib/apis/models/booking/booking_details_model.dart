@@ -297,6 +297,9 @@ class BookingDetailsModel {
 
   bool get canResumeBookingProcess => bookingStatus == "Approved";
 
+  bool get showFullPrices =>
+      (fullBooking == true || (bookingGuestsNo == 1 && roomId != ""));
+
   double get totalGuestsPaid {
     double total = 0.0;
     for (int i = 0; i < guests!.length; i++) {

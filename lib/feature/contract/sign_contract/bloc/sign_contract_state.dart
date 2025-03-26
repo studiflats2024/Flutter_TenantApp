@@ -34,6 +34,14 @@ class SignContractLoadedStateV2 extends SignContractState {
   List<Object?> get props => [contractResponse];
 }
 
+class SignMemberContractLoadedState extends SignContractState {
+  final ContractModel contractResponse;
+  SignMemberContractLoadedState(this.contractResponse);
+
+  @override
+  List<Object?> get props => [contractResponse];
+}
+
 class ContractSignedSuccessfullyState extends SignContractState {
   final SignContractSuccessfullyResponse response;
   ContractSignedSuccessfullyState(this.response);
@@ -41,6 +49,16 @@ class ContractSignedSuccessfullyState extends SignContractState {
   @override
   List<Object?> get props => [response];
 }
+
+class GetContractMemberSuccessfullyState extends SignContractState {
+  final List<ContractMemberResponseModel> response;
+
+  GetContractMemberSuccessfullyState(this.response);
+
+  @override
+  List<Object?> get props => [response];
+}
+
 
 class ContractTermsAndConditionsStatusChanged extends SignContractState {
   final bool acceptTermsAndConditions;
