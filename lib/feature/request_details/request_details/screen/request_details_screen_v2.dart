@@ -163,12 +163,16 @@ class _RequestDetailsScreenScreenWithBloc
                     ? automaticCancelClicked
                     : null,
                 //: cancelClicked,
-                changeDateClickedCallBack: state.bookingDetailsModel.canEdit
-                    ? changeDateClicked
-                    : null,
-                changeCheckInDetails: !state.bookingDetailsModel.readyToCheckout
-                    ? changeCheckInClicked
-                    : null,
+                changeDateClickedCallBack:
+                    state.bookingDetailsModel.canResumeBookingAsMainTenant &&
+                            state.bookingDetailsModel.canEdit
+                        ? changeDateClicked
+                        : null,
+                changeCheckInDetails:
+                    state.bookingDetailsModel.canResumeBookingAsMainTenant &&
+                            !state.bookingDetailsModel.readyToCheckout
+                        ? changeCheckInClicked
+                        : null,
                 checkInDetailsClickedCallBack: _checkInDetailsClicked,
                 massageUsClickedCallBack: _massageUsClicked,
                 showApartmentClickedCallBack: _showApartmentClicked,

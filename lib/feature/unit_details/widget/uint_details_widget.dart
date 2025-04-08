@@ -677,8 +677,9 @@ class _UintWidgetStateV2 extends BaseState<UintDetailsWidgetV2> {
                               ),
                             ),
                           ),
-                          if(widget.requestUiModel?.startDate != null &&
-                              widget.unitDetailsApiModel.haveUnAvailableBeds)...[
+                          if (widget.requestUiModel?.startDate != null &&
+                              widget
+                                  .unitDetailsApiModel.haveUnAvailableBeds) ...[
                             Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 8.0.w, vertical: 5.h),
@@ -745,13 +746,12 @@ class _UintWidgetStateV2 extends BaseState<UintDetailsWidgetV2> {
               ],
             ),
           ),
-
-            PositionedDirectional(
-              bottom: 0,
-              start: 0,
-              end: 0,
-              child: _requestButtonWidget(),
-            ),
+          PositionedDirectional(
+            bottom: 0,
+            start: 0,
+            end: 0,
+            child: _requestButtonWidget(),
+          ),
         ],
       ),
     );
@@ -760,7 +760,12 @@ class _UintWidgetStateV2 extends BaseState<UintDetailsWidgetV2> {
   Widget _requestButtonWidget() {
     return SubmitButtonWidget(
       title: translate(LocalizationKeys.requestApartment)!,
-      onClicked: widget.requestApartmentClicked,
+      buttonColor: (widget.unitDetailsApiModel.canMakeRequest ?? false)
+          ? null
+          : AppColors.buttonGrey,
+      onClicked: (widget.unitDetailsApiModel.canMakeRequest ?? false)
+          ? widget.requestApartmentClicked
+          : null,
     );
   }
 
