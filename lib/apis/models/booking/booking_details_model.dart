@@ -149,14 +149,15 @@ class BookingDetailsModel {
         return true;
       } else {
         Duration difference =
-            AppDateFormat.appDateFormApiParse(bookingCheckOut ?? "")
-                .difference(DateTime.now());
-        if (difference.inDays > 31 &&
+        AppDateFormat.appDateFormApiParse(bookingCheckOut ?? "")
+            .difference(DateTime.now());
+        if (difference.inDays <= 31 ||
             AppDateFormat.appDateFormApiParse(bookingCheckOut ?? "").month ==
                 DateTime.now().month) {
-          return false;
-        } else {
           return true;
+
+        } else {
+          return false;
         }
       }
     } else {
@@ -288,6 +289,7 @@ class BookingDetailsModel {
   bool get canCancel =>
       bookingStatus != "Cancelled" &&
       bookingStatus != "Rejected" &&
+      canResumeBookingAsMainTenant &&
       !paidSecurityDeposit;
 
   bool get canEdit => bookingStatus == "Pending";

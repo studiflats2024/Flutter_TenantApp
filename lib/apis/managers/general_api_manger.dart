@@ -17,16 +17,20 @@ class GeneralApiManger {
   final DioApiManager dioApiManager;
   late final bool isDowned;
   final BuildContext context;
-  GeneralApiManger(this.dioApiManager , this.context);
+
+  GeneralApiManger(this.dioApiManager, this.context);
+
   var preferencesManager = GetIt.I<PreferencesManager>();
+
   Future<void> getSearchAreaList(
       Future<void> Function(AreaListWrapper areaListWrapper) success,
       void Function(ErrorApiModel) fail) async {
     await dioApiManager.dio.get(ApiKeys.areaUrl).then((response) async {
       if (response.statusCode == 502) {
         preferencesManager.setIsDown();
-        fail(ErrorApiModel.identifyError(error: "Server On Maintenance" , context: context));
-      }else{
+        fail(ErrorApiModel.identifyError(
+            error: "Server On Maintenance", context: context));
+      } else {
         List<dynamic> extractedData = response.data as List<dynamic>;
         preferencesManager.setIsNotDown();
         AreaListWrapper wrapper = AreaListWrapper.fromJson(extractedData);
@@ -35,7 +39,7 @@ class GeneralApiManger {
     }).catchError((error) async {
       preferencesManager.setIsDown();
       isDowned = await preferencesManager.isDown();
-      fail(ErrorApiModel.identifyError(error: error , context: context));
+      fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
 
@@ -45,11 +49,12 @@ class GeneralApiManger {
     await dioApiManager.dio.get(ApiKeys.cityUrl).then((response) async {
       if (response.statusCode == 502) {
         preferencesManager.setIsDown();
-        fail(ErrorApiModel.identifyError(error: "Server On Maintenance" , context: context));
-      }else {
+        fail(ErrorApiModel.identifyError(
+            error: "Server On Maintenance", context: context));
+      } else {
         preferencesManager.setIsNotDown();
         Map<String, dynamic> extractedData =
-        response.data as Map<String, dynamic>;
+            response.data as Map<String, dynamic>;
         // Map<String, dynamic> extractedData = {
         //   "cityName": ["area1", "area2"],
         //   "cityName2": ["area1", "area2"],
@@ -62,7 +67,7 @@ class GeneralApiManger {
     }).catchError((error) async {
       preferencesManager.setIsDown();
       isDowned = await preferencesManager.isDown();
-      fail(ErrorApiModel.identifyError(error: error , context: context));
+      fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
 
@@ -76,7 +81,7 @@ class GeneralApiManger {
           TermsConditionsModel.fromJson(extractedData);
       await success(wrapper);
     }).catchError((error) {
-      fail(ErrorApiModel.identifyError(error: error , context: context));
+      fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
 
@@ -89,7 +94,7 @@ class GeneralApiManger {
       PrivacyPrivacyModel wrapper = PrivacyPrivacyModel.fromJson(extractedData);
       await success(wrapper);
     }).catchError((error) {
-      fail(ErrorApiModel.identifyError(error: error , context: context));
+      fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
 
@@ -102,7 +107,7 @@ class GeneralApiManger {
       HomeAdsListWrapper wrapper = HomeAdsListWrapper.fromJson(extractedData);
       await success(wrapper);
     }).catchError((error) {
-      fail(ErrorApiModel.identifyError(error: error , context: context));
+      fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
 
@@ -114,7 +119,7 @@ class GeneralApiManger {
       HomeCountWrapper wrapper = HomeCountWrapper.fromJson(extractedData);
       await success(wrapper);
     }).catchError((error) {
-      fail(ErrorApiModel.identifyError(error: error , context: context));
+      fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
 
@@ -128,7 +133,7 @@ class GeneralApiManger {
 
       await success(wrapper);
     }).catchError((error) {
-      fail(ErrorApiModel.identifyError(error: error , context: context));
+      fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
 
@@ -140,7 +145,7 @@ class GeneralApiManger {
       AppVersionModel wrapper = AppVersionModel.fromJson(response.data);
       await success(wrapper);
     }).catchError((error) {
-      fail(ErrorApiModel.identifyError(error: error , context: context));
+      fail(ErrorApiModel.identifyError(error: error, context: context));
     });
   }
 }

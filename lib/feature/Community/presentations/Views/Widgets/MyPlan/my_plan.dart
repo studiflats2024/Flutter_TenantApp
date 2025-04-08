@@ -363,7 +363,7 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
           : (planModel.subscriptionStatus == SubscriptionStatus.active &&
                       (planModel.contractSigned ?? false) &&
                       !(planModel.isTrial ?? false)) &&
-                  (planModel.dateTimeRange?.duration.inDays ?? 0) > 7
+                  !(planModel.canUpgrade ?? false)
               ? SizedBox(
                   height: 110.r,
                   child: SubmitButtonWidget(
@@ -375,12 +375,13 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                   ),
                 )
               : planModel.subscriptionStatus == SubscriptionStatus.active &&
-                      (planModel.dateTimeRange?.duration.inDays ?? 0) > 7
+                      !(planModel.canUpgrade ?? false) &&
+                      !(planModel.isTrial ?? false)
                   ? null
                   : SizedBox(
                       height: 110.r,
                       child: SubmitButtonWidget(
-                        withoutShape: true,
+                          withoutShape: true,
                           title: translate((planModel.subscriptionStatus ==
                                           SubscriptionStatus.waitingPayment &&
                                       !(planModel.isTrial ?? false))
@@ -407,7 +408,8 @@ class _MyPlanScreen extends BaseScreenState<MyPlanScreen> {
                                 return ViewPlans();
                               }));
                             }
-                          })),
+                          }),
+                    ),
     );
   }
 

@@ -32,6 +32,7 @@ class MyPlanModel {
   String? contractPath;
   String? paymentMethod;
   String? paymentInvoiceId;
+  bool? canUpgrade;
 
   DateTimeRange? dateTimeRange;
 
@@ -54,7 +55,8 @@ class MyPlanModel {
     this.contractSigned,
     this.contractPath,
     this.planDurationInMonths,
-    this.paymentMethod
+    this.paymentMethod,
+    this.canUpgrade
   });
 
   factory MyPlanModel.fromJson(Map<String, dynamic> json) => MyPlanModel(
@@ -87,6 +89,7 @@ class MyPlanModel {
                     .add(const Duration(days: 1)),
               )
             : null,
+    canUpgrade: json["can_Upgrade"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -108,6 +111,8 @@ class MyPlanModel {
         "payment_Invoice_ID": paymentInvoiceId,
         "planDurationInMonths": planDurationInMonths,
         "contract_Path": contractPath,
-        "contract_Signed": contractSigned
+        "contract_Signed": contractSigned,
+      "payment_Method": paymentMethod,
+        "can_Upgrade": canUpgrade,
       };
 }
