@@ -83,7 +83,7 @@ class MyActivitiesModel {
   String? activityName;
   String? activityDate;
   String? activityPostponedDate;
-  int? reviews;
+  double? reviews;
   String? activityStatus;
   bool? hasRated;
   List<ConsultSubscription>? consultSubscriptions;

@@ -41,13 +41,14 @@ class SignUpScreen extends StatelessWidget {
   }
 
   final DioApiManager dioApiManager = GetIt.I<DioApiManager>();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SignUpBloc>(
       create: (context) => SignUpBloc(SignUpRepository(
-        authApiManager: AuthApiManager(dioApiManager , context),
+        authApiManager: AuthApiManager(dioApiManager, context),
         preferencesManager: GetIt.I<PreferencesManager>(),
-        profileApiManger: ProfileApiManger(dioApiManager , context),
+        profileApiManger: ProfileApiManger(dioApiManager, context),
       )),
       child: const SignUpScreenWithBloc(),
     );
@@ -75,6 +76,7 @@ class _SignUpScreenWithBloc extends BaseAuthState<SignUpScreenWithBloc>
   GlobalKey<FormState> signUpFormKey = GlobalKey<FormState>();
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   final TextEditingController _passwordController = TextEditingController();
+
   @override
   void initState() {
     iniSocialAuth();
@@ -125,7 +127,7 @@ class _SignUpScreenWithBloc extends BaseAuthState<SignUpScreenWithBloc>
           } else if (!state.loginFailResponse.accountConfirmed) {
             showFeedbackMessage("please confirm Your phoneNumber first");
             _openOtpScreenToWelcome(state.loginFailResponse.uuid);
-          } else{
+          } else {
             showFeedbackMessage(state.loginFailResponse.message);
           }
         }
@@ -375,7 +377,8 @@ class _SignUpScreenWithBloc extends BaseAuthState<SignUpScreenWithBloc>
   }
 
   Future<void> _completedProfileScreen(String uuid, bool fromSocial) async {
-    CompletedProfileScreen.open(context, uuid, fromSocial: fromSocial, replacement: true);
+    CompletedProfileScreen.open(context, uuid,
+        fromSocial: fromSocial, replacement: true);
   }
 
   Future<void> _openLoginScreen() async {
@@ -384,10 +387,13 @@ class _SignUpScreenWithBloc extends BaseAuthState<SignUpScreenWithBloc>
 
   Future<void> _openOtpScreen(String uuid) async {
     OtpScreen.open(context, uuid,
-        openAfterCheckOtp: OpenAfterCheckOtp.completeInfoScreen, replacement: true);
+        openAfterCheckOtp: OpenAfterCheckOtp.completeInfoScreen,
+        replacement: true);
   }
+
   Future<void> _openOtpScreenToWelcome(String uuid) async {
     OtpScreen.open(context, uuid,
-        openAfterCheckOtp: OpenAfterCheckOtp.welcomeAuthScreen, replacement: true);
+        openAfterCheckOtp: OpenAfterCheckOtp.welcomeAuthScreen,
+        replacement: true);
   }
 }

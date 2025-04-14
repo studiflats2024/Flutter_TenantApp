@@ -320,6 +320,7 @@ class _ActivityDetailsWithBloc
                             height: SizeManager.sizeSp12,
                           ),
                         ],
+
                         ActivityDetailsSections(
                             activityDetailsModel, widget.fromMyActivity,
                             status: widget.sendModel.status),

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-bool isDevMode() => true;
+bool isDevMode() => false;
 bool isDebugMode() => kDebugMode;
 bool isReleaseMode() => kReleaseMode;
 bool isProfileMode() => kProfileMode;

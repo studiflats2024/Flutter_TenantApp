@@ -41,9 +41,9 @@ class BookingDetailsModel {
   int? bookingGuestsNo;
   bool? hasExtendRequest;
   bool? isOffered;
-  double? fullRent;
-  double? fullService;
-  double? fullSecurity;
+  num? fullRent;
+  num? fullService;
+  num? fullSecurity;
   String? availableFrom;
   String? availableTo;
   int? minStay;
