@@ -199,7 +199,7 @@ class _ArrivingDetailsScreenState
                                 SizedBox(height: 10.h),
                                 _requestFormWidget(),
                                 SizedBox(height: 20.h),
-                                _optionsWidget()
+                                // _optionsWidget()
                               ],
                             ),
                           ),

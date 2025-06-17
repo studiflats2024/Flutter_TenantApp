@@ -89,9 +89,16 @@ class RequestWidgetV2 extends BaseStatelessWidget {
                         AppDateFormat.appDateFormApiParse(
                             apartmentRequestsApiModel.bookingCheckOut ?? ""),
                         AppDateFormat.appDateFormApiParse(
-                            apartmentRequestsApiModel.guests?[0].checkoutDate ??
-                                apartmentRequestsApiModel.bookingCheckOut ??
-                                "")),
+                            (apartmentRequestsApiModel.guests != null &&
+                                    (apartmentRequestsApiModel
+                                            .guests?.isNotEmpty ??
+                                        false))
+                                ? (apartmentRequestsApiModel
+                                        .guests?[0].checkoutDate ??
+                                    apartmentRequestsApiModel.bookingCheckOut ??
+                                    "")
+                                : apartmentRequestsApiModel.bookingCheckOut ??
+                                    "")),
                     SizedBox(height: 10.h),
                     const Divider(),
                     _itemClickableWidget(

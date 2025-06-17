@@ -517,7 +517,7 @@ class BookingDetailsModel {
   }
 
   bool get extendAccepted {
-    return (guests?[guestIndex].extendingStatus == "Approved");
+    return (guests?.isNotEmpty ?? false) && (guests?[guestIndex].extendingStatus == "Approved");
   }
 
   bool get extendReadyForSign {

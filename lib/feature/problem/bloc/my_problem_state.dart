@@ -9,6 +9,11 @@ sealed class MyProblemState extends Equatable {
 
 final class MyProblemInitial extends MyProblemState {}
 
+ class ReadMyProblemMaintenance extends MyProblemState {
+  final bool isRead;
+  const ReadMyProblemMaintenance(this.isRead);
+}
+
 class MyProblemLoadingAsPagingState extends MyProblemState {}
 
 class MyProblemLoadingState extends MyProblemState {}

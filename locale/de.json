@@ -697,5 +697,9 @@
   "cancel_plan_warning": "Sind Sie sicher, dass Sie Ihren Plan stornieren möchten?",
   "cancel_plan_message": "Sobald Sie abgesagt wurden, können Sie Ihr Geld nicht zurückerhalten.",
   "cancel_success_message": "Erfolgreich wurde Ihr Plan storniert.",
-  "ignore": "Ignorieren"
+  "ignore": "Ignorieren",
+  "i_agree_to": "Ich bestätige, dass ich das gelesen und verstanden habe ",
+  "maintenance_policy": "Wartungsrichtlinie",
+  "maintenance_description": "Wenn Sie verfahren sind, erkennen Sie an, dass Sie möglicherweise bestimmte Wartungskosten - insbesondere geringfügige Reparaturen - gemäß der Wartungsklausel in Ihrem Mietvertrag abdecken müssen",
+  "maintenance_confirmation_description": "Sie müssen bestätigen, dass Sie die Wartungsrichtlinie gelesen und verstanden haben"
 }

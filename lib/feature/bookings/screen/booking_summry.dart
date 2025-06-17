@@ -158,7 +158,7 @@ class _BookingSummaryNameState
                       height: 25.h,
                     ),
                     Text(
-                      widget.bookingDetailsModel.fullBooking == true
+                      widget.bookingDetailsModel.showFullPrices == true
                           ? ""
                           : guest.bedName ?? "",
                       style: TextStyle(
@@ -215,14 +215,14 @@ class _BookingSummaryNameState
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          widget.bookingDetailsModel.fullBooking == true
+                          widget.bookingDetailsModel.showFullPrices == true
                               ? translate(LocalizationKeys.rentPrice)!
                               : translate(LocalizationKeys.bedPrice)!,
                           style: TextStyle(
                               fontSize: 16.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          widget.bookingDetailsModel.fullBooking == true
+                          widget.bookingDetailsModel.showFullPrices == true
                               ? "€ ${(widget.bookingDetailsModel.fullRent ?? 0.0).toStringAsFixed(2)}"
                               : "€ ${(guest.bedPrice ?? 0.0).toStringAsFixed(2)}",
                           style: TextStyle(
@@ -244,7 +244,7 @@ class _BookingSummaryNameState
                               fontSize: 16.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          widget.bookingDetailsModel.fullBooking == true
+                          widget.bookingDetailsModel.showFullPrices == true
                               ? "€ ${(widget.bookingDetailsModel.fullSecurity ?? 0.0).toStringAsFixed(2)}"
                               : "€ ${(guest.securityDeposit ?? 0.0).toStringAsFixed(2)}",
                           style: TextStyle(
@@ -266,7 +266,7 @@ class _BookingSummaryNameState
                               fontSize: 16.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          widget.bookingDetailsModel.fullBooking == true
+                          widget.bookingDetailsModel.showFullPrices == true
                               ? "€ ${(widget.bookingDetailsModel.fullService ?? 0.0).toStringAsFixed(2)}"
                               : "€ ${(guest.serviceFee ?? 0.0).toStringAsFixed(2)}",
                           style: TextStyle(

@@ -11,7 +11,7 @@ class ArrivingDetailsRequestModel {
   String? checkinTime;
   String? airportName;
   String? flightNo;
-  bool? moveService;
+  bool moveService;
   bool fromBerlin ;
 
   ArrivingDetailsRequestModel({
@@ -21,7 +21,7 @@ class ArrivingDetailsRequestModel {
     this.checkinTime,
     this.airportName,
     this.flightNo,
-    this.moveService,
+    this.moveService = false,
     this.fromBerlin = true
   });
 

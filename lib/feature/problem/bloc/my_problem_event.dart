@@ -62,3 +62,10 @@ class ChangeNumberOfDateAvailableEvent extends MyProblemEvent {
   @override
   List<Object> get props => [identityHashCode(this)];
 }
+
+class ReadMaintenanceEvent extends MyProblemEvent {
+  final bool isRead;
+  const ReadMaintenanceEvent(this.isRead);
+  @override
+  List<Object> get props => [identityHashCode(this)];
+}

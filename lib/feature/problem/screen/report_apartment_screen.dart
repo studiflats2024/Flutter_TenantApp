@@ -1,3 +1,5 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,15 +15,20 @@ import 'package:vivas/feature/problem/model/send_problem_model.dart';
 import 'package:vivas/feature/problem/widgets/select_image_widget.dart';
 import 'package:vivas/feature/problem/widgets/send_problem_successfully_dialog.dart';
 import 'package:vivas/feature/widgets/app_buttons/submit_button_widget.dart';
+import 'package:vivas/feature/widgets/text_app.dart';
 import 'package:vivas/feature/widgets/text_field/app_text_form_filed_widget.dart';
 import 'package:vivas/feature/widgets/text_field/date_time_form_field_widget.dart';
 import 'package:vivas/feature/widgets/text_field/phone_number_form_filed_widget.dart';
 import 'package:vivas/feature/widgets/text_field/time_picker_form_field_widget.dart';
 
 import 'package:vivas/preferences/preferences_manager.dart';
+import 'package:vivas/res/app_colors.dart';
+import 'package:vivas/res/font_size.dart';
+import 'package:vivas/utils/extensions/context_extensions.dart';
 import 'package:vivas/utils/feedback/feedback_message.dart';
 import 'package:vivas/utils/format/app_date_format.dart';
 import 'package:vivas/utils/locale/app_localization_keys.dart';
+import 'package:vivas/utils/size_manager.dart';
 
 class ReportApartmentScreen extends StatelessWidget {
   ReportApartmentScreen({Key? key}) : super(key: key);
@@ -35,12 +42,13 @@ class ReportApartmentScreen extends StatelessWidget {
   }
 
   final DioApiManager dioApiManager = GetIt.I<DioApiManager>();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<MyProblemBloc>(
       create: (context) => MyProblemBloc(MyProblemRepository(
         preferencesManager: GetIt.I<PreferencesManager>(),
-        problemsApiManger: ProblemsApiManger(dioApiManager , context),
+        problemsApiManger: ProblemsApiManger(dioApiManager, context),
       )),
       child: ReportApartmentScreenWithBloc(unitUUID(context)),
     );
@@ -53,6 +61,7 @@ class ReportApartmentScreen extends StatelessWidget {
 
 class ReportApartmentScreenWithBloc extends BaseStatefulScreenWidget {
   final String unitUUID;
+
   const ReportApartmentScreenWithBloc(this.unitUUID, {super.key});
 
   @override
@@ -68,6 +77,8 @@ class _ReportApartmentScreenWithBloc
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
   int numberDateTextFelid = 1;
   Map<int, Widget> dates = {};
+  bool readMaintenance = false;
+
   @override
   void initState() {
     _sendProblemModel = SendProblemModel(aptUUID: widget.unitUUID);
@@ -104,32 +115,114 @@ class _ReportApartmentScreenWithBloc
             context: context,
             goBackCallback: _closeScreen,
           );
+        } else if (state is ReadMyProblemMaintenance) {
+          readMaintenance = state.isRead;
         }
       }, builder: (ctx, state) {
-        return Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      SizedBox(height: 20.h),
-                      _reportFormWidget(),
-                      SizedBox(height: 20.h),
-                    ],
-                  ),
+        return Column(children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    SizedBox(height: 20.h),
+                    _reportFormWidget(),
+                    SizedBox(height: 20.h),
+                  ],
                 ),
               ),
             ),
-            SubmitButtonWidget(
-              title: translate(LocalizationKeys.sendReport)!,
-              onClicked: _sendReportClicked,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: SizeManager.sizeSp8),
+            child: Row(
+              children: [
+                Checkbox(
+                    value: readMaintenance,
+                    onChanged: (onChanged) {
+                      if (onChanged != null) {
+                        currentBloc.add(ReadMaintenanceEvent(onChanged));
+                      }
+                    }),
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: RichText(
+                    maxLines: 3,
+                    overflow: TextOverflow.clip,
+                    text: TextSpan(
+                      text: translate(LocalizationKeys.iAgreeTo)!,
+                      style: const TextStyle(
+                        color: Colors.black,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: translate(LocalizationKeys.readTheMaintenance)!,
+                          style: const TextStyle(
+                            color: AppColors.colorPrimary,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              ArtSweetAlert.show(
+                                context: context,
+                                artDialogArgs: ArtDialogArgs(
+                                  customColumns: [
+                                    TextApp(
+                                      text: LocalizationKeys.readTheMaintenance,
+                                      multiLang: true,
+                                    ),
+                                    SizedBox(
+                                      height: SizeManager.sizeSp16,
+                                    ),
+                                    TextApp(
+                                      text: LocalizationKeys.maintenanceDescription,
+                                      textAlign: TextAlign.center,
+                                      color: AppColors.textNatural700,
+                                      multiLang: true,
+                                    ),
+
+                                    SizedBox(
+                                      height: SizeManager.sizeSp32,
+                                    ),
+                                  ],
+                                  // title: translate(
+                                  //     LocalizationKeys.readTheMaintenance)!,
+                                  // text: translate(
+                                  //     LocalizationKeys.maintenanceDescription)!,
+                                  confirmButtonText:
+                                      translate(LocalizationKeys.ok)!,
+                                  confirmButtonColor: AppColors.colorPrimary,
+                                ),
+                              );
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        );
+          ),
+          SubmitButtonWidget(
+            title: translate(LocalizationKeys.sendReport)!,
+            buttonColor: readMaintenance ? null : AppColors.buttonGrey,
+            onClicked: readMaintenance
+                ? _sendReportClicked
+                : () {
+                    ArtSweetAlert.show(
+                      artDialogArgs: ArtDialogArgs(
+                          type: ArtSweetAlertType.warning,
+                          title:
+                              translate(LocalizationKeys.readTheMaintenance)!,
+                          text: translate(LocalizationKeys
+                              .maintenanceConfirmationDescription)),
+                      context: context,
+                    );
+                  },
+          ),
+        ]);
       }),
     );
   }
@@ -275,6 +368,7 @@ class _ReportApartmentScreenWithBloc
       ),
     );
   }
+
   ///////////////////////////////////////////////////////////
   /////////////////// Helper methods ////////////////////////
   ///////////////////////////////////////////////////////////

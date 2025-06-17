@@ -449,8 +449,7 @@ class _LoginScreenWithBloc extends BaseAuthState<LoginScreenWithBloc>
         _password));
   }
 
-  Future<void> _signInWithGoogleClicked(
-      GoogleSignInAccount googleSignInAccount) async {
+  Future<void> _signInWithGoogleClicked(GoogleSignInAccount googleSignInAccount) async {
     currentBloc.add(LoginWithGoogleApiEvent(googleSignInAccount));
   }
 

@@ -24,8 +24,8 @@ class ApartmentContentsScreen extends StatelessWidget {
   static const routeName = '/apartment-contents-screen';
   static const argumentUnitDetailsApiModel = 'unitDetailsApiModel';
 
-  static Future<void> open(
-      BuildContext context, UnitDetailsApiModel unitDetailsApiModel) async {
+  static Future<void> open(BuildContext context,
+      UnitDetailsApiModel unitDetailsApiModel) async {
     Navigator.of(context).pushNamed(routeName, arguments: {
       argumentUnitDetailsApiModel: unitDetailsApiModel,
     });
@@ -33,26 +33,32 @@ class ApartmentContentsScreen extends StatelessWidget {
 
   final DioApiManager dioApiManager = GetIt.I<DioApiManager>();
   final PreferencesManager preferencesManager = GetIt.I<PreferencesManager>();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UnitDetailsBloc>(
-      create: (context) => UnitDetailsBloc(UnitDetailsRepository(
-        apartmentApiManger:ApartmentApiManger(dioApiManager,context),
-        preferencesManager: preferencesManager,
-        generalApiManger:GeneralApiManger(dioApiManager,context),
-      )),
+      create: (context) =>
+          UnitDetailsBloc(UnitDetailsRepository(
+            apartmentApiManger: ApartmentApiManger(dioApiManager, context),
+            preferencesManager: preferencesManager,
+            generalApiManger: GeneralApiManger(dioApiManager, context),
+          )),
       child: ApartmentContentsScreenWithBloc(unitDetailsApiModel(context)),
     );
   }
 
   UnitDetailsApiModel unitDetailsApiModel(BuildContext context) =>
-      (ModalRoute.of(context)!.settings.arguments
-              as Map)[ApartmentContentsScreen.argumentUnitDetailsApiModel]
-          as UnitDetailsApiModel;
+      (ModalRoute
+          .of(context)!
+          .settings
+          .arguments
+      as Map)[ApartmentContentsScreen.argumentUnitDetailsApiModel]
+      as UnitDetailsApiModel;
 }
 
 class ApartmentContentsScreenWithBloc extends BaseStatefulScreenWidget {
   final UnitDetailsApiModel unitDetailsApiModel;
+
   const ApartmentContentsScreenWithBloc(this.unitDetailsApiModel, {super.key});
 
   @override
@@ -67,7 +73,7 @@ class _ApartmentContentsScreenWithBloc
   Widget baseScreenBuild(BuildContext context) {
     return Scaffold(
       appBar:
-          AppBar(title: Text(translate(LocalizationKeys.apartmentDetails)!)),
+      AppBar(title: Text(translate(LocalizationKeys.apartmentDetails)!)),
       body: BlocListener<UnitDetailsBloc, UnitDetailsState>(
         listener: (context, state) {
           if (state is UnitDetailLoadingState) {
@@ -104,26 +110,28 @@ class _ApartmentContentsScreenWithBloc
             GeneralDetailsWidget(
               floorNumber: widget.unitDetailsApiModel.generalInfo.aptFloorNo,
               maxNumberOfGuest:
-                  widget.unitDetailsApiModel.generalInfo.aptMaxGuest,
+              widget.unitDetailsApiModel.generalInfo.aptMaxGuest,
             ),
             SizedBox(height: 15.h),
             ...widget.unitDetailsApiModel.rooms
-                .map((e) => ContentItemWidget(
-                      assetPath: e.isBedRoom
-                          ? AppAssetPaths.unitBedroomIcon
-                          : AppAssetPaths.unitLivingRooIcon,
-                      listOfFeature: e.roomTools,
-                      title: e.roomType,
-                      titleIsLocalizationKey: false,
-                    ))
+                .map((e) =>
+                ContentItemWidget(
+                  assetPath: e.isBedRoom
+                      ? AppAssetPaths.unitBedroomIcon
+                      : AppAssetPaths.unitLivingRooIcon,
+                  listOfFeature: e.roomTools,
+                  title: e.roomType,
+                  titleIsLocalizationKey: false,
+                ))
                 .toList(),
             ...widget.unitDetailsApiModel.bathRoom
-                .map((e) => ContentItemWidget(
-                      assetPath: AppAssetPaths.unitBathroomIcon,
-                      listOfFeature: e.bathTools,
-                      title: e.bathName,
-                      titleIsLocalizationKey: false,
-                    ))
+                .map((e) =>
+                ContentItemWidget(
+                  assetPath: AppAssetPaths.unitBathroomIcon,
+                  listOfFeature: e.bathTools,
+                  title: e.bathName,
+                  titleIsLocalizationKey: false,
+                ))
                 .toList(),
             if (widget.unitDetailsApiModel.kitchenTools.kitTool.isNotEmpty) ...[
               ContentItemWidget.kitchen(
@@ -171,11 +179,12 @@ class ApartmentContentsScreenV2 extends StatelessWidget {
     return BlocProvider<UnitDetailsBloc>(
       create: (context) =>
           UnitDetailsBloc(UnitDetailsRepository(
-            apartmentApiManger:ApartmentApiManger(dioApiManager,context),
+            apartmentApiManger: ApartmentApiManger(dioApiManager, context),
             preferencesManager: preferencesManager,
-            generalApiManger:GeneralApiManger(dioApiManager,context),
+            generalApiManger: GeneralApiManger(dioApiManager, context),
           )),
-      child: ApartmentContentsScreenWithBlocV2(unitDetailsApiModel(context), maxPersons(context)),
+      child: ApartmentContentsScreenWithBlocV2(
+          unitDetailsApiModel(context), maxPersons(context)),
     );
   }
 
@@ -262,8 +271,11 @@ class _ApartmentContentsScreenWithBlocV2
                   assetPath: e.isBedRoom
                       ? AppAssetPaths.unitBedroomIcon
                       : AppAssetPaths.unitLivingRooIcon,
-                  listOfFeature: e.roomBeds?.map((e) => "BedRoom ${e.bedNo}").toList()??[],
-                  title:widget.unitDetailsApiModel.isStudio ? "Studio" : "BedRoom ${e.roomType}" ,
+                  listOfFeature: e.roomBeds?.map((e) => "BedRoom ${e.bedNo}")
+                      .toList() ?? [],
+                  title: widget.unitDetailsApiModel.isStudio
+                      ? "Studio"
+                      : "BedRoom ${e.roomType}",
                   titleIsLocalizationKey: false,
                 ))
                 .toList(),

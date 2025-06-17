@@ -72,6 +72,12 @@ class MyProblemBloc extends Bloc<MyProblemEvent, MyProblemState> {
     emit(await myProblemRepository.getProblemDetailsApi(event.problemId));
   }
 
+  _updateReadProblemApiEvent(
+      ReadMaintenanceEvent event, Emitter<MyProblemState> emit) async {
+
+    emit(MyProblemInitial());
+  }
+
   FutureOr<void> _editDescriptionApiEvent(
       EditDescriptionApiEvent event, Emitter<MyProblemState> emit) async {
     emit(MyProblemLoadingState());

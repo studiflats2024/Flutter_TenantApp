@@ -774,5 +774,9 @@ class LocalizationKeys {
   static var cancelPlanMessage = "cancel_plan_message";
   static var cancelSuccessMessage = "cancel_success_message";
   static var ignore = "ignore";
+  static var iAgreeTo = "i_agree_to";
+  static var readTheMaintenance = "maintenance_policy";
+  static var maintenanceDescription = "maintenance_description";
+  static var maintenanceConfirmationDescription = "maintenance_confirmation_description";
 }
 
