@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:727951335686:android:317ac0557b3515022afe87",
+        "android_client_info": {
+          "package_name": "com.studiflats.agent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "727951335686-psv9svhulcsrpv2sc1aqjs7oc87ggg61.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7SammzoenY1_Z-N16I23CSnQpjsXD2n8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "727951335686-2ldicnh60h85hkbsasakdto3cllg5lon.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "727951335686-bpfv5lpac98iki2onqnusdvm13il12ol.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.studiflats.agent"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:727951335686:android:eba54756ef29cf012afe87",
         "android_client_info": {
           "package_name": "com.studiflats.app"
@@ -63,11 +99,10 @@
               "client_type": 3
             },
             {
-              "client_id": "727951335686-e55jcvjakqela6767bsaapbc951aubvl.apps.googleusercontent.com",
+              "client_id": "727951335686-bpfv5lpac98iki2onqnusdvm13il12ol.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.studiflats.app",
-                "app_store_id": "6474908385"
+                "bundle_id": "com.studiflats.agent"
               }
             }
           ]
@@ -100,11 +135,10 @@
               "client_type": 3
             },
             {
-              "client_id": "727951335686-e55jcvjakqela6767bsaapbc951aubvl.apps.googleusercontent.com",
+              "client_id": "727951335686-bpfv5lpac98iki2onqnusdvm13il12ol.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.studiflats.app",
-                "app_store_id": "6474908385"
+                "bundle_id": "com.studiflats.agent"
               }
             }
           ]
