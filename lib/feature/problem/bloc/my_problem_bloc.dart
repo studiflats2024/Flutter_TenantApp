@@ -13,10 +13,12 @@ import 'package:vivas/feature/problem/model/filter_enum.dart';
 import 'package:vivas/feature/problem/model/send_problem_model.dart';
 
 part 'my_problem_event.dart';
+
 part 'my_problem_state.dart';
 
 class MyProblemBloc extends Bloc<MyProblemEvent, MyProblemState> {
   final BaseMyProblemRepository myProblemRepository;
+
   MyProblemBloc(this.myProblemRepository) : super(MyProblemInitial()) {
     on<GetMyProblemApiEvent>(_getMyProblemApiEvent);
     on<GetUserApartmentsApiEvent>(_getUserApartmentsApiEvent);
@@ -25,6 +27,7 @@ class MyProblemBloc extends Bloc<MyProblemEvent, MyProblemState> {
     on<SendProblemApiEvent>(_sendProblemApiEvent);
     on<GetProblemDetailsApiEvent>(_getProblemDetailsApiEvent);
     on<EditDescriptionApiEvent>(_editDescriptionApiEvent);
+    on<ReadMaintenanceEvent>(_updateReadProblemApiEvent);
   }
 
   FutureOr<void> _getMyProblemApiEvent(
@@ -74,8 +77,7 @@ class MyProblemBloc extends Bloc<MyProblemEvent, MyProblemState> {
 
   _updateReadProblemApiEvent(
       ReadMaintenanceEvent event, Emitter<MyProblemState> emit) async {
-
-    emit(MyProblemInitial());
+    emit(ReadMyProblemMaintenance(event.isRead));
   }
 
   FutureOr<void> _editDescriptionApiEvent(

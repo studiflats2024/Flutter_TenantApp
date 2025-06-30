@@ -114,7 +114,6 @@ class _ArrivingDetailsScreenState
     // minDate = DateFormat("M/d/yyyy").parse(widget.bookingDetailsModel.checkIn ?? "");
     maxDate = minDate.add(const Duration(days: 365));
     arrivingDetailsRequestModel = widget.arrivingDetailsRequestModel;
-    print("minDate: ${minDate.toString()}");
     super.initState();
   }
 
