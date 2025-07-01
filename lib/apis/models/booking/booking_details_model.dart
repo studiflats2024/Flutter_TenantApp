@@ -151,7 +151,7 @@ class BookingDetailsModel {
         Duration difference =
         AppDateFormat.appDateFormApiParse(bookingCheckOut ?? "")
             .difference(DateTime.now());
-        if (difference.inDays <= 31 ||
+        if (difference.inDays <= 93 ||
             AppDateFormat.appDateFormApiParse(bookingCheckOut ?? "").month ==
                 DateTime.now().month) {
           return true;
