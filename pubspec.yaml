@@ -111,6 +111,7 @@ dependency_overrides:
   intl: ^0.18.0
   archive: ^4.0.2
   win32: ^5.10.0
+  sensors_plus: ^5.0.1
 
 
 dev_dependencies:
